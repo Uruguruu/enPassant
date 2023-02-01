@@ -60,6 +60,7 @@ antwort:
 2. ungültiger Zug
 3. ungültige spiel_id
 4. ungültiger KEY
+   
 ## Schachregeln:
 - normale Spielregeln (bewegung der Figuren)
 - enPassant
