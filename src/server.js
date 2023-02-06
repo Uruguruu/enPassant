@@ -8,13 +8,122 @@ var bodyParser = require("body-parser");
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//Defines an API key.
+// functions
+
+// check if key exist and update time
+function check_key(Key){
+    // check if key is in database
+    const check_key = db.prepare("SELECT * FROM Key WHERE Key = @Key");
+    const check = check_key.get({Key});
+    if(check != undefined){
+        // check if key is not out time
+        if(new Date() / 1 - check["time"] > 10000){
+            // delete Key
+            const delete_key = db.prepare("DELETE FROM Key WHERE Key = @Key");
+            delete_key.run({Key});
+            return false;
+        }
+        else{
+            // set new time for key
+            const update_key = this.db.prepare("UPDATE Key SET time = @Time WHERE Key = @Key");
+            var Time = new Date() / 1;
+            return true;
+        }
+
+    }
+    else{
+        return false;
+    }
+}
+
+// returns the User_ID from the Key
+function get_player(Key){
+    const get_player = db.prepare("SELECT User_FK FROM Key WHERE Key = @Key");
+    return get_player.run({Key});
+}
+
+// check if spiel exist and if user has rights to access
+function spielexist(spiel_id, Player){
+const spielexist = db.prepare("SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id");
+const check_spiel = spielexist.run({Player, spiel_id});
+if(check_spiel =! undefined){
+    return true;
+}
+return false;
+}
+
+// generate API Key
 const genAPIKey = () => {
   //create a base-36 string that contains 30 chars in a-z,0-9
   return [...Array(300)]
     .map((e) => ((Math.random() * 36) | 0).toString(36))
     .join("");
 };
+
+// starts the game and insert all data to database
+function game_create(Player_1, public){
+    const insert_game = db.prepare("INSERT INTO GAMES (Player_1, aktueller_player, public) VALUES (@Player_1, true, @public)");
+    const check_spiel = insert_game.run({Player_1, public});
+    const get_game_id = db.prepare("SELECT Games_ID FROM Games WHERE Player_1= @Player_1 AND ");
+    return get_game_id.run({Player_1, public});
+}
+
+function game_start(Player_1, Player_2, game_id){
+    const insert = db.prepare("INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) ");
+    //White Pawns
+    insert.run({game_id, X:1, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:2, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:3, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:4, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:5, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:6, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:7, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:8, Y:2, type:1, player:Player_1});
+    //White Towers
+    insert.run({game_id, X:1, Y:1, type:2, player:Player_1});
+    insert.run({game_id, X:8, Y:1, type:2, player:Player_1});
+    //White Knights
+    insert.run({game_id, X:2, Y:1, type:3, player:Player_1});
+    insert.run({game_id, X:7, Y:1, type:3, player:Player_1});
+    //White Bishops
+    insert.run({game_id, X:3, Y:1, type:4, player:Player_1});
+    insert.run({game_id, X:6, Y:1, type:4, player:Player_1});
+    //White King
+    insert.run({game_id, X:5, Y:1, type:5, player:Player_1});
+    //White Queen
+    insert.run({game_id, X:4, Y:1, type:6, player:Player_1});
+
+    //Black Pawns
+    insert.run({game_id, X:1, Y:7, type:1, player:Player_2});
+    insert.run({game_id, X:2, Y:7, type:1, player:Player_2});
+    insert.run({game_id, X:3, Y:7, type:1, player:Player_2});
+    insert.run({game_id, X:4, Y:7, type:1, player:Player_2});
+    insert.run({game_id, X:5, Y:7, type:1, player:Player_2});
+    insert.run({game_id, X:6, Y:7, type:1, player:Player_2});
+    insert.run({game_id, X:7, Y:7, type:1, player:Player_2});
+    insert.run({game_id, X:8, Y:7, type:1, player:Player_2});
+    //Black Towers
+    insert.run({game_id, X:1, Y:8, type:2, player:Player_2});
+    insert.run({game_id, X:8, Y:8, type:2, player:Player_2});
+    //Black Knights
+    insert.run({game_id, X:2, Y:8, type:3, player:Player_2});
+    insert.run({game_id, X:7, Y:8, type:3, player:Player_2});
+    //Black Bishops
+    insert.run({game_id, X:3, Y:8, type:4, player:Player_2});
+    insert.run({game_id, X:6, Y:8, type:4, player:Player_2});
+    //Black Knight
+    insert.run({game_id, X:5, Y:8, type:5, player:Player_2});
+    //Black Queen
+    insert.run({game_id, X:4, Y:8, type:6, player:Player_2});
+
+}
+
+
+/*
+-------------------------------------------------------------------------------------------------------------------------------
+Beginn of the main code 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
 /*
 Login
 Needs name and Password.
@@ -24,6 +133,8 @@ No connection = "wrong user or password"
 Yes = sends api key
 */
 app.post("/login", async function (req, res) {
+    const insert = db.prepare("INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) ");
+    insert.run({game_id:1, X:1, Y:2, type:1, player:1} );
   try {
     let { name, password } = req.body;
     const check_key = db.prepare(
@@ -76,14 +187,32 @@ app.post("/register", async function (req, res) {
 /*
 Register END
 */
+
+app.post("/create_game", async function (req, res) {
+    try{
+        let {KEY} = req.body;
+        if(!(await check_key(Key))) res.send("ungültiger KEY");
+        else{
+            var Player = await get_player(KEY);
+            return game_create(Player);
+
+        }
+    }
+    catch(error){
+        console.log(error);
+        res.send("Error");
+    }
+})
 app.post("/mache_move", async function (req, res) {
   try {
-    let { KEY, spiel_id, anfangx, anfangy, endex, endey } = req.body;
-    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = ");
-    get_type.run({ anfangx, anfangy });
-    var spielzug = true;
-    var farbe = true; // true = weiss false = schwarz
-    var spielfigur = 2;
+    let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
+    if(!(await check_key(KEY))) res.send("ungültiger KEY");
+    var Player = get_player(KEY);
+    if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
+    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = @Player AND Games_ID = @spiel_id");
+    const get_color = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
+    var farbe = get_color.run({spiel_id}); // true = weiss false = schwarz
+    var spielfigur =  get_type.run({anfangx, anfangy});
     /*
     Switch for White Figures
     */
