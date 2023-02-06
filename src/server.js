@@ -40,13 +40,49 @@ app.post('/login', async function (req, res) {
     }
 })
 
+app.post('/mache_move', async function (req, res) {
+try{
+    let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
+    const get_type = db.prepare("SELECT * FROM User WHERE Username= @name AND Password = @password");
+    get_type.run({anfangx, anfangy})
+    var spielfigur = 2;
+    switch (spielfigur) {
+        case 1:
+          break;
+        case 2:
+           day = "Tuesday";
+          break;
+        case 3:
+          day = "Wednesday";
+          break;
+        case 4:
+          day = "Thursday";
+          break;
+        case 5:
+          day = "Friday";
+          break;
+        case 6:
+          day = "Saturday";
+      }
+    
+
+}
+catch(error){
+    res.send()
+}
+})
+
+function getposition(x,y,spiel_id){
+
+}
+
 app.post('/register', async function (req, res){
     try{
         let {name, password} = req.body;
         const check_key = db.prepare("SELECT * FROM User WHERE Username= @name");
         const check = await check_key.get({name});
         if(check != undefined){
-            
+
         }
         else{
             res.send("User already exist");
