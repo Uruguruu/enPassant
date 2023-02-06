@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 3004;
+const port = 3004;  // App running on Port 3004
 const Database = require("better-sqlite3");
 const db = new Database("./database.db", {});
 const fs = require("fs");
@@ -9,14 +9,21 @@ var bodyParser = require('body-parser');
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
+//Defines an API key.
 const genAPIKey = () => {
     //create a base-36 string that contains 30 chars in a-z,0-9
     return [...Array(300)]
       .map((e) => ((Math.random() * 36) | 0).toString(36))
       .join("");
 };
-
+/*
+Login
+Needs name and Password.
+Checks in Database if User and Password exists.
+No = "wrong user or Password"
+No connection = "wrong user or password"
+Yes = sends api key
+*/
 app.post('/login', async function (req, res) {
     try{
         let {name, password} = req.body;
@@ -246,7 +253,9 @@ catch(error){
 function getposition(x,y,spiel_id){
 
 }
-
+/*
+Create Account
+*/
 app.post('/register', async function (req, res){
     try{
         let {name, password} = req.body;
