@@ -31,6 +31,10 @@ antwort:
 1. [API Key]
 2. login Daten falsch
 
+/create_game
+POST
+braucht: {KEY, public}
+
 /get_angefangene_spiele?{API Key}
 GET
 antwort:

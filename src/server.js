@@ -53,13 +53,35 @@ if(check_spiel =! undefined){
 return false;
 }
 
-
+// generate API Key
 const genAPIKey = () => {
   //create a base-36 string that contains 30 chars in a-z,0-9
   return [...Array(300)]
     .map((e) => ((Math.random() * 36) | 0).toString(36))
     .join("");
 };
+
+// starts the game and insert all data to database
+function game_create(Player_1){
+    const insert_game = db.prepare("INSERT ");
+    const check_spiel = spielexist.run({Player, spiel_id});
+    return game_id
+}
+
+function game_start(Player_1, Player_2, game_id){
+    const insert = db.prepare("INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) ");
+    insert.run({game_id, X:1, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:2, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:3, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:4, Y:2, type:1, player:Player_1});
+}
+
+
+/*
+-------------------------------------------------------------------------------------------------------------------------------
+Beginn of the main code 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
 /*
 Login
 Needs name and Password.
@@ -123,6 +145,10 @@ app.post("/register", async function (req, res) {
 Register END
 */
 
+app.post("/create_game", async function (req, res) {
+
+})
+
 app.post("/mache_move", async function (req, res) {
   try {
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
@@ -130,9 +156,9 @@ app.post("/mache_move", async function (req, res) {
     var Player = get_player(key);
     if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
     const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = @Player AND Games_ID = @spiel_id");
-    get_type.run({anfangx, anfangy})
-    var farbe = true; // true = weiss false = schwarz
-    var spielfigur = 2;
+    const get_color = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
+    var farbe = get_color.run({spiel_id}); // true = weiss false = schwarz
+    var spielfigur =  get_type.run({anfangx, anfangy});
     if ((farbe = true)) {
       switch (spielfigur) {
         case 1:
@@ -530,33 +556,6 @@ catch(error){
     res.send("Error")
 }
 })
-
-function getposition(x,y,spiel_id){
-
-}
-function eat(x,y,spiel_id){
-
-}
-
-app.post('/register', async function (req, res){
-    try{
-        let {name, password} = req.body;
-        const check_key = db.prepare("SELECT * FROM User WHERE Username= @name");
-        const check = await check_key.get({name});
-        if(check != undefined){
-
-        }
-        else{
-            res.send("User already exist");
-        }
-    }
-    catch(error){
-        res.send("Error");
-    }
-})
-
-
-function getposition(x, y, spiel_id) {}
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
