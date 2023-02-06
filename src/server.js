@@ -134,7 +134,7 @@ try{
               break;
 
             case 4:
-              day = "Thursday";
+              
               break;
             case 5:
               if((anfangx+1 === endex && anfangy+1 === endey)){
