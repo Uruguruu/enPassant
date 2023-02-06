@@ -43,29 +43,50 @@ app.post('/login', async function (req, res) {
 app.post('/mache_move', async function (req, res) {
 try{
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
-    const get_type = db.prepare("SELECT * FROM User WHERE Username= @name AND Password = @password");
+    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = ");
     get_type.run({anfangx, anfangy})
+    var farbe = true;
     var spielfigur = 2;
-    switch (spielfigur) {
-        case 1:
-          break;
-        case 2:
-           day = "Tuesday";
-          break;
-        case 3:
-          day = "Wednesday";
-          break;
-        case 4:
-          day = "Thursday";
-          break;
-        case 5:
-          day = "Friday";
-          break;
-        case 6:
-          day = "Saturday";
-      }
-    
-
+    if(farbe = true){
+        switch (spielfigur) {
+            case 1:
+              break;
+            case 2:
+               day = "Tuesday";
+              break;
+            case 3:
+              day = "Wednesday";
+              break;
+            case 4:
+              day = "Thursday";
+              break;
+            case 5:
+              day = "Friday";
+              break;
+            case 6:
+              day = "Saturday";
+          }
+        }
+    else if(farbe == false){
+        switch (spielfigur) {
+            case 1:
+              break;
+            case 2:
+               day = "Tuesday";
+              break;
+            case 3:
+              day = "Wednesday";
+              break;
+            case 4:
+              day = "Thursday";
+              break;
+            case 5:
+              day = "Friday";
+              break;
+            case 6:
+              day = "Saturday";
+          }
+    }
 }
 catch(error){
     res.send()
