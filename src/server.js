@@ -98,9 +98,21 @@ try{
 
               break;
             case 3:
-            
-            if (anfangx !== endex && anfangy !== endey) {
-                spielzug = false;
+                if (anfangx + 2 === endex && anfangy-1 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx + 2 === endex && anfangy+1 === endey) { 
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx + 1 === endex && anfangy-2 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx + 1 === endex && anfangy+2 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
                 }
                 if (anfangx - 1 === endex && anfangy+2 === endey) {
                   eat(endex, endey, spiel_id);
@@ -118,10 +130,31 @@ try{
                   eat(endex, endey, spiel_id);
                   break;
                 }
+                spielzug = false;
+              break;
+
+              case 4:
+                if (Math.abs(endex - anfangx) !== Math.abs(endey - anfangy)) {
+                spielzug = false;
+                }
+
+                let i = anfangx + incrementx;
+                let j = anfangy + incrementy;
+
+                while (i !== endex && j !== endey) {
+                if (await getposition(i, j, spiel_id)) {
+                    spielzug = false;
+                    break;
+                }
+                i += incrementx;
+                j += incrementy;
+                }
+
+                if (i === endex && j === endey) {
+                spielzug = true;
+                eat(endex, endey, spiel_id);
+                }
                 
-                break;
-            case 4:
-              
               break;
             case 5:
               if((anfangx+1 === endex && anfangy+1 === endey)){
