@@ -62,15 +62,15 @@ const genAPIKey = () => {
 };
 
 // starts the game and insert all data to database
-function game_create(Player_1){
-    const insert_game = db.prepare("INSERT ");
-    const check_spiel = spielexist.run({Player, spiel_id});
+function game_create(Player_1, public){
+    const insert_game = db.prepare("INSERT INTO GAMES (Player_1, aktueller_player, public)");
+    const check_spiel = insert_game.run({Player, spiel_id});
     return game_id
 }
 
 function game_start(Player_1, Player_2, game_id){
     const insert = db.prepare("INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) ");
-    insert.run({game_id, X:1, Y:2, type:1, player:Player_1});
+    insert.run({game_id, X:1, Y:2, type:1, player:Player_1}, );
     insert.run({game_id, X:2, Y:2, type:1, player:Player_1});
     insert.run({game_id, X:3, Y:2, type:1, player:Player_1});
     insert.run({game_id, X:4, Y:2, type:1, player:Player_1});
@@ -91,6 +91,8 @@ No connection = "wrong user or password"
 Yes = sends api key
 */
 app.post("/login", async function (req, res) {
+    const insert = db.prepare("INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) ");
+    insert.run({game_id:1, X:1, Y:2, type:1, player:1} );
   try {
     let { name, password } = req.body;
     const check_key = db.prepare(
@@ -146,14 +148,26 @@ Register END
 */
 
 app.post("/create_game", async function (req, res) {
+    try{
+        let {KEY} = req.body;
+        if(!(await check_key(Key))) res.send("ungültiger KEY");
+        else{
+            var Player = await get_player(KEY);
+            return game_create(Player);
 
+        }
+    }
+    catch(error){
+        console.log(error);
+        res.send("Error");
+    }
 })
 
 app.post("/mache_move", async function (req, res) {
   try {
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
-    if(!(await check_key(key))) res.send("ungültiger KEY");
-    var Player = get_player(key);
+    if(!(await check_key(KEY))) res.send("ungültiger KEY");
+    var Player = get_player(KEY);
     if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
     const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = @Player AND Games_ID = @spiel_id");
     const get_color = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
