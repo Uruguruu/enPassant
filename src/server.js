@@ -233,12 +233,66 @@ try{
               spielzug = false;
               break;
             case 6:
-              day = "Saturday";
+              if(anfangx === endex && anfangy === endey){
+                spielzug = false;
+              break;  
+              }
+              if(anfangx === endex || anfangy === endey){
+                if (anfangx === endex) {  //Function checks if in the x axis is any piece
+                  let increment = (endey - anfangy) / Math.abs(endey - anfangy);
+                  for (let i = anfangy + increment; i !== endey; i += increment) {
+                    if (await getposition(anfangx, i, spiel_id)) {
+                      spielzug = true;
+                      eat(endex, endey, spiel_id);
+                      break;
+                    }
+                  }
+                }
+              }
+              else{
+                var richtung;
+                if(anfangx-endex > 0) richtung = true;
+                else richtung = false;
+                if(Math.abs(anfangx - endex) === Math.abs(anfangy- endey)){
+                  for (let i = 1; i < Math.abs(anfangx - endex) ; i++) {
+                    if(getposition(anfangx + i, anfangy+i, spiel_id) && !richtung){
+                      spielzug = false;
+                      break;
+                    }
+                    if(getposition(anfangx -i, anfangy-i, spiel_id) && richtung){
+                      spielzug = false;
+                      break;
+                    }
+                  }
+                }
+                else{
+                  spielzug = false;
+                }
+              }
+              break;
           }
         }
     else if(farbe == false){
         switch (spielfigur) {
             case 1:
+              if (anfangx-endex != +1) {
+                spielzug = false; // Überprüfung ob der Bauer nach vorne geht
+              }
+  
+              if((await getposition(anfangx-1, anfangy-1, spiel_id) && anfangx-1 === endex && anfangy-1 === endey)|| 
+              await getposition(anfangx-1, anfangy+1, spiel_id) && anfangx-1 === endex && anfangy+1 === endey){
+                spielzug = true;
+                eat(endex, endey, spiel_id);  // Überprüfung ob der Bauer essen will und kann
+              }
+  
+              if (anfangx === 2 && !(await getposition(anfangx - 1))) {
+                await anfangy - 2 || anfangy - 1; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
+              }
+  
+              if (await getposition(anfangx+1, anfangy, spiel_id)) {
+                spielzug = false;
+              } // Überprüft ob eine Figur vor dem Bauer steht
+                break;
               break;
             case 2:
             
@@ -267,7 +321,40 @@ try{
 
               break;
             case 3:
-              
+              if (anfangx + 2 === endex && anfangy-1 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx + 2 === endex && anfangy+1 === endey) { 
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx + 1 === endex && anfangy-2 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx + 1 === endex && anfangy+2 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx - 1 === endex && anfangy+2 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx - 1 === endex && anfangy-2 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx - 2 === endex && anfangy+1 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx - 2 === endex && anfangy-1 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              spielzug = false;
+            break;
             case 4:
                 
              if (anfangx !== endex && anfangy !== endey) {
@@ -299,10 +386,78 @@ try{
                 
               break;
             case 5:
-              day = "Friday";
+              if((anfangx+1 === endex && anfangy+1 === endey)){
+                eat(endex, endey, spiel_id);
+                break;
+            }
+            if((anfangx+1 === endex && anfangy+0 === endey)){
+                eat(endex, endey, spiel_id);
+                break;
+            }
+            if((anfangx+1 === endex && anfangy-1 === endey)){
+                eat(endex, endey, spiel_id);
+                break;
+            }
+            if((anfangx+0 === endex && anfangy+1 === endey)){
+                eat(endex, endey, spiel_id);
+                break;
+            }
+            if((anfangx+0 === endex && anfangy-1 === endey)){
+                eat(endex, endey, spiel_id);
+                break;
+            }
+            if((anfangx-1 === endex && anfangy+1 === endey)){
+                eat(endex, endey, spiel_id);
+                break;
+            }
+            if((anfangx-1 === endex && anfangy+0 === endey)){
+                eat(endex, endey, spiel_id);
+                break;
+            }
+            if((anfangx-1 === endex && anfangy-1 === endey)){
+                eat(endex, endey, spiel_id);
+                break;
+            }
+            spielzug = false;
               break;
             case 6:
-              day = "Saturday";
+              if(anfangx === endex && anfangy === endey){
+                spielzug = false;
+              break;  
+              }
+              if(anfangx === endex || anfangy === endey){
+                if (anfangx === endex) {  //Function checks if in the x axis is any piece
+                  let increment = (endey - anfangy) / Math.abs(endey - anfangy);
+                  for (let i = anfangy + increment; i !== endey; i += increment) {
+                    if (await getposition(anfangx, i, spiel_id)) {
+                      spielzug = true;
+                      eat(endex, endey, spiel_id);
+                      break;
+                    }
+                  }
+                }
+              }
+              else{
+                var richtung;
+                if(anfangx-endex > 0) richtung = true;
+                else richtung = false;
+                if(Math.abs(anfangx - endex) === Math.abs(anfangy- endey)){
+                  for (let i = 1; i < Math.abs(anfangx - endex) ; i++) {
+                    if(getposition(anfangx + i, anfangy+i, spiel_id) && !richtung){
+                      spielzug = false;
+                      break;
+                    }
+                    if(getposition(anfangx -i, anfangy-i, spiel_id) && richtung){
+                      spielzug = false;
+                      break;
+                    }
+                  }
+                }
+                else{
+                  spielzug = false;
+                }
+              }
+              break;
           }
     }
 }
