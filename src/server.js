@@ -259,7 +259,7 @@ try{
                 spielzug = false;
               } // Überprüft ob eine Figur vor dem Bauer steht
                 break;
-              break;
+
             case 2:
             
             if (anfangx !== endex && anfangy !== endey) {
