@@ -3,7 +3,6 @@ const app = express();
 const port = 3004; // App running on Port 3004
 const Database = require("better-sqlite3");
 const db = new Database("./database.db", {});
-const fs = require("fs");
 var bodyParser = require("body-parser");
 
 // parse application/x-www-form-urlencoded
@@ -165,7 +164,6 @@ app.post("/login", async function (req, res) {
     res.send("wrong user or password");
   }
 });
-
 /*
 Register Start
 */
@@ -245,16 +243,20 @@ app.post("/join_game", async function (req, res) {
 
 app.post("/mache_move", async function (req, res) {
   try {
-    let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
-    if(!(await check_key(KEY))) res.send("ungültiger KEY");
-    var Player = get_player(KEY);
-    if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
-    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = @Player AND Games_ID = @spiel_id");
-    const get_color = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
-    var farbe = get_color.run({spiel_id}); // true = weiss false = schwarz
-    var spielfigur =  get_type.run({anfangx, anfangy});
+    let { KEY, spiel_id, anfangx, anfangy, endex, endey } = req.body;
+    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = ");
+    get_type.run({ anfangx, anfangy });
+    var spielzug = true;
+    var farbe = true; // true = weiss false = schwarz
+    var spielfigur = 2;
+    /*
+    Switch for White Figures
+    */
     if ((farbe = true)) {
       switch (spielfigur) {
+      /*
+      Pawn
+      */
         case 1:
           if (anfangx - endex != -1) {
             spielzug = false; // Überprüfung ob der Bauer nach vorne geht
@@ -281,6 +283,9 @@ app.post("/mache_move", async function (req, res) {
           } // Überprüft ob eine Figur vor dem Bauer steht
           break;
 
+        /*
+        Rook
+        */
         case 2:
           if (anfangx !== endex && anfangy !== endey) {
             spielzug = false;
@@ -308,6 +313,9 @@ app.post("/mache_move", async function (req, res) {
           }
 
           break;
+        /*
+        Knight
+        */
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
@@ -343,7 +351,9 @@ app.post("/mache_move", async function (req, res) {
           }
           spielzug = false;
           break;
-
+        /*
+        Bishop
+        */
         case 4:
           if (Math.abs(endex - anfangx) !== Math.abs(endey - anfangy)) {
             spielzug = false;
@@ -367,6 +377,9 @@ app.post("/mache_move", async function (req, res) {
           }
 
           break;
+        /*
+        King
+        */
         case 5:
           if (anfangx + 1 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
@@ -402,6 +415,9 @@ app.post("/mache_move", async function (req, res) {
           }
           spielzug = false;
           break;
+        /*
+        Queen
+        */
         case 6:
           if (anfangx === endex && anfangy === endey) {
             spielzug = false;
@@ -446,8 +462,14 @@ app.post("/mache_move", async function (req, res) {
           }
           break;
       }
+    /*
+    Switch for black figures
+    */
     } else if (farbe == false) {
       switch (spielfigur) {
+        /*
+        Pawn
+        */
         case 1:
           if (anfangx - endex != +1) {
             spielzug = false; // Überprüfung ob der Bauer nach vorne geht
@@ -473,7 +495,9 @@ app.post("/mache_move", async function (req, res) {
             spielzug = false;
           } // Überprüft ob eine Figur vor dem Bauer steht
           break;
-          break;
+        /*
+        Rook
+        */
         case 2:
           if (anfangx !== endex && anfangy !== endey) {
             spielzug = false;
@@ -499,8 +523,10 @@ app.post("/mache_move", async function (req, res) {
               }
             }
           }
-
           break;
+        /*
+        Knight
+        */
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
@@ -536,6 +562,9 @@ app.post("/mache_move", async function (req, res) {
           }
           spielzug = false;
           break;
+        /*
+        Bishop
+        */
         case 4:
           if (anfangx !== endex && anfangy !== endey) {
             spielzug = false;
@@ -563,7 +592,9 @@ app.post("/mache_move", async function (req, res) {
             spielzug = true;
             eat(endex, endey, spiel_id);
           }
-
+          /*
+          King
+          */
           break;
         case 5:
           if (anfangx + 1 === endex && anfangy + 1 === endey) {
@@ -600,6 +631,9 @@ app.post("/mache_move", async function (req, res) {
           }
           spielzug = false;
           break;
+        /*
+        Queen
+        */
         case 6:
           if (anfangx === endex && anfangy === endey) {
             spielzug = false;
@@ -645,11 +679,21 @@ app.post("/mache_move", async function (req, res) {
           break;
       }
     }
-}
-catch(error){
-    res.send("Error")
-}
-})
+  } catch (error) {
+    res.send();
+  }
+});
+
+function getposition(x, y, spiel_id) {}
+
+
+
+app.get('/leaderboard', (req, res) => {
+  const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
+  var result = lead_list.all();
+  res.send(result);
+});
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
