@@ -98,8 +98,41 @@ try{
 
               break;
             case 3:
-              day = "Wednesday";
+                if (anfangx + 2 === endex && anfangy-1 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx + 2 === endex && anfangy+1 === endey) { 
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx + 1 === endex && anfangy-2 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx + 1 === endex && anfangy+2 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx - 1 === endex && anfangy+2 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx - 1 === endex && anfangy-2 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx - 2 === endex && anfangy+1 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx - 2 === endex && anfangy-1 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                spielzug = false;
               break;
+
             case 4:
               day = "Thursday";
               break;
