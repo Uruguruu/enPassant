@@ -47,6 +47,40 @@ app.post('/login', async function (req, res) {
     }
 })
 
+/*
+Register Start
+*/
+app.post('/register', async function (req, res){
+    try{
+        let {name, password} = req.body;
+        const check_key = db.prepare("SELECT * FROM User WHERE Username= @name");
+        const check = await check_key.get({name});
+        if(check === undefined && name.length >= 5 && name.length <= 200){
+                res.send("Account created");
+               const insertUser = db.prepare("INSERT INTO User (Username, Password) VALUES (@name, @password)");
+               insertUser.run({name, password })
+
+        } else if(name.length <= 5) {
+        res.send("Username is too short!")
+
+
+        } else if(name.length >= 200) {
+        res.send("Username is to long!")
+        }
+        else{
+        res.send("User already exists");
+        }
+    }
+    catch(error){
+        console.log(error);
+        res.send("Error");
+    }
+})
+/*
+Register END
+*/
+
+
 app.post('/mache_move', async function (req, res) {
 try{
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
@@ -280,26 +314,6 @@ catch(error){
 function getposition(x,y,spiel_id){
 
 }
-/*
-Create Account
-*/
-app.post('/register', async function (req, res){
-    try{
-        let {name, password} = req.body;
-        const check_key = db.prepare("SELECT * FROM User WHERE Username= @name");
-        const check = await check_key.get({name});
-        if(check != undefined){
-
-        }
-        else{
-            res.send("User already exist");
-        }
-    }
-    catch(error){
-        res.send("Error");
-    }
-})
-
 
 
 app.listen(port, () => {
