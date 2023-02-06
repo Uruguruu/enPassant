@@ -62,7 +62,30 @@ try{
 
               break;
             case 2:
-               day = "Tuesday";
+               
+            if (anfangx !== endex && anfangy !== endey) {
+                spielzug = false;
+              }
+              if (anfangx === endex) {  //Function checks if in the x axis is any piece
+                let increment = (endey - anfangy) / Math.abs(endey - anfangy);
+                for (let i = anfangy + increment; i !== endey; i += increment) {
+                  if (await getposition(anfangx, i, spiel_id)) {
+                    spielzug = true;
+                    eat(endex, endey, spiel_id);
+                    break;
+                  }
+                }
+              } else if (anfangy === endey) {   //Function checks if in the y axis is any piece
+                let increment = (endex - anfangx) / Math.abs(endex - anfangx);
+                for (let i = anfangx + increment; i !== endex; i += increment) {
+                  if (await getposition(i, anfangy, spiel_id)) {
+                    spielzug = true;
+                    eat(endex, endey, spiel_id);
+                    break;
+                  }
+                }
+              }
+
               break;
             case 3:
               day = "Wednesday";
