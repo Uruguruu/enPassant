@@ -205,6 +205,24 @@ try{
     else if(farbe == false){
         switch (spielfigur) {
             case 1:
+              if (anfangx-endex != +1) {
+                spielzug = false; // Überprüfung ob der Bauer nach vorne geht
+              }
+  
+              if((await getposition(anfangx-1, anfangy-1, spiel_id) && anfangx-1 === endex && anfangy-1 === endey)|| 
+              await getposition(anfangx-1, anfangy+1, spiel_id) && anfangx-1 === endex && anfangy+1 === endey){
+                spielzug = true;
+                eat(endex, endey, spiel_id);  // Überprüfung ob der Bauer essen will und kann
+              }
+  
+              if (anfangx === 2 && !(await getposition(anfangx - 1))) {
+                await anfangy - 2 || anfangy - 1; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
+              }
+  
+              if (await getposition(anfangx+1, anfangy, spiel_id)) {
+                spielzug = false;
+              } // Überprüft ob eine Figur vor dem Bauer steht
+                break;
               break;
             case 2:
             
@@ -233,7 +251,40 @@ try{
 
               break;
             case 3:
-              
+              if (anfangx + 2 === endex && anfangy-1 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx + 2 === endex && anfangy+1 === endey) { 
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx + 1 === endex && anfangy-2 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx + 1 === endex && anfangy+2 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx - 1 === endex && anfangy+2 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx - 1 === endex && anfangy-2 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx - 2 === endex && anfangy+1 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              if (anfangx - 2 === endex && anfangy-1 === endey) {
+                eat(endex, endey, spiel_id);
+                break;
+              }
+              spielzug = false;
+            break;
             case 4:
                 
              if (anfangx !== endex && anfangy !== endey) {
