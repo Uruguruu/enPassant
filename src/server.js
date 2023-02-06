@@ -63,9 +63,10 @@ const genAPIKey = () => {
 
 // starts the game and insert all data to database
 function game_create(Player_1, public){
-    const insert_game = db.prepare("INSERT INTO GAMES (Player_1, aktueller_player, public)");
-    const check_spiel = insert_game.run({Player, spiel_id});
-    return game_id
+    const insert_game = db.prepare("INSERT INTO GAMES (Player_1, aktueller_player, public) VALUES (@Player_1, true, @public)");
+    const check_spiel = insert_game.run({Player_1, public});
+    const get_game_id = db.prepare("SELECT Games_ID FROM Games WHERE Player_1= @Player_1 AND ");
+    return get_game_id.run({Player_1, public});
 }
 
 function game_start(Player_1, Player_2, game_id){
