@@ -99,7 +99,9 @@ try{
               break;
             case 3:
             
-            if (anfangx !== endex && anfangy !== endey) {
+            case 4:
+
+             if (anfangx !== endex && anfangy !== endey) {
                 spielzug = false;
                 }
                 let incrementx = (endex - anfangx) / Math.abs(endex - anfangx);
@@ -126,9 +128,6 @@ try{
                 eat(endex, endey, spiel_id);
                 }
                 
-                break;
-            case 4:
-              
               break;
             case 5:
               if((anfangx+1 === endex && anfangy+1 === endey)){
@@ -174,13 +173,62 @@ try{
             case 1:
               break;
             case 2:
-               day = "Tuesday";
+            
+            if (anfangx !== endex && anfangy !== endey) {
+                spielzug = false;
+              }
+              if (anfangx === endex) {  //Function checks if in the x axis is any piece
+                let increment = (endey - anfangy) / Math.abs(endey - anfangy);
+                for (let i = anfangy + increment; i !== endey; i += increment) {
+                  if (await getposition(anfangx, i, spiel_id)) {
+                    spielzug = true;
+                    eat(endex, endey, spiel_id);
+                    break;
+                  }
+                }
+              } else if (anfangy === endey) {   //Function checks if in the y axis is any piece
+                let increment = (endex - anfangx) / Math.abs(endex - anfangx);
+                for (let i = anfangx + increment; i !== endex; i += increment) {
+                  if (await getposition(i, anfangy, spiel_id)) {
+                    spielzug = true;
+                    eat(endex, endey, spiel_id);
+                    break;
+                  }
+                }
+              }
+
               break;
             case 3:
-              day = "Wednesday";
-              break;
+              
             case 4:
-              day = "Thursday";
+                
+             if (anfangx !== endex && anfangy !== endey) {
+                spielzug = false;
+                }
+                let incrementx = (endex - anfangx) / Math.abs(endex - anfangx);
+                let incrementy = (endey - anfangy) / Math.abs(endey - anfangy);
+
+                if (Math.abs(endex - anfangx) !== Math.abs(endey - anfangy)) {
+                spielzug = false;
+                }
+
+                let i = anfangx + incrementx;
+                let j = anfangy + incrementy;
+
+                while (i !== endex && j !== endey) {
+                if (await getposition(i, j, spiel_id)) {
+                    spielzug = false;
+                    break;
+                }
+                i += incrementx;
+                j += incrementy;
+                }
+
+                if (i === endex && j === endey) {
+                spielzug = true;
+                eat(endex, endey, spiel_id);
+                }
+                
               break;
             case 5:
               day = "Friday";
