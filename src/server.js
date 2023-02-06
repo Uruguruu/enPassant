@@ -45,11 +45,21 @@ try{
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
     const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = ");
     get_type.run({anfangx, anfangy})
+    var spielzug = true;
     var farbe = true;
     var spielfigur = 2;
     if(farbe = true){
         switch (spielfigur) {
-            case 1:
+            case 1: 
+            
+            if (anfangx-endex != -1) {
+              spielzug = false;
+            }
+            if((await getposition(anfangx+1, anfangy+1, spiel_id) && anfangx+1 === endex && anfangy+1 === endey)|| await getposition(anfangx+1, anfangy-1, spiel_id)){
+              spielzug = true;
+              eat(endex, endey, spiel_id);
+            }
+
               break;
             case 2:
                day = "Tuesday";
