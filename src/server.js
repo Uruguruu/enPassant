@@ -244,10 +244,12 @@ app.post("/join_game", async function (req, res) {
 
 app.post("/mache_move", async function (req, res) {
   try {
-    let { KEY, spiel_id, anfangx, anfangy, endex, endey } = req.body;
-    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = ");
-    get_type.run({ anfangx, anfangy });
-    var spielzug = true;
+    let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
+    if(!(await check_key(key))) res.send("ungültiger KEY");
+    var Player = get_player(key);
+    if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
+    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = @Player AND Games_ID = @spiel_id");
+    get_type.run({anfangx, anfangy})
     var farbe = true; // true = weiss false = schwarz
     var spielfigur = 2;
     /*
