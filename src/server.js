@@ -46,21 +46,31 @@ try{
     const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = ");
     get_type.run({anfangx, anfangy})
     var spielzug = true;
-    var farbe = true;
+    var farbe = true; // true = weiss false = schwarz
     var spielfigur = 2;
     if(farbe = true){
         switch (spielfigur) {
             case 1: 
             
             if (anfangx-endex != -1) {
-              spielzug = false;
-            }
-            if((await getposition(anfangx+1, anfangy+1, spiel_id) && anfangx+1 === endex && anfangy+1 === endey)|| await getposition(anfangx+1, anfangy-1, spiel_id)){
-              spielzug = true;
-              eat(endex, endey, spiel_id);
+              spielzug = false; // Überprüfung ob der Bauer nach vorne geht
             }
 
+            if((await getposition(anfangx+1, anfangy+1, spiel_id) && anfangx+1 === endex && anfangy+1 === endey)|| 
+            await getposition(anfangx+1, anfangy-1, spiel_id) && anfangx+1 === endex && anfangy-1 === endey){
+              spielzug = true;
+              eat(endex, endey, spiel_id);  // Überprüfung ob der Bauer essen will und kann
+            }
+
+            if (anfangx === 2 && !(await getposition(anfangx + 1))) {
+              await anfangy + 2 || anfangy + 1; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
+            }
+
+            if (await getposition(anfangx+1, anfangy, spiel_id)) {
+              spielzug = false;
+            } // Überprüft ob eine Figur vor dem Bauer steht
               break;
+
             case 2:
                
             if (anfangx !== endex && anfangy !== endey) {
@@ -94,7 +104,39 @@ try{
               day = "Thursday";
               break;
             case 5:
-              day = "Friday";
+              if((anfangx+1 === endex && anfangy+1 === endey)){
+                  eat(endex, endey, spiel_id);
+                  break;
+              }
+              if((anfangx+1 === endex && anfangy+0 === endey)){
+                  eat(endex, endey, spiel_id);
+                  break;
+              }
+              if((anfangx+1 === endex && anfangy-1 === endey)){
+                  eat(endex, endey, spiel_id);
+                  break;
+              }
+              if((anfangx+0 === endex && anfangy+1 === endey)){
+                  eat(endex, endey, spiel_id);
+                  break;
+              }
+              if((anfangx+0 === endex && anfangy-1 === endey)){
+                  eat(endex, endey, spiel_id);
+                  break;
+              }
+              if((anfangx-1 === endex && anfangy+1 === endey)){
+                  eat(endex, endey, spiel_id);
+                  break;
+              }
+              if((anfangx-1 === endex && anfangy+0 === endey)){
+                  eat(endex, endey, spiel_id);
+                  break;
+              }
+              if((anfangx-1 === endex && anfangy-1 === endey)){
+                  eat(endex, endey, spiel_id);
+                  break;
+              }
+              spielzug = false;
               break;
             case 6:
               day = "Saturday";
