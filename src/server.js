@@ -694,6 +694,18 @@ app.get('/leaderboard', (req, res) => {
   res.send(result);
 });
 
+app.get('/your_live_games', (req, res) => {
+  const lead_list = db.prepare("SELECT * FROM Games WHERE Player_1 = @;");
+  var result = lead_list.all();
+  res.send(result);
+});
+
+app.get('/all_live_games', (req, res) => {
+  const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
+  var result = lead_list.all();
+  res.send(result);
+});
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
