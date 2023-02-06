@@ -105,15 +105,42 @@ try{
 
               break;
             case 3:
-            
-            case 4:
-
-             if (anfangx !== endex && anfangy !== endey) {
-                spielzug = false;
+                if (anfangx + 2 === endex && anfangy-1 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
                 }
-                let incrementx = (endex - anfangx) / Math.abs(endex - anfangx);
-                let incrementy = (endey - anfangy) / Math.abs(endey - anfangy);
+                if (anfangx + 2 === endex && anfangy+1 === endey) { 
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx + 1 === endex && anfangy-2 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx + 1 === endex && anfangy+2 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx - 1 === endex && anfangy+2 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx - 1 === endex && anfangy-2 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx - 2 === endex && anfangy+1 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                if (anfangx - 2 === endex && anfangy-1 === endey) {
+                  eat(endex, endey, spiel_id);
+                  break;
+                }
+                spielzug = false;
+              break;
 
+              case 4:
                 if (Math.abs(endex - anfangx) !== Math.abs(endey - anfangy)) {
                 spielzug = false;
                 }
