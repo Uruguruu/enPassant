@@ -3,7 +3,6 @@ const app = express();
 const port = 3004; // App running on Port 3004
 const Database = require("better-sqlite3");
 const db = new Database("./database.db", {});
-const fs = require("fs");
 var bodyParser = require("body-parser");
 
 // parse application/x-www-form-urlencoded
@@ -14,11 +13,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // check if key exist and update time
 function check_key(Key){
     // check if key is in database
+    console.log(Key);
     const check_key = db.prepare("SELECT * FROM Key WHERE Key = @Key");
     const check = check_key.get({Key});
+    console.log(check);
     if(check != undefined){
+        console.log(check)
         // check if key is not out time
-        if(new Date() / 1 - check["time"] > 10000){
+        if(new Date() / 1 - check["time"] > 100000000){
+            console.log(new Date() / 1 - check["time"] );
             // delete Key
             const delete_key = db.prepare("DELETE FROM Key WHERE Key = @Key");
             delete_key.run({Key});
@@ -26,7 +29,7 @@ function check_key(Key){
         }
         else{
             // set new time for key
-            const update_key = this.db.prepare("UPDATE Key SET time = @Time WHERE Key = @Key");
+            const update_key = db.prepare("UPDATE Key SET time = @Time WHERE Key = @Key");
             var Time = new Date() / 1;
             return true;
         }
@@ -40,17 +43,22 @@ function check_key(Key){
 // returns the User_ID from the Key
 function get_player(Key){
     const get_player = db.prepare("SELECT User_FK FROM Key WHERE Key = @Key");
-    return get_player.run({Key});
+    return get_player.get({Key})["User_FK"];
 }
 
 // check if spiel exist and if user has rights to access
 function spielexist(spiel_id, Player){
+  console.log(11);
+  var wf;
 const spielexist = db.prepare("SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id");
-const check_spiel = spielexist.run({Player, spiel_id});
-if(check_spiel =! undefined){
-    return true;
+var check_spiel = spielexist.run({Player, spiel_id});
+if(check_spiel != undefined){
+    wf =  true;
 }
-return false;
+else{
+  wf =  false;  
+}
+return wf
 }
 
 // generate API Key
@@ -63,9 +71,13 @@ const genAPIKey = () => {
 
 // starts the game and insert all data to database
 function game_create(Player_1, public){
-    const insert_game = db.prepare("INSERT INTO GAMES (Player_1, aktueller_player, public)");
-    const check_spiel = insert_game.run({Player, spiel_id});
-    return game_id
+    const get_max = db.prepare("SELECT MAX(Games_ID) FROM Games");
+    var game_id = get_max.get();
+    game_id = parseInt(game_id["MAX(Games_ID)"]) + 1;
+    game_id++;
+    const insert_game = db.prepare("INSERT INTO GAMES (Player_1, aktueller_player, public) VALUES (@Player_1, true, @public)");
+    insert_game.run({Player_1, public, game_id});
+    return game_id;
 }
 
 function game_start(Player_1, Player_2, game_id){
@@ -132,12 +144,11 @@ No = "wrong user or Password"
 No connection = "wrong user or password"
 Yes = sends api key
 */
+
 app.post("/login", async function (req, res) {
-    const insert = db.prepare("INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) ");
-    insert.run({game_id:1, X:1, Y:2, type:1, player:1} );
   try {
     let { name, password } = req.body;
-    const check_key = db.prepare(
+    const check_key = db.prepare(   
       "SELECT * FROM User WHERE Username= @name AND Password = @password"
     );
     const check = await check_key.get({ name, password });
@@ -146,9 +157,10 @@ app.post("/login", async function (req, res) {
       var time = new Date() / 1;
       const user_ID = check["User_ID"];
       const insertKEY = db.prepare(
-        "INSERT INTO Key (time, User_FK) VALUES (@time, @user_ID)"
+        "INSERT INTO Key (time, User_FK, Key) VALUES (@time, @user_ID, @Key)"
       );
-      insertKEY.run({ time, user_ID });
+      insertKEY.run({ time, user_ID, Key:api_key });
+
       res.send(api_key);
     } else {
       res.send("wrong user or password");
@@ -158,7 +170,6 @@ app.post("/login", async function (req, res) {
     res.send("wrong user or password");
   }
 });
-
 /*
 Register Start
 */
@@ -191,12 +202,12 @@ Register END
 
 app.post("/create_game", async function (req, res) {
     try{
-        let {KEY} = req.body;
-        if(!(await check_key(Key))) res.send("ungültiger KEY");
+        let {KEY, public} = req.body;
+        if(!(await check_key(KEY))) res.send("ungültiger KEY");
         else{
             var Player = await get_player(KEY);
-            return game_create(Player);
-
+            response = await game_create(Player, public);
+            res.send(response.toString());
         }
     }
     catch(error){
@@ -205,18 +216,61 @@ app.post("/create_game", async function (req, res) {
     }
 })
 
+app.post("/join_game", async function (req, res) {
+    try{
+        let {KEY, code} = req.body;
+        console.log(KEY);
+        if(!(await check_key(KEY))) res.send("ungültiger KEY");
+        else{
+            const check_code = db.prepare("SELECT * FROM Games WHERE Games_ID = @code");
+            var check = check_code.get({code});
+            if(check != undefined){
+                var Player = await get_player(KEY);
+            const join_game = db.prepare("UPDATE Games SET Player_2 = @Player WHERE Games_ID = @code");
+            join_game.run({Player, code});
+            const get_player1 = db.prepare("SELECT Player_1 FROM Games WHERE Games_ID = @code");
+            player1 = get_player1.get({code});
+            console.log("____________________________");
+            console.log(player1);
+            await game_start(player1["Player_1"], Player, code)
+            res.send("Success");
+            }
+            else{
+                res.send("Wrong Code");
+
+            }
+        }
+    }
+    catch(error){
+        console.log(error);
+        res.send("Error");
+    }
+});
+
 app.post("/mache_move", async function (req, res) {
   try {
+    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5");
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
     if(!(await check_key(KEY))) res.send("ungültiger KEY");
     var Player = get_player(KEY);
     if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
-    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = @Player AND Games_ID = @spiel_id");
-    const get_color = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
-    var farbe = get_color.run({spiel_id}); // true = weiss false = schwarz
-    var spielfigur =  get_type.run({anfangx, anfangy});
+    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
+    var spielfigur = get_type.run({spiel_id ,anfangx, anfangy});
+    const get_color = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
+    console.log(spiel_id ,anfangx, anfangy);
+    var g_color = get_color.get({ spiel_id ,anfangx, anfangy});
+    var farbe // true = weiss false = schwarz
+    if(g_color["Player"] === Player) farbe = true
+    else if (g_color["Player"] === Player) farbe = false
+    else res.send("Error");
+    /*
+    Switch for White Figures
+    */
     if ((farbe = true)) {
       switch (spielfigur) {
+      /*
+      Pawn
+      */
         case 1:
           if (anfangx - endex != -1) {
             spielzug = false; // Überprüfung ob der Bauer nach vorne geht
@@ -243,6 +297,9 @@ app.post("/mache_move", async function (req, res) {
           } // Überprüft ob eine Figur vor dem Bauer steht
           break;
 
+        /*
+        Rook
+        */
         case 2:
           if (anfangx !== endex && anfangy !== endey) {
             spielzug = false;
@@ -270,6 +327,9 @@ app.post("/mache_move", async function (req, res) {
           }
 
           break;
+        /*
+        Knight
+        */
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
@@ -305,7 +365,9 @@ app.post("/mache_move", async function (req, res) {
           }
           spielzug = false;
           break;
-
+        /*
+        Bishop
+        */
         case 4:
           if (Math.abs(endex - anfangx) !== Math.abs(endey - anfangy)) {
             spielzug = false;
@@ -329,6 +391,9 @@ app.post("/mache_move", async function (req, res) {
           }
 
           break;
+        /*
+        King
+        */
         case 5:
           if (anfangx + 1 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
@@ -364,6 +429,9 @@ app.post("/mache_move", async function (req, res) {
           }
           spielzug = false;
           break;
+        /*
+        Queen
+        */
         case 6:
           if (anfangx === endex && anfangy === endey) {
             spielzug = false;
@@ -408,8 +476,14 @@ app.post("/mache_move", async function (req, res) {
           }
           break;
       }
+    /*
+    Switch for black figures
+    */
     } else if (farbe == false) {
       switch (spielfigur) {
+        /*
+        Pawn
+        */
         case 1:
           if (anfangx - endex != +1) {
             spielzug = false; // Überprüfung ob der Bauer nach vorne geht
@@ -435,7 +509,9 @@ app.post("/mache_move", async function (req, res) {
             spielzug = false;
           } // Überprüft ob eine Figur vor dem Bauer steht
           break;
-          break;
+        /*
+        Rook
+        */
         case 2:
           if (anfangx !== endex && anfangy !== endey) {
             spielzug = false;
@@ -461,8 +537,10 @@ app.post("/mache_move", async function (req, res) {
               }
             }
           }
-
           break;
+        /*
+        Knight
+        */
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
@@ -498,6 +576,9 @@ app.post("/mache_move", async function (req, res) {
           }
           spielzug = false;
           break;
+        /*
+        Bishop
+        */
         case 4:
           if (anfangx !== endex && anfangy !== endey) {
             spielzug = false;
@@ -525,7 +606,9 @@ app.post("/mache_move", async function (req, res) {
             spielzug = true;
             eat(endex, endey, spiel_id);
           }
-
+          /*
+          King
+          */
           break;
         case 5:
           if (anfangx + 1 === endex && anfangy + 1 === endey) {
@@ -562,6 +645,9 @@ app.post("/mache_move", async function (req, res) {
           }
           spielzug = false;
           break;
+        /*
+        Queen
+        */
         case 6:
           if (anfangx === endex && anfangy === endey) {
             spielzug = false;
@@ -607,11 +693,34 @@ app.post("/mache_move", async function (req, res) {
           break;
       }
     }
-}
-catch(error){
-    res.send("Error")
-}
-})
+  } catch (error) {
+    console.log(error);
+    res.send("Error");
+  }
+});
+
+function getposition(x, y, spiel_id) {}
+
+
+
+app.get('/leaderboard', (req, res) => {
+  const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
+  var result = lead_list.all();
+  res.send(result);
+});
+
+app.get('/your_live_games', (req, res) => {
+  const lead_list = db.prepare("SELECT * FROM Games WHERE Player_1 = @;");
+  var result = lead_list.all();
+  res.send(result);
+});
+
+app.get('/all_live_games', (req, res) => {
+  const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
+  var result = lead_list.all();
+  res.send(result);
+});
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
