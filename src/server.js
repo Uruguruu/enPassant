@@ -249,7 +249,6 @@ app.post("/join_game", async function (req, res) {
 
 app.post("/mache_move", async function (req, res) {
   try {
-    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5");
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
     if(!(await check_key(KEY))) res.send("ungültiger KEY");
     var Player = get_player(KEY);
@@ -333,34 +332,43 @@ app.post("/mache_move", async function (req, res) {
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy - 2 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
+            spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy - 2 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           spielzug = false;
@@ -369,14 +377,18 @@ app.post("/mache_move", async function (req, res) {
         Bishop
         */
         case 4:
-          if (Math.abs(endex - anfangx) !== Math.abs(endey - anfangy)) {
+          if (Math.abs(endex - anfangx) != Math.abs(endey - anfangy)) {
             spielzug = false;
+            break;
           }
 
-          let i = anfangx + incrementx;
-          let j = anfangy + incrementy;
+          var increment
+          if(anfangx-endex > 0) increment = -1
+          else increment = 1
+          let i = anfangx;
+          let j = anfangy;
 
-          while (i !== endex && j !== endey) {
+          while (i != endex && j != endey) {
             if (await getposition(i, j, spiel_id)) {
               spielzug = false;
               break;
@@ -397,34 +409,42 @@ app.post("/mache_move", async function (req, res) {
         case 5:
           if (anfangx + 1 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy + 0 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 0 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 0 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 0 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           spielzug = false;
@@ -692,6 +712,16 @@ app.post("/mache_move", async function (req, res) {
           }
           break;
       }
+      // does the moving and the eating
+      await eat(endex, endey, spiel_id);
+      const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
+      if(spielzug === true){
+        move.run({endex, endey, anfangx, anfangy, spiel_id});
+        res.send("Success");
+      }
+      else{
+        res.send("ungültiger Zug");
+      }
     }
   } catch (error) {
     console.log(error);
@@ -707,6 +737,14 @@ function getposition(x, y, spiel_id) {
   else return true;
 }
 
+function eat(x,y,id){
+  new Promise(function(myResolve) {
+    const deleten = db.prepare("DELETE FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @id");
+    const check = deleten.run({x,y,id});  
+    myResolve();
+    });
+  
+}
 
 
 app.get('/leaderboard', (req, res) => {
