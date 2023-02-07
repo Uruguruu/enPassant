@@ -766,8 +766,11 @@ function getposition(x, y, spiel_id) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // ---Leaderboard START---
 =======
+=======
+>>>>>>> e7495abd11513d6827cfd4c4aafd4f6a27f79a01
 function eat(x,y,id){
   new Promise(function(myResolve) {
     const deleten = db.prepare("DELETE FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @id");
