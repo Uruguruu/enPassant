@@ -699,7 +699,13 @@ app.post("/mache_move", async function (req, res) {
   }
 });
 
-function getposition(x, y, spiel_id) {}
+function getposition(x, y, spiel_id) {
+  const check_position = db.prepare("SELECT * FROM Figuren WHERE X = x AND Y = y AND Games_ID = spiel_id");
+  const check = check_position.get({x, y, spiel_id});
+  console.log(check);
+  if(check != undefined) return false;
+  else return true;
+}
 
 
 
