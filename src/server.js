@@ -275,7 +275,8 @@ app.post("/mache_move", async function (req, res) {
     else{
     var Player = get_player(KEY);
     if(!spielexist(spiel_id, Player))
-    { res.send("ungültiges Spiel");
+    { 
+      res.send("ungültiges Spiel");
     }
     else{
     const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
@@ -286,6 +287,17 @@ app.post("/mache_move", async function (req, res) {
     catch{
       res.send("ungültiger Zug");
     }
+    const get_player = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
+    try{
+    var get_player_f = get_player.get({spiel_id ,anfangx, anfangy})["Player"]
+    }
+    catch{
+
+    }
+    if(!(get_player_f === Player)){
+      res.send("ungültiger Zug");
+    }
+    else{
     const get_color = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
     console.log(spiel_id ,anfangx, anfangy);
     var g_color = get_color.get({ spiel_id ,anfangx, anfangy});
@@ -798,10 +810,13 @@ app.post("/mache_move", async function (req, res) {
     }
   }
 }
-
+}
   } catch (error) {
+    try{
     console.log(error);
     res.send("Error");
+    }
+    catch{}
   }
 });
 
