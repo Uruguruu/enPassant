@@ -51,9 +51,20 @@ function spielexist(spiel_id, Player){
   console.log(11);
   var wf;
 const spielexist = db.prepare("SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id");
-var check_spiel = spielexist.run({Player, spiel_id});
+var check_spiel = spielexist.get({Player, spiel_id});
+console.log(check_spiel, "___", Player);
 if(check_spiel != undefined){
-    wf =  true;
+  console.log(check_spiel["aktueller_player"] === 1 && check_spiel["Player_2"] === Player);
+  if(check_spiel["aktueller_player"] === 1 && check_spiel["Player_2"] === Player ){
+    wf = true;
+  } 
+  else if(check_spiel["aktueller_player"] === 0 && check_spiel["Player_2"] != Player){
+    wf = true;
+  }
+  else{
+    wf =  false;
+  }
+  
 }
 else{
   wf =  false;  
@@ -77,7 +88,7 @@ function game_create(Player_1, public){
     game_id++;
     const insert_game = db.prepare("INSERT INTO GAMES (Player_1, aktueller_player, public) VALUES (@Player_1, true, @public)");
     insert_game.run({Player_1, public, game_id});
-    return game_id;
+    return game_id -1;
 }
 
 function game_start(Player_1, Player_2, game_id){
@@ -179,11 +190,11 @@ app.post("/register", async function (req, res) {
     const check_key = db.prepare("SELECT * FROM User WHERE Username= @name");
     const check = await check_key.get({ name });
     if (check === undefined && name.length >= 5 && name.length <= 200) {
-      res.send("Account created");
       const insertUser = db.prepare(
         "INSERT INTO User (Username, Password) VALUES (@name, @password)"
       );
       insertUser.run({ name, password });
+      res.send("Account created");
     } else if (name.length <= 5) {
       res.send("Username is too short!");
     } else if (name.length >= 200) {
@@ -255,11 +266,26 @@ app.post("/mache_move", async function (req, res) {
     endex = parseInt(endex);
     endey =parseInt(endey);
     spiel_id =parseInt(spiel_id);
+    anfangx = parseInt(anfangx);
+    anfangy = parseInt(anfangy);
+    endex = parseInt(endex);
+    endey =parseInt(endey);
+    spiel_id =parseInt(spiel_id);
     if(!(await check_key(KEY))) res.send("ungültiger KEY");
+    else{
     var Player = get_player(KEY);
-    if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
+    if(!spielexist(spiel_id, Player))
+    { res.send("ungültiges Spiel");
+    }
+    else{
     const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
-    var spielfigur = get_type.get({spiel_id ,anfangx, anfangy})["Type"];
+    var spielfigur;
+    try{
+      spielfigur = get_type.get({spiel_id ,anfangx, anfangy})["Type"];
+    }
+    catch{
+      res.send("ungültiger Zug");
+    }
     const get_color = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
     console.log(spiel_id ,anfangx, anfangy);
     var g_color = get_color.get({ spiel_id ,anfangx, anfangy});
@@ -749,13 +775,24 @@ app.post("/mache_move", async function (req, res) {
     // does the moving and the eating
     await eat(endex, endey, spiel_id);
     const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
+    const get_spielzug = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
+    const change_spielzug = db.prepare("UPDATE Games SET aktueller_player = @player WHERE Games_ID = @spiel_id");
     if(spielzug === true){
       move.run({endex, endey, anfangx, anfangy, spiel_id});
+      var spiel_spieler = get_spielzug.get({spiel_id});
+      if(spiel_spieler["aktueller_player"] === 1){
+        change_spielzug.run({player:0, spiel_id});
+      }
+      else{
+        change_spielzug.run({player:1, spiel_id});
+      }
       res.send("Success");
     }
     else{
       res.send("ungültiger Zug");
     }
+  }
+}
 
   } catch (error) {
     console.log(error);
@@ -783,28 +820,38 @@ function eat(x,y,id){
 }
 
 
+
+
 app.get('/leaderboard', (req, res) => {
   const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
   var result = lead_list.all();
   res.send(result);
 });
+// ---Leaderboard END---
 
-app.get('/your_live_games/{KEY}', async function (req, res)  {
-  if(!(await check_key(KEY))) res.send("ungültiger KEY");
+// ---Your Hosted games START---
+app.get('/your_live_games/:KEY', async function (req, res)  { //KEY = TOKKEN
+  if(!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
   else {
-    var player = get_player(KEY);
+    var player = get_player(req.params.KEY);
     const lead_list = db.prepare("SELECT * FROM Games WHERE Player_1 = @player;");
     var result = lead_list.all({player});
     res.send(result);
   }
-
 });
+// ---Your Hosted games END---
 
-app.get('/all_live_games', (req, res) => {
-  const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
-  var result = lead_list.all();
-  res.send(result);
-});
+// ---Games you participating START---
+app.get('/live_games_4u/:KEY', async function (req, res)  { //KEY = TOKKEN
+  if(!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
+  else {
+    var player = get_player(req.params.KEY);
+    const lead_list = db.prepare("SELECT * FROM Games WHERE Player_2 = @player;");
+    var result = lead_list.all({player});
+    res.send(result);
+  }});
+// ---GAMES you participating END---
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
