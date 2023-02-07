@@ -785,20 +785,27 @@ function getposition(x, y, spiel_id) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 // ---Leaderboard START---
 =======
 =======
 >>>>>>> e7495abd11513d6827cfd4c4aafd4f6a27f79a01
 =======
 >>>>>>> 45f1bf5a56dac06a02edd78179f8493fb6b2dfb2
+=======
+>>>>>>> 9bec2fcb04cf2835609b91bb7b8df9cc93d1be0a
 function eat(x,y,id){
   new Promise(function(myResolve) {
     const deleten = db.prepare("DELETE FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @id");
     const check = deleten.run({x,y,id});  
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     console.log("Ich esse: " + x + y );
 >>>>>>> 45f1bf5a56dac06a02edd78179f8493fb6b2dfb2
+=======
+    console.log("Ich esse: " + x + y );
+>>>>>>> 9bec2fcb04cf2835609b91bb7b8df9cc93d1be0a
     myResolve();
     });
   
