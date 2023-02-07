@@ -726,10 +726,15 @@ app.get('/leaderboard', (req, res) => {
   res.send(result);
 });
 
-app.get('/your_live_games', (req, res) => {
-  const lead_list = db.prepare("SELECT * FROM Games WHERE Player_1 = @;");
-  var result = lead_list.all();
-  res.send(result);
+app.get('/your_live_games/{KEY}', async function (req, res)  {
+  if(!(await check_key(KEY))) res.send("ungültiger KEY");
+  else {
+    var player = get_player(KEY);
+    const lead_list = db.prepare("SELECT * FROM Games WHERE Player_1 = @player;");
+    var result = lead_list.all({player});
+    res.send(result);
+  }
+
 });
 
 app.get('/all_live_games', (req, res) => {
@@ -737,7 +742,6 @@ app.get('/all_live_games', (req, res) => {
   var result = lead_list.all();
   res.send(result);
 });
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
