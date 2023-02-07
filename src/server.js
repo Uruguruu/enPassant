@@ -313,32 +313,34 @@ app.post("/mache_move", async function (req, res) {
         Rook
         */
         case 2:
-          console.log(1);
+          
           if (anfangx !== endex && anfangy !== endey) {
             spielzug = false;
           }
+          console.log(spielzug);
           if (anfangx === endex) {
-            console.log(2);
+            console.log(spielzug);
             //Function checks if in the x axis is any piece
             let increment = (endey - anfangy) / Math.abs(endey - anfangy);
             for (let i = anfangy + increment; i !== endey; i += increment) {
-              if (await getposition(anfangx, i, spiel_id)) {
-                spielzug = true;
-                eat(endex, endey, spiel_id);
+              if (!(await getposition(anfangx, i, spiel_id))) {
+                spielzug = false;
                 break;
               }
             }
-          } else if (anfangy === endey) {
-            console.log(3);
+            spielzug = true;
+          } 
+          else if (anfangy === endey) {
+            console.log(spielzug);
             //Function checks if in the y axis is any piece
             let increment = (endex - anfangx) / Math.abs(endex - anfangx);
-            for (let i = anfangx + increment; i !== endex; i += increment) {
-              if (await getposition(i, anfangy, spiel_id)) {
-                spielzug = true;
-                eat(endex, endey, spiel_id);
+            for (let i = anfangx + increment; i === endex; i += increment) {
+              if (!(await getposition(i, anfangy, spiel_id))) {
+                spielzug = false;
                 break;
               }
             }
+            spielzug = true;
           }
 
           break;
@@ -348,34 +350,43 @@ app.post("/mache_move", async function (req, res) {
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            console.log(1);
             break;
           }
           if (anfangx + 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            console.log(1);
             break;
           }
           if (anfangx + 1 === endex && anfangy - 2 === endey) {
             eat(endex, endey, spiel_id);
+            console.log(1);
             break;
           }
           if (anfangx + 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
+            console.log(1);
             break;
           }
           if (anfangx - 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
+            console.log(1);
             break;
           }
           if (anfangx - 1 === endex && anfangy - 2 === endey) {
             eat(endex, endey, spiel_id);
+            console.log(1);
             break;
           }
           if (anfangx - 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            console.log(1);
             break;
           }
+          
           if (anfangx - 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            console.log(1);
             break;
           }
           spielzug = false;
