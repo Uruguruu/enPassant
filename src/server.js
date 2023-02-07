@@ -291,6 +291,7 @@ app.post("/mache_move", async function (req, res) {
           ) {
             spielzug = true;
             eat(endex, endey, spiel_id); // Überprüfung ob der Bauer essen will und kann
+            break; 
           }
           
           console.log(spielzug, spielfigur);
@@ -306,6 +307,9 @@ app.post("/mache_move", async function (req, res) {
             console.log(spielzug);
             break;
           } // Überprüft ob eine Figur vor dem Bauer steht
+          if (anfangx - endex != 0) {
+            spielzug = false; // Überprüfung ob der Bauer nach vorne geht
+          }
           if(spielzug != false) spielzug = true;
           console.log(spielzug);
           break;
