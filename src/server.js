@@ -48,12 +48,17 @@ function get_player(Key){
 
 // check if spiel exist and if user has rights to access
 function spielexist(spiel_id, Player){
+  console.log(11);
+  var wf;
 const spielexist = db.prepare("SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id");
-const check_spiel = spielexist.run({Player, spiel_id});
-if(check_spiel =! undefined){
-    return true;
+var check_spiel = spielexist.run({Player, spiel_id});
+if(check_spiel != undefined){
+    wf =  true;
 }
-return false;
+else{
+  wf =  false;  
+}
+return wf
 }
 
 // generate API Key
@@ -244,14 +249,20 @@ app.post("/join_game", async function (req, res) {
 
 app.post("/mache_move", async function (req, res) {
   try {
+    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5");
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
-    if(!(await check_key(key))) res.send("ungültiger KEY");
-    var Player = get_player(key);
+    if(!(await check_key(KEY))) res.send("ungültiger KEY");
+    var Player = get_player(KEY);
     if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
-    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Player = @Player AND Games_ID = @spiel_id");
-    get_type.run({anfangx, anfangy})
-    var farbe = true; // true = weiss false = schwarz
-    var spielfigur = 2;
+    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
+    var spielfigur = get_type.run({spiel_id ,anfangx, anfangy});
+    const get_color = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
+    console.log(spiel_id ,anfangx, anfangy);
+    var g_color = get_color.get({ spiel_id ,anfangx, anfangy});
+    var farbe // true = weiss false = schwarz
+    if(g_color["Player"] === Player) farbe = true
+    else if (g_color["Player"] === Player) farbe = false
+    else res.send("Error");
     /*
     Switch for White Figures
     */
@@ -683,7 +694,8 @@ app.post("/mache_move", async function (req, res) {
       }
     }
   } catch (error) {
-    res.send();
+    console.log(error);
+    res.send("Error");
   }
 });
 
