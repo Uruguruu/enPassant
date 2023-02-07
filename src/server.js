@@ -279,7 +279,7 @@ app.post("/mache_move", async function (req, res) {
             spielzug = false; // Überprüfung ob der Bauer nach vorne geht
           }
           
-          console.log(1);
+          console.log(spielzug, spielfigur);
           
           if (
             ((await getposition(anfangx + 1, anfangy + 1, spiel_id)) &&
@@ -293,20 +293,21 @@ app.post("/mache_move", async function (req, res) {
             eat(endex, endey, spiel_id); // Überprüfung ob der Bauer essen will und kann
           }
           
-          console.log(1);
+          console.log(spielzug, spielfigur);
           
           if (anfangx === 2 && !(await getposition(anfangx + 1))) {
-            (await anfangy) + 2 || anfangy + 1; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
+            anfangy + 2 || anfangy + 1; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
           }
           
-          console.log(1);
+          console.log(spielzug, spielfigur);
           
-          if (await getposition(anfangx + 1, anfangy, spiel_id)) {
+          if (await getposition(anfangx, anfangy + 1, spiel_id)) {
             spielzug = false;
+            console.log(spielzug);
+            break;
           } // Überprüft ob eine Figur vor dem Bauer steht
-          
+          if(spielzug != false) spielzug = true;
           console.log(spielzug);
-          
           break;
 
         /*
@@ -717,8 +718,8 @@ app.post("/mache_move", async function (req, res) {
 function getposition(x, y, spiel_id) {
   const check_position = db.prepare("SELECT * FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @spiel_id");
   const check = check_position.get({x, y, spiel_id});
-  console.log(check);
-  if(check != undefined) return false;
+  console.log(check, 5);
+  if(check === undefined) return false;
   else return true;
 }
 
