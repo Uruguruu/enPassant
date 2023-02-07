@@ -385,47 +385,52 @@ app.post("/mache_move", async function (req, res) {
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
-          
+            spielzug = true;
             break;
           }
           console.log(spielzug);
           if (anfangx + 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
-         
+            spielzug = true;
             break;
           }
           console.log(spielzug);
           if (anfangx + 1 === endex && anfangy - 2 === endey) {
-            eat(endex, endey, spiel_id);l
+            eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           console.log(spielzug);
           if (anfangx + 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
-            
+            spielzug = true;
             break;
           }
           console.log(spielzug);
           if (anfangx - 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
            
             break;
           }
           console.log(spielzug);
           if (anfangx - 1 === endex && anfangy - 2 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
            
             break;
           }
           console.log(spielzug);
           if (anfangx - 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             
             break;
           }
           console.log(spielzug);
           if (anfangx - 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
            
             break;
           }
