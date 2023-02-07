@@ -123,7 +123,7 @@ function game_start(Player_1, Player_2, game_id){
     //Black Bishops
     insert.run({game_id, X:3, Y:8, type:4, player:Player_2});
     insert.run({game_id, X:6, Y:8, type:4, player:Player_2});
-    //Black Knight
+    //Black King
     insert.run({game_id, X:5, Y:8, type:5, player:Player_2});
     //Black Queen
     insert.run({game_id, X:4, Y:8, type:6, player:Player_2});
