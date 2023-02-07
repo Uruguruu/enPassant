@@ -255,7 +255,7 @@ app.post("/mache_move", async function (req, res) {
     var Player = get_player(KEY);
     if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
     const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
-    var spielfigur = get_type.run({spiel_id ,anfangx, anfangy});
+    var spielfigur = get_type.get({spiel_id ,anfangx, anfangy})["Type"];
     const get_color = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
     console.log(spiel_id ,anfangx, anfangy);
     var g_color = get_color.get({ spiel_id ,anfangx, anfangy});
@@ -264,19 +264,23 @@ app.post("/mache_move", async function (req, res) {
     else if (g_color["Player"] === Player) farbe = false
     else res.send("Error");
     console.log("Die Spielfigur ist: " + spielfigur);
+    var spielzug;
     /*
     Switch for White Figures
     */
+   console.log(farbe, spielfigur);
     if ((farbe = true)) {
       switch (spielfigur) {
       /*
       Pawn
       */
         case 1:
-          if (anfangx - endex != -1) {
+          if (anfangy - endey != -1) {
             spielzug = false; // Überprüfung ob der Bauer nach vorne geht
           }
-
+          
+          console.log(1);
+          
           if (
             ((await getposition(anfangx + 1, anfangy + 1, spiel_id)) &&
               anfangx + 1 === endex &&
@@ -288,14 +292,21 @@ app.post("/mache_move", async function (req, res) {
             spielzug = true;
             eat(endex, endey, spiel_id); // Überprüfung ob der Bauer essen will und kann
           }
-
+          
+          console.log(1);
+          
           if (anfangx === 2 && !(await getposition(anfangx + 1))) {
             (await anfangy) + 2 || anfangy + 1; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
           }
-
+          
+          console.log(1);
+          
           if (await getposition(anfangx + 1, anfangy, spiel_id)) {
             spielzug = false;
           } // Überprüft ob eine Figur vor dem Bauer steht
+          
+          console.log(spielzug);
+          
           break;
 
         /*
@@ -703,7 +714,13 @@ app.post("/mache_move", async function (req, res) {
   }
 });
 
-function getposition(x, y, spiel_id) {}
+function getposition(x, y, spiel_id) {
+  const check_position = db.prepare("SELECT * FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @spiel_id");
+  const check = check_position.get({x, y, spiel_id});
+  console.log(check);
+  if(check != undefined) return false;
+  else return true;
+}
 
 
 
@@ -713,10 +730,15 @@ app.get('/leaderboard', (req, res) => {
   res.send(result);
 });
 
-app.get('/your_live_games', (req, res) => {
-  const lead_list = db.prepare("SELECT * FROM Games WHERE Player_1 = @;");
-  var result = lead_list.all();
-  res.send(result);
+app.get('/your_live_games/{KEY}', async function (req, res)  {
+  if(!(await check_key(KEY))) res.send("ungültiger KEY");
+  else {
+    var player = get_player(KEY);
+    const lead_list = db.prepare("SELECT * FROM Games WHERE Player_1 = @player;");
+    var result = lead_list.all({player});
+    res.send(result);
+  }
+
 });
 
 app.get('/all_live_games', (req, res) => {
@@ -724,7 +746,6 @@ app.get('/all_live_games', (req, res) => {
   var result = lead_list.all();
   res.send(result);
 });
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
