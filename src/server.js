@@ -255,6 +255,11 @@ app.post("/mache_move", async function (req, res) {
     endex = parseInt(endex);
     endey =parseInt(endey);
     spiel_id =parseInt(spiel_id);
+    anfangx = parseInt(anfangx);
+    anfangy = parseInt(anfangy);
+    endex = parseInt(endex);
+    endey =parseInt(endey);
+    spiel_id =parseInt(spiel_id);
     if(!(await check_key(KEY))) res.send("ungültiger KEY");
     var Player = get_player(KEY);
     if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
@@ -745,16 +750,6 @@ app.post("/mache_move", async function (req, res) {
           }
           break;
       }
-      // does the moving and the eating
-      await eat(endex, endey, spiel_id);
-      const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
-      if(spielzug === true){
-        move.run({endex, endey, anfangx, anfangy, spiel_id});
-        res.send("Success");
-      }
-      else{
-        res.send("ungültiger Zug");
-      }
     }
     // does the moving and the eating
     await eat(endex, endey, spiel_id);
@@ -782,37 +777,19 @@ function getposition(x, y, spiel_id) {
   else return true;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-// ---Leaderboard START---
-=======
-=======
->>>>>>> e7495abd11513d6827cfd4c4aafd4f6a27f79a01
-=======
->>>>>>> 45f1bf5a56dac06a02edd78179f8493fb6b2dfb2
-=======
->>>>>>> 9bec2fcb04cf2835609b91bb7b8df9cc93d1be0a
 function eat(x,y,id){
   new Promise(function(myResolve) {
     const deleten = db.prepare("DELETE FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @id");
     const check = deleten.run({x,y,id});  
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     console.log("Ich esse: " + x + y );
->>>>>>> 45f1bf5a56dac06a02edd78179f8493fb6b2dfb2
-=======
-    console.log("Ich esse: " + x + y );
->>>>>>> 9bec2fcb04cf2835609b91bb7b8df9cc93d1be0a
     myResolve();
     });
   
 }
 
 
->>>>>>> e7495abd11513d6827cfd4c4aafd4f6a27f79a01
+
+
 app.get('/leaderboard', (req, res) => {
   const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
   var result = lead_list.all();
