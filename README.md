@@ -17,50 +17,137 @@ Project repository for a Chess Game made in two weeks.
 
 ## API
 
-/register
-POST
-braucht: {name: "mindestens 5 Stellig und einmalig", password: ""}
-antwort: 
+description: `If feed with a name and a Password the register function checks if the User already exists and is over 5 and under 200 signs, at the end he either trows back en error or creats the Account in the Database.`
+
+/register\
+POST\
+braucht: {name: "mindestens 5 Stellig und einmalig", password: ""}\
+antwort:
 1. erfolgreich user erstellt
 2. fehler nicht erstellt
 
-/login
-POST
-braucht: {name: "", password: "" }
+### Beispiele
+```
+Username is too short!
+Account created
+User already exists
+```
+
+---
+description: `If feed with the Accounts name and Password the login function checks if said account exists and sends back a Tokken for identification.`\
+/login\
+POST\
+braucht: {name: "", password: "" }\
 antwort:
 1. [API Key]
 2. login Daten falsch
 
-/get_angefangene_spiele?{API Key}
-GET
-antwort:
-1. {}
-2. API Key abgelaufen
+---
+description: `Shows Information about a specific game.`
 
-/get_spiel?{spiel_id}
-GET
+/get_spiel?{spiel_id}\
+GET\
 antwort:
 1. {}
 2. ungultige spiel_id
 
-/mache_move
-POST
-braucht: {KEY: "", spiel_id: "", anfangx: "Zahl", anfangy: "Zahl", endex: "Zahl", endey: "Zahl"}
+---
+description: `Bewegt die Figuren und validiert zug (Ist der Zug erlaubt).`
+
+/mache_move\
+POST\
+braucht: {KEY: "", spiel_id: "", anfangx: "Zahl", anfangy: "Zahl", endex: "Zahl", endey: "Zahl"}\EE
 antwort:
 1. Zug gemacht
 2. ungültiger Zug
 3. ungültige spiel_id
 4. ungültiger KEY
 
-/bauer_zu
-POST
-braucht: {KEY: "", spiel_id: "", anfangx: "Zahl", anfangy: "Zahl", zu: "1= queen, 2=turm..."}
+---
+
+description: `Wenn ein Bauer das Ende des Spielfeldes ereich kann er sich in eine Andere Figur (alle ausser König und Bauer) verwandeln.`
+
+/bauer_zu\
+POST\
+braucht: {KEY: "", spiel_id: "", anfangx: "Zahl", anfangy: "Zahl", zu: "1= queen, 2=turm..."}\
 antwort:
 1. Zug gemacht
 2. ungültiger Zug
 3. ungültige spiel_id
 4. ungültiger KEY
-   
+
+---
+
+description: `Sends TOP 10 (can be changed) Players Username and Win.`
+
+/leaderboard\
+GET\
+Datatype: Array\
+antwort:
+1. Username und anzahl Wins Top 10 User (kann bei /leaderboard bei {10} --> "SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10" angepasst werden.)
+### Beispiel
+```
+[{"Username":"lol postman go brrrrrr hello","Wins":3000},
+{"Username":"Satgunungg","Wins":99},
+{"Username":"Niel","Wins":3},
+{"Username":"Niell","Wins":2},
+{"Username":"Samuel","Wins":1},
+{"Username":"Sa","Wins":0},
+{"Username":"samuel","Wins":null}]
+```
+
+---
+
+description: `If given a The at Login generated KEY, the live_games_4u API spits out every game that you are the creator of.`
+
+/your_live_games/:KEY\
+GET\
+special: has parameter (:KEY)\
+Antwort:
+1. ungültiger KEY
+2. Array mit: {Game_ID, Player_1, Player_2, aktueller_player, public}
+## Beispiel
+```
+[
+    {
+        "Games_ID": 1,
+        "Player_1": 1,
+        "Player_2": 3,
+        "aktueller_player": 1,
+        "public": null
+    },
+    {
+        "Games_ID": 3,
+        "Player_1": 1,
+        "Player_2": 1,
+        "aktueller_player": 1,
+        "public": 1
+    }
+]
+```
+---
+
+description: `If given a The at Login generated KEY, the live_games_4u API spits out every game that you haven't created but participating in.`
+
+/live_games_4u/:KEY\
+GET\
+special: has parameter (:KEY)
+Antwort:
+1. ungültiger KEY
+2. Array mit: {Game_ID, Player_1, Player_2, aktueller_player, public}
+## Beispiel
+```
+[
+    {
+        "Games_ID": 3,
+        "Player_1": 1,
+        "Player_2": 1,
+        "aktueller_player": 1,
+        "public": 1
+    }
+]
+```
+---
 ## Schachregeln:
 - normale Spielregeln (bewegung der Figuren)
 - enPassant
