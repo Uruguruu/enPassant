@@ -263,6 +263,7 @@ app.post("/mache_move", async function (req, res) {
     if(g_color["Player"] === Player) farbe = true
     else if (g_color["Player"] === Player) farbe = false
     else res.send("Error");
+    console.log("Die Spielfigur ist: " + spielfigur);
     /*
     Switch for White Figures
     */
@@ -301,10 +302,12 @@ app.post("/mache_move", async function (req, res) {
         Rook
         */
         case 2:
+          console.log(1);
           if (anfangx !== endex && anfangy !== endey) {
             spielzug = false;
           }
           if (anfangx === endex) {
+            console.log(2);
             //Function checks if in the x axis is any piece
             let increment = (endey - anfangy) / Math.abs(endey - anfangy);
             for (let i = anfangy + increment; i !== endey; i += increment) {
@@ -315,6 +318,7 @@ app.post("/mache_move", async function (req, res) {
               }
             }
           } else if (anfangy === endey) {
+            console.log(3);
             //Function checks if in the y axis is any piece
             let increment = (endex - anfangx) / Math.abs(endex - anfangx);
             for (let i = anfangx + increment; i !== endex; i += increment) {
