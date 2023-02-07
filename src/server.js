@@ -249,7 +249,6 @@ app.post("/join_game", async function (req, res) {
 
 app.post("/mache_move", async function (req, res) {
   try {
-    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5");
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
     if(!(await check_key(KEY))) res.send("ungültiger KEY");
     var Player = get_player(KEY);
@@ -291,6 +290,7 @@ app.post("/mache_move", async function (req, res) {
           ) {
             spielzug = true;
             eat(endex, endey, spiel_id); // Überprüfung ob der Bauer essen will und kann
+            break; 
           }
           
           console.log(spielzug, spielfigur);
@@ -306,6 +306,9 @@ app.post("/mache_move", async function (req, res) {
             console.log(spielzug);
             break;
           } // Überprüft ob eine Figur vor dem Bauer steht
+          if (anfangx - endex != 0) {
+            spielzug = false; // Überprüfung ob der Bauer nach vorne geht
+          }
           if(spielzug != false) spielzug = true;
           console.log(spielzug);
           break;
@@ -314,32 +317,34 @@ app.post("/mache_move", async function (req, res) {
         Rook
         */
         case 2:
-          console.log(1);
+          
           if (anfangx !== endex && anfangy !== endey) {
             spielzug = false;
           }
+          console.log(spielzug);
           if (anfangx === endex) {
-            console.log(2);
+            console.log(spielzug);
             //Function checks if in the x axis is any piece
             let increment = (endey - anfangy) / Math.abs(endey - anfangy);
             for (let i = anfangy + increment; i !== endey; i += increment) {
-              if (await getposition(anfangx, i, spiel_id)) {
-                spielzug = true;
-                eat(endex, endey, spiel_id);
+              if (!(await getposition(anfangx, i, spiel_id))) {
+                spielzug = false;
                 break;
               }
             }
-          } else if (anfangy === endey) {
-            console.log(3);
+            spielzug = true;
+          } 
+          else if (anfangy === endey) {
+            console.log(spielzug);
             //Function checks if in the y axis is any piece
             let increment = (endex - anfangx) / Math.abs(endex - anfangx);
-            for (let i = anfangx + increment; i !== endex; i += increment) {
-              if (await getposition(i, anfangy, spiel_id)) {
-                spielzug = true;
-                eat(endex, endey, spiel_id);
+            for (let i = anfangx + increment; i === endex; i += increment) {
+              if (!(await getposition(i, anfangy, spiel_id))) {
+                spielzug = false;
                 break;
               }
             }
+            spielzug = true;
           }
 
           break;
@@ -349,50 +354,69 @@ app.post("/mache_move", async function (req, res) {
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+          
             break;
           }
+          console.log(spielzug);
           if (anfangx + 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+         
             break;
           }
+          console.log(spielzug);
           if (anfangx + 1 === endex && anfangy - 2 === endey) {
-            eat(endex, endey, spiel_id);
+            eat(endex, endey, spiel_id);l
             break;
           }
+          console.log(spielzug);
           if (anfangx + 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
+            
             break;
           }
+          console.log(spielzug);
           if (anfangx - 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
+           
             break;
           }
+          console.log(spielzug);
           if (anfangx - 1 === endex && anfangy - 2 === endey) {
             eat(endex, endey, spiel_id);
+           
             break;
           }
+          console.log(spielzug);
           if (anfangx - 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            
             break;
           }
+          console.log(spielzug);
           if (anfangx - 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+           
             break;
           }
+          console.log(spielzug);
           spielzug = false;
           break;
         /*
         Bishop
         */
         case 4:
-          if (Math.abs(endex - anfangx) !== Math.abs(endey - anfangy)) {
+          if (Math.abs(endex - anfangx) != Math.abs(endey - anfangy)) {
             spielzug = false;
+            break;
           }
 
-          let i = anfangx + incrementx;
-          let j = anfangy + incrementy;
+          var increment
+          if(anfangx-endex > 0) increment = -1
+          else increment = 1
+          let i = anfangx;
+          let j = anfangy;
 
-          while (i !== endex && j !== endey) {
+          while (i != endex && j != endey) {
             if (await getposition(i, j, spiel_id)) {
               spielzug = false;
               break;
@@ -413,34 +437,42 @@ app.post("/mache_move", async function (req, res) {
         case 5:
           if (anfangx + 1 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy + 0 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 0 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 0 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 0 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           spielzug = false;
@@ -708,6 +740,16 @@ app.post("/mache_move", async function (req, res) {
           }
           break;
       }
+      // does the moving and the eating
+      await eat(endex, endey, spiel_id);
+      const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
+      if(spielzug === true){
+        move.run({endex, endey, anfangx, anfangy, spiel_id});
+        res.send("Success");
+      }
+      else{
+        res.send("ungültiger Zug");
+      }
     }
   } catch (error) {
     console.log(error);
@@ -723,7 +765,20 @@ function getposition(x, y, spiel_id) {
   else return true;
 }
 
+<<<<<<< HEAD
 // ---Leaderboard START---
+=======
+function eat(x,y,id){
+  new Promise(function(myResolve) {
+    const deleten = db.prepare("DELETE FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @id");
+    const check = deleten.run({x,y,id});  
+    myResolve();
+    });
+  
+}
+
+
+>>>>>>> e7495abd11513d6827cfd4c4aafd4f6a27f79a01
 app.get('/leaderboard', (req, res) => {
   const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
   var result = lead_list.all();
