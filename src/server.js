@@ -707,30 +707,37 @@ function getposition(x, y, spiel_id) {
   else return true;
 }
 
-
-
+// ---Leaderboard START---
 app.get('/leaderboard', (req, res) => {
   const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
   var result = lead_list.all();
   res.send(result);
 });
+// ---Leaderboard END---
 
-app.get('/your_live_games/{KEY}', async function (req, res)  {
-  if(!(await check_key(KEY))) res.send("ungültiger KEY");
+// ---Your Hosted games START---
+app.get('/your_live_games/:KEY', async function (req, res)  { //KEY = TOKKEN
+  if(!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
   else {
-    var player = get_player(KEY);
+    var player = get_player(req.params.KEY);
     const lead_list = db.prepare("SELECT * FROM Games WHERE Player_1 = @player;");
     var result = lead_list.all({player});
     res.send(result);
   }
-
 });
+// ---Your Hosted games END---
 
-app.get('/all_live_games', (req, res) => {
-  const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
-  var result = lead_list.all();
-  res.send(result);
-});
+// ---Games you participating START---
+app.get('/live_games_4u/:KEY', async function (req, res)  { //KEY = TOKKEN
+  if(!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
+  else {
+    var player = get_player(req.params.KEY);
+    const lead_list = db.prepare("SELECT * FROM Games WHERE Player_2 = @player;");
+    var result = lead_list.all({player});
+    res.send(result);
+  }});
+// ---GAMES you participating END---
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
