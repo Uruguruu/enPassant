@@ -250,6 +250,11 @@ app.post("/join_game", async function (req, res) {
 app.post("/mache_move", async function (req, res) {
   try {
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
+    anfangx = parseInt(anfangx);
+    anfangy = parseInt(anfangy);
+    endex = parseInt(endex);
+    endey =parseInt(endey);
+    spiel_id =parseInt(spiel_id);
     if(!(await check_key(KEY))) res.send("ungültiger KEY");
     var Player = get_player(KEY);
     if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
@@ -284,15 +289,15 @@ app.post("/mache_move", async function (req, res) {
             ((await getposition(anfangx + 1, anfangy + 1, spiel_id)) &&
               anfangx + 1 === endex &&
               anfangy + 1 === endey) ||
-            ((await getposition(anfangx + 1, anfangy - 1, spiel_id)) &&
-              anfangx + 1 === endex &&
-              anfangy - 1 === endey)
+            ((await getposition(anfangx - 1, anfangy + 1, spiel_id)) &&
+              anfangx - 1 === endex &&
+              anfangy + 1 === endey)
           ) {
             spielzug = true;
             eat(endex, endey, spiel_id); // Überprüfung ob der Bauer essen will und kann
             break; 
           }
-          
+          console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
           console.log(spielzug, spielfigur);
           
           if (anfangx === 2 && !(await getposition(anfangx + 1))) {
@@ -751,6 +756,17 @@ app.post("/mache_move", async function (req, res) {
         res.send("ungültiger Zug");
       }
     }
+    // does the moving and the eating
+    await eat(endex, endey, spiel_id);
+    const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
+    if(spielzug === true){
+      move.run({endex, endey, anfangx, anfangy, spiel_id});
+      res.send("Success");
+    }
+    else{
+      res.send("ungültiger Zug");
+    }
+
   } catch (error) {
     console.log(error);
     res.send("Error");
@@ -758,6 +774,7 @@ app.post("/mache_move", async function (req, res) {
 });
 
 function getposition(x, y, spiel_id) {
+  console.log(x, y, spiel_id, "______________");
   const check_position = db.prepare("SELECT * FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @spiel_id");
   const check = check_position.get({x, y, spiel_id});
   console.log(check, 5);
@@ -767,14 +784,21 @@ function getposition(x, y, spiel_id) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 // ---Leaderboard START---
 =======
 =======
 >>>>>>> e7495abd11513d6827cfd4c4aafd4f6a27f79a01
+=======
+>>>>>>> 45f1bf5a56dac06a02edd78179f8493fb6b2dfb2
 function eat(x,y,id){
   new Promise(function(myResolve) {
     const deleten = db.prepare("DELETE FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @id");
     const check = deleten.run({x,y,id});  
+<<<<<<< HEAD
+=======
+    console.log("Ich esse: " + x + y );
+>>>>>>> 45f1bf5a56dac06a02edd78179f8493fb6b2dfb2
     myResolve();
     });
   
