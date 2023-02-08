@@ -327,7 +327,7 @@ app.post("/mache_move", async function (req, res) {
               )
               {
                 spielzug = true;
-                eat(endex, endey, spiel_id); // Überprüfung ob der Bauer essen will und kann
+                 // Überprüfung ob der Bauer essen will und kann
                 break; 
               }
           
@@ -381,42 +381,42 @@ app.post("/mache_move", async function (req, res) {
             */
             case 3:
               if (anfangx + 2 === endex && anfangy - 1 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx + 2 === endex && anfangy + 1 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx + 1 === endex && anfangy - 2 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx + 1 === endex && anfangy + 2 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx - 1 === endex && anfangy + 2 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx - 1 === endex && anfangy - 2 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx - 2 === endex && anfangy + 1 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx - 2 === endex && anfangy - 1 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
@@ -448,7 +448,7 @@ app.post("/mache_move", async function (req, res) {
               }
               if (i === endex && j === endey) {
                 spielzug = true;
-                eat(endex, endey, spiel_id);
+                
               }
               break;
             /*
@@ -456,42 +456,42 @@ app.post("/mache_move", async function (req, res) {
             */
             case 5:
               if (anfangx + 1 === endex && anfangy + 1 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx + 1 === endex && anfangy + 0 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx + 1 === endex && anfangy - 1 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx + 0 === endex && anfangy + 1 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx + 0 === endex && anfangy - 1 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx - 1 === endex && anfangy + 1 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
                 break;
               }
               if (anfangx - 1 === endex && anfangy + 0 === endey) {
-                eat(endex, endey, spiel_id);
+                
                 spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy - 1 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
@@ -553,7 +553,7 @@ app.post("/mache_move", async function (req, res) {
             }
             if (i === endex && j === endey) {
               spielzug = true;
-              eat(endex, endey, spiel_id);
+              
             }
             break;
           }
@@ -581,7 +581,7 @@ app.post("/mache_move", async function (req, res) {
           )
           {
             spielzug = true;
-            eat(endex, endey, spiel_id); // Überprüfung ob der Bauer essen will und kann
+             // Überprüfung ob der Bauer essen will und kann
             break; 
           }
       
@@ -635,42 +635,42 @@ app.post("/mache_move", async function (req, res) {
         */
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx + 2 === endex && anfangy + 1 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy - 2 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy + 2 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 2 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy - 2 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx - 2 === endex && anfangy + 1 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx - 2 === endex && anfangy - 1 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
@@ -702,7 +702,7 @@ app.post("/mache_move", async function (req, res) {
           }
           if (i === endex && j === endey) {
             spielzug = true;
-            eat(endex, endey, spiel_id);
+            
           }
           break;
         /*
@@ -710,42 +710,41 @@ app.post("/mache_move", async function (req, res) {
         */
         case 5:
           if (anfangx + 1 === endex && anfangy + 1 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy + 0 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy - 1 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx + 0 === endex && anfangy + 1 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx + 0 === endex && anfangy - 1 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 1 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 0 === endey) {
-            eat(endex, endey, spiel_id);
+            
             spielzug = true;
         break;
       }
       if (anfangx - 1 === endex && anfangy - 1 === endey) {
-        eat(endex, endey, spiel_id);
         spielzug = true;
         break;
       }
@@ -807,7 +806,6 @@ app.post("/mache_move", async function (req, res) {
         }
         if (i === endex && j === endey) {
           spielzug = true;
-          eat(endex, endey, spiel_id);
         }
         break;
       }
@@ -815,11 +813,11 @@ app.post("/mache_move", async function (req, res) {
       }
     }
     // does the moving and the eating
-    await eat(endex, endey, spiel_id);
     const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
     const get_spielzug = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
     const change_spielzug = db.prepare("UPDATE Games SET aktueller_player = @player WHERE Games_ID = @spiel_id");
     if(spielzug === true){
+      await eat(endex, endey, spiel_id);
       move.run({endex, endey, anfangx, anfangy, spiel_id});
       var spiel_spieler = get_spielzug.get({spiel_id});
       if(spiel_spieler["aktueller_player"] === 1){
