@@ -873,12 +873,64 @@ function eat(ax, ay,ex,ey,id){
     }
     else{
       const deleten = db.prepare("DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
-    const check = deleten.run({ex,ey,id});  
-    myResolve(true);
+      const check = deleten.run({ex,ey,id});  
+      myResolve(true);
     }
     });
   
 }
+
+app.post("/bauer_zu", async function(req, res) {
+  try{
+    let {KEY , spiel_id , anfangx, anfangy, zu} = req.body;
+    anfangy = parseInt(anfangy);
+    anfangx = parseInt(anfangx);
+    zu = parseInt(zu);
+    spiel_id =parseInt(spiel_id);
+    if(!(await check_key(KEY))) res.send("ungültiger KEY");
+    else{
+      var Player = await get_player(KEY);
+      if(spielexist(spiel_id, Player) === "k_spiel" || spielexist(spiel_id, Player) === "f_player")
+      { 
+        res.send("ungültiges Spiel "+spielexist(spiel_id, Player));
+        return;
+      }
+      else{
+        const get_color = db.prepare("SELECT g.Player_2 FROM Figuren f LEFT JOIN Games g ON f.Player = g.Player_2 WHERE f.X = @anfangx AND f.Y = @anfangy AND f.Games_ID = @spiel_id");
+        var g_color = get_color.get({anfangx, anfangy, spiel_id});
+        console.log(g_color, Player);
+        var linie;
+        if(g_color["Player_2"] === Player) linie = 1;
+        else linie = 8;
+        const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
+        var spielfigur;
+        try{
+          spielfigur = get_type.get({spiel_id ,anfangx, anfangy})["Type"];
+        }
+        catch{
+          res.send("ungültiger Zug (Keine Figur gefunden)");
+          return;
+        }
+        if(anfangx === linie && spielfigur === 1){
+          if(zu > 0 && zu < 7){
+            const update = db.prepare("UPDATE Figuren SET Type = @zu WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
+            update.run({spiel_id , anfangx, anfangy, zu});   
+            res.send("Success");
+          }
+          else{
+            res.send("Ungültiger Typ");
+          }
+        }
+        else res.send("Ungültige Position");
+        
+      }
+    }
+  }
+  catch(error){
+    console.log(error);
+    res.send("Error");
+  }
+})
 
 app.get("/leaderboard", (req, res) => {
   const lead_list = db.prepare(
