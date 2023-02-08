@@ -37,9 +37,9 @@ function check_key(Key){
 }
 
 // returns the User_ID from the Key
-function get_player(Key){
-    const get_player = db.prepare("SELECT User_FK FROM Key WHERE Key = @Key");
-    return get_player.get({Key})["User_FK"];
+function get_player(Key) {
+  const get_player = db.prepare("SELECT User_FK FROM Key WHERE Key = @Key");
+  return get_player.get({ Key })["User_FK"];
 }
 
 
@@ -86,56 +86,56 @@ function game_create(Player_1, public){
     return game_id -1;
 }
 
-function game_start(Player_1, Player_2, game_id){
-    const insert = db.prepare("INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) ");
-    //White Pawns
-    insert.run({game_id, X:1, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:2, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:3, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:4, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:5, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:6, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:7, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:8, Y:2, type:1, player:Player_1});
-    //White Towers
-    insert.run({game_id, X:1, Y:1, type:2, player:Player_1});
-    insert.run({game_id, X:8, Y:1, type:2, player:Player_1});
-    //White Knights
-    insert.run({game_id, X:2, Y:1, type:3, player:Player_1});
-    insert.run({game_id, X:7, Y:1, type:3, player:Player_1});
-    //White Bishops
-    insert.run({game_id, X:3, Y:1, type:4, player:Player_1});
-    insert.run({game_id, X:6, Y:1, type:4, player:Player_1});
-    //White King
-    insert.run({game_id, X:5, Y:1, type:5, player:Player_1});
-    //White Queen
-    insert.run({game_id, X:4, Y:1, type:6, player:Player_1});
+function game_start(Player_1, Player_2, game_id) {
+  const insert = db.prepare(
+    "INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) "
+  );
+  //White Pawns
+  insert.run({ game_id, X: 1, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 2, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 3, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 4, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 5, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 6, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 7, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 8, Y: 2, type: 1, player: Player_1 });
+  //White Towers
+  insert.run({ game_id, X: 1, Y: 1, type: 2, player: Player_1 });
+  insert.run({ game_id, X: 8, Y: 1, type: 2, player: Player_1 });
+  //White Knights
+  insert.run({ game_id, X: 2, Y: 1, type: 3, player: Player_1 });
+  insert.run({ game_id, X: 7, Y: 1, type: 3, player: Player_1 });
+  //White Bishops
+  insert.run({ game_id, X: 3, Y: 1, type: 4, player: Player_1 });
+  insert.run({ game_id, X: 6, Y: 1, type: 4, player: Player_1 });
+  //White King
+  insert.run({ game_id, X: 5, Y: 1, type: 5, player: Player_1 });
+  //White Queen
+  insert.run({ game_id, X: 4, Y: 1, type: 6, player: Player_1 });
 
-    //Black Pawns
-    insert.run({game_id, X:1, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:2, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:3, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:4, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:5, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:6, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:7, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:8, Y:7, type:1, player:Player_2});
-    //Black Towers
-    insert.run({game_id, X:1, Y:8, type:2, player:Player_2});
-    insert.run({game_id, X:8, Y:8, type:2, player:Player_2});
-    //Black Knights
-    insert.run({game_id, X:2, Y:8, type:3, player:Player_2});
-    insert.run({game_id, X:7, Y:8, type:3, player:Player_2});
-    //Black Bishops
-    insert.run({game_id, X:3, Y:8, type:4, player:Player_2});
-    insert.run({game_id, X:6, Y:8, type:4, player:Player_2});
-    //Black King
-    insert.run({game_id, X:5, Y:8, type:5, player:Player_2});
-    //Black Queen
-    insert.run({game_id, X:4, Y:8, type:6, player:Player_2});
-
+  //Black Pawns
+  insert.run({ game_id, X: 1, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 2, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 3, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 4, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 5, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 6, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 7, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 8, Y: 7, type: 1, player: Player_2 });
+  //Black Towers
+  insert.run({ game_id, X: 1, Y: 8, type: 2, player: Player_2 });
+  insert.run({ game_id, X: 8, Y: 8, type: 2, player: Player_2 });
+  //Black Knights
+  insert.run({ game_id, X: 2, Y: 8, type: 3, player: Player_2 });
+  insert.run({ game_id, X: 7, Y: 8, type: 3, player: Player_2 });
+  //Black Bishops
+  insert.run({ game_id, X: 3, Y: 8, type: 4, player: Player_2 });
+  insert.run({ game_id, X: 6, Y: 8, type: 4, player: Player_2 });
+  //Black King
+  insert.run({ game_id, X: 5, Y: 8, type: 5, player: Player_2 });
+  //Black Queen
+  insert.run({ game_id, X: 4, Y: 8, type: 6, player: Player_2 });
 }
-
 
 /*
 -------------------------------------------------------------------------------------------------------------------------------
@@ -152,9 +152,14 @@ Yes = sends api key
 */
 
 app.post("/login", async function (req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   try {
     let { name, password } = req.body;
-    const check_key = db.prepare(   
+    const check_key = db.prepare(
       "SELECT * FROM User WHERE Username= @name AND Password = @password"
     );
     const check = await check_key.get({ name, password });
@@ -165,7 +170,7 @@ app.post("/login", async function (req, res) {
       const insertKEY = db.prepare(
         "INSERT INTO Key (time, User_FK, Key) VALUES (@time, @user_ID, @Key)"
       );
-      insertKEY.run({ time, user_ID, Key:api_key });
+      insertKEY.run({ time, user_ID, Key: api_key });
 
       res.send(api_key);
     } else 
@@ -561,7 +566,7 @@ app.post("/mache_move", async function (req, res) {
           }
           break;
       }
-    /*
+      /*
     Switch for black figures
     */
     } else if (farbe === false) {
@@ -875,39 +880,44 @@ function eat(ax, ay,ex,ey,id){
   
 }
 
-
-
-
-app.get('/leaderboard', (req, res) => {
-  const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
+app.get("/leaderboard", (req, res) => {
+  const lead_list = db.prepare(
+    "SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10"
+  );
   var result = lead_list.all();
   res.send(result);
 });
 // ---Leaderboard END---
 
 // ---Your Hosted games START---
-app.get('/your_live_games/:KEY', async function (req, res)  { //KEY = TOKKEN
-  if(!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
+app.get("/your_live_games/:KEY", async function (req, res) {
+  //KEY = TOKKEN
+  if (!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
   else {
     var player = get_player(req.params.KEY);
-    const lead_list = db.prepare("SELECT * FROM Games WHERE Player_1 = @player;");
-    var result = lead_list.all({player});
+    const lead_list = db.prepare(
+      "SELECT * FROM Games WHERE Player_1 = @player;"
+    );
+    var result = lead_list.all({ player });
     res.send(result);
   }
 });
 // ---Your Hosted games END---
 
 // ---Games you participating START---
-app.get('/live_games_4u/:KEY', async function (req, res)  { //KEY = TOKKEN
-  if(!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
+app.get("/live_games_4u/:KEY", async function (req, res) {
+  //KEY = TOKKEN
+  if (!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
   else {
     var player = get_player(req.params.KEY);
-    const lead_list = db.prepare("SELECT * FROM Games WHERE Player_2 = @player;");
-    var result = lead_list.all({player});
+    const lead_list = db.prepare(
+      "SELECT * FROM Games WHERE Player_2 = @player;"
+    );
+    var result = lead_list.all({ player });
     res.send(result);
-  }});
+  }
+});
 // ---GAMES you participating END---
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
