@@ -890,7 +890,7 @@ app.post("/bauer_zu", async function(req, res) {
     if(!(await check_key(KEY))) res.send("ungültiger KEY");
     else{
       var Player = await get_player(KEY);
-      if(spielexist(spiel_id, Player) === "k_spiel" || spielexist(spiel_id, Player) === "f_player")
+      if(spielexist(spiel_id, Player) === "k_spiel")
       { 
         res.send("ungültiges Spiel "+spielexist(spiel_id, Player));
         return;
@@ -911,8 +911,9 @@ app.post("/bauer_zu", async function(req, res) {
           res.send("ungültiger Zug (Keine Figur gefunden)");
           return;
         }
-        if(anfangx === linie && spielfigur === 1){
-          if(zu > 0 && zu < 7){
+        console.log(anfangx, linie, spielfigur);
+        if(anfangy === linie && spielfigur === 1){
+          if(zu > 1 && zu < 7){
             const update = db.prepare("UPDATE Figuren SET Type = @zu WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
             update.run({spiel_id , anfangx, anfangy, zu});   
             res.send("Success");
@@ -931,6 +932,14 @@ app.post("/bauer_zu", async function(req, res) {
     res.send("Error");
   }
 })
+
+app.get("/get_spiel/:spiel_id", (req, res) => {
+  const figures = db.prepare(
+    "SELECT * FROM Figuren"
+  );
+  var result = figures.all();
+  res.send(result);
+});
 
 app.get("/leaderboard", (req, res) => {
   const lead_list = db.prepare(
