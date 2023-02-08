@@ -11,54 +11,54 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // functions
 
 // check if key exist and update time
-function check_key(Key){
-    // check if key is in database
-    console.log(Key);
-    const check_key = db.prepare("SELECT * FROM Key WHERE Key = @Key");
-    const check = check_key.get({Key});
+function check_key(Key) {
+  // check if key is in database
+  console.log(Key);
+  const check_key = db.prepare("SELECT * FROM Key WHERE Key = @Key");
+  const check = check_key.get({ Key });
+  console.log(check);
+  if (check != undefined) {
     console.log(check);
-    if(check != undefined){
-        console.log(check)
-        // check if key is not out time
-        if(new Date() / 1 - check["time"] > 100000000){
-            console.log(new Date() / 1 - check["time"] );
-            // delete Key
-            const delete_key = db.prepare("DELETE FROM Key WHERE Key = @Key");
-            delete_key.run({Key});
-            return false;
-        }
-        else{
-            // set new time for key
-            const update_key = db.prepare("UPDATE Key SET time = @Time WHERE Key = @Key");
-            var Time = new Date() / 1;
-            return true;
-        }
-
+    // check if key is not out time
+    if (new Date() / 1 - check["time"] > 100000000) {
+      console.log(new Date() / 1 - check["time"]);
+      // delete Key
+      const delete_key = db.prepare("DELETE FROM Key WHERE Key = @Key");
+      delete_key.run({ Key });
+      return false;
+    } else {
+      // set new time for key
+      const update_key = db.prepare(
+        "UPDATE Key SET time = @Time WHERE Key = @Key"
+      );
+      var Time = new Date() / 1;
+      return true;
     }
-    else{
-        return false;
-    }
+  } else {
+    return false;
+  }
 }
 
 // returns the User_ID from the Key
-function get_player(Key){
-    const get_player = db.prepare("SELECT User_FK FROM Key WHERE Key = @Key");
-    return get_player.get({Key})["User_FK"];
+function get_player(Key) {
+  const get_player = db.prepare("SELECT User_FK FROM Key WHERE Key = @Key");
+  return get_player.get({ Key })["User_FK"];
 }
 
 // check if spiel exist and if user has rights to access
-function spielexist(spiel_id, Player){
+function spielexist(spiel_id, Player) {
   console.log(11);
   var wf;
-const spielexist = db.prepare("SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id");
-var check_spiel = spielexist.run({Player, spiel_id});
-if(check_spiel != undefined){
-    wf =  true;
-}
-else{
-  wf =  false;  
-}
-return wf
+  const spielexist = db.prepare(
+    "SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id"
+  );
+  var check_spiel = spielexist.run({ Player, spiel_id });
+  if (check_spiel != undefined) {
+    wf = true;
+  } else {
+    wf = false;
+  }
+  return wf;
 }
 
 // generate API Key
@@ -70,66 +70,68 @@ const genAPIKey = () => {
 };
 
 // starts the game and insert all data to database
-function game_create(Player_1, public){
-    const get_max = db.prepare("SELECT MAX(Games_ID) FROM Games");
-    var game_id = get_max.get();
-    game_id = parseInt(game_id["MAX(Games_ID)"]) + 1;
-    game_id++;
-    const insert_game = db.prepare("INSERT INTO GAMES (Player_1, aktueller_player, public) VALUES (@Player_1, true, @public)");
-    insert_game.run({Player_1, public, game_id});
-    return game_id;
+function game_create(Player_1, public) {
+  const get_max = db.prepare("SELECT MAX(Games_ID) FROM Games");
+  var game_id = get_max.get();
+  game_id = parseInt(game_id["MAX(Games_ID)"]) + 1;
+  game_id++;
+  const insert_game = db.prepare(
+    "INSERT INTO GAMES (Player_1, aktueller_player, public) VALUES (@Player_1, true, @public)"
+  );
+  insert_game.run({ Player_1, public, game_id });
+  return game_id;
 }
 
-function game_start(Player_1, Player_2, game_id){
-    const insert = db.prepare("INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) ");
-    //White Pawns
-    insert.run({game_id, X:1, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:2, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:3, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:4, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:5, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:6, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:7, Y:2, type:1, player:Player_1});
-    insert.run({game_id, X:8, Y:2, type:1, player:Player_1});
-    //White Towers
-    insert.run({game_id, X:1, Y:1, type:2, player:Player_1});
-    insert.run({game_id, X:8, Y:1, type:2, player:Player_1});
-    //White Knights
-    insert.run({game_id, X:2, Y:1, type:3, player:Player_1});
-    insert.run({game_id, X:7, Y:1, type:3, player:Player_1});
-    //White Bishops
-    insert.run({game_id, X:3, Y:1, type:4, player:Player_1});
-    insert.run({game_id, X:6, Y:1, type:4, player:Player_1});
-    //White King
-    insert.run({game_id, X:5, Y:1, type:5, player:Player_1});
-    //White Queen
-    insert.run({game_id, X:4, Y:1, type:6, player:Player_1});
+function game_start(Player_1, Player_2, game_id) {
+  const insert = db.prepare(
+    "INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) "
+  );
+  //White Pawns
+  insert.run({ game_id, X: 1, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 2, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 3, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 4, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 5, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 6, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 7, Y: 2, type: 1, player: Player_1 });
+  insert.run({ game_id, X: 8, Y: 2, type: 1, player: Player_1 });
+  //White Towers
+  insert.run({ game_id, X: 1, Y: 1, type: 2, player: Player_1 });
+  insert.run({ game_id, X: 8, Y: 1, type: 2, player: Player_1 });
+  //White Knights
+  insert.run({ game_id, X: 2, Y: 1, type: 3, player: Player_1 });
+  insert.run({ game_id, X: 7, Y: 1, type: 3, player: Player_1 });
+  //White Bishops
+  insert.run({ game_id, X: 3, Y: 1, type: 4, player: Player_1 });
+  insert.run({ game_id, X: 6, Y: 1, type: 4, player: Player_1 });
+  //White King
+  insert.run({ game_id, X: 5, Y: 1, type: 5, player: Player_1 });
+  //White Queen
+  insert.run({ game_id, X: 4, Y: 1, type: 6, player: Player_1 });
 
-    //Black Pawns
-    insert.run({game_id, X:1, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:2, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:3, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:4, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:5, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:6, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:7, Y:7, type:1, player:Player_2});
-    insert.run({game_id, X:8, Y:7, type:1, player:Player_2});
-    //Black Towers
-    insert.run({game_id, X:1, Y:8, type:2, player:Player_2});
-    insert.run({game_id, X:8, Y:8, type:2, player:Player_2});
-    //Black Knights
-    insert.run({game_id, X:2, Y:8, type:3, player:Player_2});
-    insert.run({game_id, X:7, Y:8, type:3, player:Player_2});
-    //Black Bishops
-    insert.run({game_id, X:3, Y:8, type:4, player:Player_2});
-    insert.run({game_id, X:6, Y:8, type:4, player:Player_2});
-    //Black King
-    insert.run({game_id, X:5, Y:8, type:5, player:Player_2});
-    //Black Queen
-    insert.run({game_id, X:4, Y:8, type:6, player:Player_2});
-
+  //Black Pawns
+  insert.run({ game_id, X: 1, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 2, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 3, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 4, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 5, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 6, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 7, Y: 7, type: 1, player: Player_2 });
+  insert.run({ game_id, X: 8, Y: 7, type: 1, player: Player_2 });
+  //Black Towers
+  insert.run({ game_id, X: 1, Y: 8, type: 2, player: Player_2 });
+  insert.run({ game_id, X: 8, Y: 8, type: 2, player: Player_2 });
+  //Black Knights
+  insert.run({ game_id, X: 2, Y: 8, type: 3, player: Player_2 });
+  insert.run({ game_id, X: 7, Y: 8, type: 3, player: Player_2 });
+  //Black Bishops
+  insert.run({ game_id, X: 3, Y: 8, type: 4, player: Player_2 });
+  insert.run({ game_id, X: 6, Y: 8, type: 4, player: Player_2 });
+  //Black King
+  insert.run({ game_id, X: 5, Y: 8, type: 5, player: Player_2 });
+  //Black Queen
+  insert.run({ game_id, X: 4, Y: 8, type: 6, player: Player_2 });
 }
-
 
 /*
 -------------------------------------------------------------------------------------------------------------------------------
@@ -146,9 +148,14 @@ Yes = sends api key
 */
 
 app.post("/login", async function (req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   try {
     let { name, password } = req.body;
-    const check_key = db.prepare(   
+    const check_key = db.prepare(
       "SELECT * FROM User WHERE Username= @name AND Password = @password"
     );
     const check = await check_key.get({ name, password });
@@ -159,7 +166,7 @@ app.post("/login", async function (req, res) {
       const insertKEY = db.prepare(
         "INSERT INTO Key (time, User_FK, Key) VALUES (@time, @user_ID, @Key)"
       );
-      insertKEY.run({ time, user_ID, Key:api_key });
+      insertKEY.run({ time, user_ID, Key: api_key });
 
       res.send(api_key);
     } else {
@@ -201,95 +208,101 @@ Register END
 */
 
 app.post("/create_game", async function (req, res) {
-    try{
-        let {KEY, public} = req.body;
-        if(!(await check_key(KEY))) res.send("ungültiger KEY");
-        else{
-            var Player = await get_player(KEY);
-            response = await game_create(Player, public);
-            res.send(response.toString());
-        }
+  try {
+    let { KEY, public } = req.body;
+    if (!(await check_key(KEY))) res.send("ungültiger KEY");
+    else {
+      var Player = await get_player(KEY);
+      response = await game_create(Player, public);
+      res.send(response.toString());
     }
-    catch(error){
-        console.log(error);
-        res.send("Error");
-    }
-})
+  } catch (error) {
+    console.log(error);
+    res.send("Error");
+  }
+});
 
 app.post("/join_game", async function (req, res) {
-    try{
-        let {KEY, code} = req.body;
-        console.log(KEY);
-        if(!(await check_key(KEY))) res.send("ungültiger KEY");
-        else{
-            const check_code = db.prepare("SELECT * FROM Games WHERE Games_ID = @code");
-            var check = check_code.get({code});
-            if(check != undefined){
-                var Player = await get_player(KEY);
-            const join_game = db.prepare("UPDATE Games SET Player_2 = @Player WHERE Games_ID = @code");
-            join_game.run({Player, code});
-            const get_player1 = db.prepare("SELECT Player_1 FROM Games WHERE Games_ID = @code");
-            player1 = get_player1.get({code});
-            console.log("____________________________");
-            console.log(player1);
-            await game_start(player1["Player_1"], Player, code)
-            res.send("Success");
-            }
-            else{
-                res.send("Wrong Code");
-
-            }
-        }
+  try {
+    let { KEY, code } = req.body;
+    console.log(KEY);
+    if (!(await check_key(KEY))) res.send("ungültiger KEY");
+    else {
+      const check_code = db.prepare(
+        "SELECT * FROM Games WHERE Games_ID = @code"
+      );
+      var check = check_code.get({ code });
+      if (check != undefined) {
+        var Player = await get_player(KEY);
+        const join_game = db.prepare(
+          "UPDATE Games SET Player_2 = @Player WHERE Games_ID = @code"
+        );
+        join_game.run({ Player, code });
+        const get_player1 = db.prepare(
+          "SELECT Player_1 FROM Games WHERE Games_ID = @code"
+        );
+        player1 = get_player1.get({ code });
+        console.log("____________________________");
+        console.log(player1);
+        await game_start(player1["Player_1"], Player, code);
+        res.send("Success");
+      } else {
+        res.send("Wrong Code");
+      }
     }
-    catch(error){
-        console.log(error);
-        res.send("Error");
-    }
+  } catch (error) {
+    console.log(error);
+    res.send("Error");
+  }
 });
 
 app.post("/mache_move", async function (req, res) {
   try {
-    let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
+    let { KEY, spiel_id, anfangx, anfangy, endex, endey } = req.body;
     anfangx = parseInt(anfangx);
     anfangy = parseInt(anfangy);
     endex = parseInt(endex);
-    endey =parseInt(endey);
-    spiel_id =parseInt(spiel_id);
+    endey = parseInt(endey);
+    spiel_id = parseInt(spiel_id);
     anfangx = parseInt(anfangx);
     anfangy = parseInt(anfangy);
     endex = parseInt(endex);
-    endey =parseInt(endey);
-    spiel_id =parseInt(spiel_id);
-    if(!(await check_key(KEY))) res.send("ungültiger KEY");
+    endey = parseInt(endey);
+    spiel_id = parseInt(spiel_id);
+    if (!(await check_key(KEY))) res.send("ungültiger KEY");
     var Player = get_player(KEY);
-    if(!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
-    const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
-    var spielfigur = get_type.get({spiel_id ,anfangx, anfangy})["Type"];
-    const get_color = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
-    console.log(spiel_id ,anfangx, anfangy);
-    var g_color = get_color.get({ spiel_id ,anfangx, anfangy});
-    var farbe // true = weiss false = schwarz
-    if(g_color["Player"] === Player) farbe = true
-    else if (g_color["Player"] === Player) farbe = false
+    if (!spielexist(spiel_id, Player)) res.send("ungültiges Spiel");
+    const get_type = db.prepare(
+      "SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
+    );
+    var spielfigur = get_type.get({ spiel_id, anfangx, anfangy })["Type"];
+    const get_color = db.prepare(
+      "SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
+    );
+    console.log(spiel_id, anfangx, anfangy);
+    var g_color = get_color.get({ spiel_id, anfangx, anfangy });
+    var farbe; // true = weiss false = schwarz
+    if (g_color["Player"] === Player) farbe = true;
+    else if (g_color["Player"] === Player) farbe = false;
     else res.send("Error");
     console.log("Die Spielfigur ist: " + spielfigur);
     var spielzug;
     /*
     Switch for White Figures
     */
-   console.log(farbe, spielfigur);
+    console.log(farbe, spielfigur);
     if ((farbe = true)) {
       switch (spielfigur) {
-      /*
+        /*
       Pawn
       */
         case 1:
           if (anfangy - endey != -1) {
             spielzug = false; // Überprüfung ob der Bauer nach vorne geht
           }
-          
+
           console.log(spielzug, spielfigur);
-          
+
           if (
             ((await getposition(anfangx + 1, anfangy + 1, spiel_id)) &&
               anfangx + 1 === endex &&
@@ -300,17 +313,17 @@ app.post("/mache_move", async function (req, res) {
           ) {
             spielzug = true;
             eat(endex, endey, spiel_id); // Überprüfung ob der Bauer essen will und kann
-            break; 
+            break;
           }
           console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
           console.log(spielzug, spielfigur);
-          
+
           if (anfangx === 2 && !(await getposition(anfangx + 1))) {
             anfangy + 2 || anfangy + 1; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
           }
-          
+
           console.log(spielzug, spielfigur);
-          
+
           if (await getposition(anfangx, anfangy + 1, spiel_id)) {
             spielzug = false;
             console.log(spielzug);
@@ -319,7 +332,7 @@ app.post("/mache_move", async function (req, res) {
           if (anfangx - endex != 0) {
             spielzug = false; // Überprüfung ob der Bauer nach vorne geht
           }
-          if(spielzug != false) spielzug = true;
+          if (spielzug != false) spielzug = true;
           console.log(spielzug);
           break;
 
@@ -327,7 +340,6 @@ app.post("/mache_move", async function (req, res) {
         Rook
         */
         case 2:
-          
           if (anfangx !== endex && anfangy !== endey) {
             spielzug = false;
           }
@@ -343,8 +355,7 @@ app.post("/mache_move", async function (req, res) {
               }
             }
             spielzug = true;
-          } 
-          else if (anfangy === endey) {
+          } else if (anfangy === endey) {
             console.log(spielzug);
             //Function checks if in the y axis is any piece
             let increment = (endex - anfangx) / Math.abs(endex - anfangx);
@@ -364,48 +375,49 @@ app.post("/mache_move", async function (req, res) {
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
-          
+
             break;
           }
           console.log(spielzug);
           if (anfangx + 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
-         
+
             break;
           }
           console.log(spielzug);
           if (anfangx + 1 === endex && anfangy - 2 === endey) {
-            eat(endex, endey, spiel_id);l
+            eat(endex, endey, spiel_id);
+            l;
             break;
           }
           console.log(spielzug);
           if (anfangx + 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
-            
+
             break;
           }
           console.log(spielzug);
           if (anfangx - 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
-           
+
             break;
           }
           console.log(spielzug);
           if (anfangx - 1 === endex && anfangy - 2 === endey) {
             eat(endex, endey, spiel_id);
-           
+
             break;
           }
           console.log(spielzug);
           if (anfangx - 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
-            
+
             break;
           }
           console.log(spielzug);
           if (anfangx - 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
-           
+
             break;
           }
           console.log(spielzug);
@@ -420,9 +432,9 @@ app.post("/mache_move", async function (req, res) {
             break;
           }
 
-          var increment
-          if(anfangx-endex > 0) increment = -1
-          else increment = 1
+          var increment;
+          if (anfangx - endex > 0) increment = -1;
+          else increment = 1;
           let i = anfangx;
           let j = anfangy;
 
@@ -534,7 +546,7 @@ app.post("/mache_move", async function (req, res) {
           }
           break;
       }
-    /*
+      /*
     Switch for black figures
     */
     } else if (farbe == false) {
@@ -753,15 +765,15 @@ app.post("/mache_move", async function (req, res) {
     }
     // does the moving and the eating
     await eat(endex, endey, spiel_id);
-    const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
-    if(spielzug === true){
-      move.run({endex, endey, anfangx, anfangy, spiel_id});
+    const move = db.prepare(
+      "UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id"
+    );
+    if (spielzug === true) {
+      move.run({ endex, endey, anfangx, anfangy, spiel_id });
       res.send("Success");
-    }
-    else{
+    } else {
       res.send("ungültiger Zug");
     }
-
   } catch (error) {
     console.log(error);
     res.send("Error");
@@ -770,56 +782,64 @@ app.post("/mache_move", async function (req, res) {
 
 function getposition(x, y, spiel_id) {
   console.log(x, y, spiel_id, "______________");
-  const check_position = db.prepare("SELECT * FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @spiel_id");
-  const check = check_position.get({x, y, spiel_id});
+  const check_position = db.prepare(
+    "SELECT * FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @spiel_id"
+  );
+  const check = check_position.get({ x, y, spiel_id });
   console.log(check, 5);
-  if(check === undefined) return false;
+  if (check === undefined) return false;
   else return true;
 }
 
-function eat(x,y,id){
-  new Promise(function(myResolve) {
-    const deleten = db.prepare("DELETE FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @id");
-    const check = deleten.run({x,y,id});  
-    console.log("Ich esse: " + x + y );
+function eat(x, y, id) {
+  new Promise(function (myResolve) {
+    const deleten = db.prepare(
+      "DELETE FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @id"
+    );
+    const check = deleten.run({ x, y, id });
+    console.log("Ich esse: " + x + y);
     myResolve();
-    });
-  
+  });
 }
 
-
-
-
-app.get('/leaderboard', (req, res) => {
-  const lead_list = db.prepare("SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10");
+app.get("/leaderboard", (req, res) => {
+  const lead_list = db.prepare(
+    "SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10"
+  );
   var result = lead_list.all();
   res.send(result);
 });
 // ---Leaderboard END---
 
 // ---Your Hosted games START---
-app.get('/your_live_games/:KEY', async function (req, res)  { //KEY = TOKKEN
-  if(!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
+app.get("/your_live_games/:KEY", async function (req, res) {
+  //KEY = TOKKEN
+  if (!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
   else {
     var player = get_player(req.params.KEY);
-    const lead_list = db.prepare("SELECT * FROM Games WHERE Player_1 = @player;");
-    var result = lead_list.all({player});
+    const lead_list = db.prepare(
+      "SELECT * FROM Games WHERE Player_1 = @player;"
+    );
+    var result = lead_list.all({ player });
     res.send(result);
   }
 });
 // ---Your Hosted games END---
 
 // ---Games you participating START---
-app.get('/live_games_4u/:KEY', async function (req, res)  { //KEY = TOKKEN
-  if(!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
+app.get("/live_games_4u/:KEY", async function (req, res) {
+  //KEY = TOKKEN
+  if (!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
   else {
     var player = get_player(req.params.KEY);
-    const lead_list = db.prepare("SELECT * FROM Games WHERE Player_2 = @player;");
-    var result = lead_list.all({player});
+    const lead_list = db.prepare(
+      "SELECT * FROM Games WHERE Player_2 = @player;"
+    );
+    var result = lead_list.all({ player });
     res.send(result);
-  }});
+  }
+});
 // ---GAMES you participating END---
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
