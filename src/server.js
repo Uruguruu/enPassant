@@ -51,15 +51,17 @@ function spielexist(spiel_id, Player){
   if(check_spiel != undefined){
     if(check_spiel["aktueller_player"] === 1 && check_spiel["Player_2"] === Player ){
       wf = true;
-    } 
+    }
     else if(check_spiel["aktueller_player"] === 0 && check_spiel["Player_2"] != Player){
       wf = true;
     }
     else{
+      // falscher spieler
       wf =  "f_player";
     }
   }
   else{
+    // falsches Spiel
     wf =  "k_spiel";  
   }
   return wf
@@ -289,12 +291,12 @@ app.post("/mache_move", async function (req, res) {
           return;
         }
         else{
-          const get_color = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
-          var g_color = get_color.get({ spiel_id ,anfangx, anfangy});
+          const get_color = db.prepare("SELECT g.Player_2 FROM Figuren f LEFT JOIN Games g ON f.Player = g.Player_2 WHERE f.X = @anfangx AND f.Y = @anfangy AND f.Games_ID = @spiel_id");
+          var g_color = get_color.get({anfangx, anfangy, spiel_id});
+          console.log(g_color, Player);
           var farbe // true = weiss false = schwarz
-          if(g_color["Player"] === Player) farbe = true
-          else if (g_color["Player"] != Player) farbe = false
-          else res.send("Error");
+          if(g_color["Player_2"] === Player) farbe = false;
+          else farbe = true;
           var spielzug;
           // check if they arent the same and in the playground
           if(anfangx === endex && anfangy === endey){
@@ -308,7 +310,7 @@ app.post("/mache_move", async function (req, res) {
           /*
           Switch for White Figures
           */
-          if ((farbe = true)) {
+          if ((farbe === true)) {
             switch (spielfigur) {
               /*
               Pawn
@@ -562,7 +564,7 @@ app.post("/mache_move", async function (req, res) {
     /*
     Switch for black figures
     */
-    } else if (farbe == false) {
+    } else if (farbe === false) {
       switch (spielfigur) {
         /*
         Pawn
@@ -817,16 +819,20 @@ app.post("/mache_move", async function (req, res) {
     const get_spielzug = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
     const change_spielzug = db.prepare("UPDATE Games SET aktueller_player = @player WHERE Games_ID = @spiel_id");
     if(spielzug === true){
-      await eat(endex, endey, spiel_id);
-      move.run({endex, endey, anfangx, anfangy, spiel_id});
-      var spiel_spieler = get_spielzug.get({spiel_id});
-      if(spiel_spieler["aktueller_player"] === 1){
-       change_spielzug.run({player:0, spiel_id});
+      if(await eat(anfangx, anfangy ,endex, endey, spiel_id)){
+        move.run({endex, endey, anfangx, anfangy, spiel_id});
+        var spiel_spieler = get_spielzug.get({spiel_id});
+        if(spiel_spieler["aktueller_player"] === 1){
+        change_spielzug.run({player:0, spiel_id});
+        }
+        else{
+        change_spielzug.run({player:1, spiel_id});
+        }
+        res.send("Success");
       }
       else{
-       change_spielzug.run({player:1, spiel_id});
+        res.send("Ungültiger Zug (Essen von eigenen Spieler)");
       }
-      res.send("Success");
     }
     else{
       res.send("ungültiger Zug (Unerlaubter Spielzug)");
@@ -847,17 +853,24 @@ function getposition(x, y, spiel_id) {
   console.log(x, y, spiel_id, "______________");
   const check_position = db.prepare("SELECT * FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @spiel_id");
   const check = check_position.get({x, y, spiel_id});
-  console.log(check, 5);
   if(check === undefined) return false;
   else return true;
 }
 
-function eat(x,y,id){
-  new Promise(function(myResolve) {
-    const deleten = db.prepare("DELETE FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @id");
-    const check = deleten.run({x,y,id});  
-    console.log("Ich esse: " + x + y );
-    myResolve();
+function eat(ax, ay,ex,ey,id){
+  return new Promise(function(myResolve) {
+    const besitzer_figur_m = db.prepare("SELECT Player FROM Figuren WHERE X = @ax AND Y = @ay AND Games_ID = @id");
+    const check_gleich = besitzer_figur_m.get({ax,ay,id});
+    const besitzer_figur_g = db.prepare("SELECT Player FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
+    const check_gleich_2 = besitzer_figur_g.get({ex,ey,id});
+    if(check_gleich["Player"] === check_gleich_2["Player"]){
+      myResolve(false);
+    }
+    else{
+      const deleten = db.prepare("DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
+    const check = deleten.run({ex,ey,id});  
+    myResolve(true);
+    }
     });
   
 }
