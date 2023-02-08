@@ -42,6 +42,7 @@ function get_player(Key){
     return get_player.get({Key})["User_FK"];
 }
 
+
 // check if spiel exist and if user has rights to access
 function spielexist(spiel_id, Player){
   var wf;
@@ -55,11 +56,11 @@ function spielexist(spiel_id, Player){
       wf = true;
     }
     else{
-      wf =  false;
+      wf =  "f_player";
     }
   }
   else{
-    wf =  false;  
+    wf =  "k_spiel";  
   }
   return wf
 }
@@ -255,7 +256,6 @@ app.post("/join_game", async function (req, res) {
 app.post("/mache_move", async function (req, res) {
   try {
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
-    anfangx, anfangy = parseInt(anfangx, anfangy);
     anfangy = parseInt(anfangy);
     endex = parseInt(endex);
     endey =parseInt(endey);
@@ -263,9 +263,10 @@ app.post("/mache_move", async function (req, res) {
     if(!(await check_key(KEY))) res.send("ungültiger KEY");
     else{
       var Player = get_player(KEY);
-      if(!spielexist(spiel_id, Player))
+      if(spielexist(spiel_id, Player) === "k_spiel" || spielexist(spiel_id, Player) === "f_player")
       { 
-        res.send("ungültiges Spiel");
+        res.send("ungültiges Spiel "+spielexist(spiel_id, Player));
+        return;
       }
       else{
         const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
@@ -274,7 +275,8 @@ app.post("/mache_move", async function (req, res) {
           spielfigur = get_type.get({spiel_id ,anfangx, anfangy})["Type"];
         }
         catch{
-          res.send("ungültiger Zug");
+          res.send("ungültiger Zug (Keine Figur gefunden)");
+          return;
         }
         const get_player = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
         try{
@@ -282,7 +284,8 @@ app.post("/mache_move", async function (req, res) {
         }
         catch{}
         if(!(get_player_f === Player)){
-          res.send("ungültiger Zug");
+          res.send("ungültiger Zug (Falscher Player)");
+          return;
         }
         else{
           const get_color = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
@@ -368,34 +371,42 @@ app.post("/mache_move", async function (req, res) {
             case 3:
               if (anfangx + 2 === endex && anfangy - 1 === endey) {
                 eat(endex, endey, spiel_id);
+                spielzug = true;
                 break;
               }
               if (anfangx + 2 === endex && anfangy + 1 === endey) {
                 eat(endex, endey, spiel_id);
+                spielzug = true;
                 break;
               }
               if (anfangx + 1 === endex && anfangy - 2 === endey) {
-                eat(endex, endey, spiel_id);l
+                eat(endex, endey, spiel_id);
+                spielzug = true;
                 break;
               }
               if (anfangx + 1 === endex && anfangy + 2 === endey) {
                 eat(endex, endey, spiel_id);
+                spielzug = true;
                 break;
               }
               if (anfangx - 1 === endex && anfangy + 2 === endey) {
                 eat(endex, endey, spiel_id);
+                spielzug = true;
                 break;
               }
               if (anfangx - 1 === endex && anfangy - 2 === endey) {
                 eat(endex, endey, spiel_id);
+                spielzug = true;
                 break;
               }
               if (anfangx - 2 === endex && anfangy + 1 === endey) {
                 eat(endex, endey, spiel_id);
+                spielzug = true;
                 break;
               }
               if (anfangx - 2 === endex && anfangy - 1 === endey) {
                 eat(endex, endey, spiel_id);
+                spielzug = true;
                 break;
               }
               spielzug = false;
@@ -408,21 +419,25 @@ app.post("/mache_move", async function (req, res) {
                 spielzug = false;
                 break;
               }
-              var increment
+              var increment;
               if(anfangx-endex > 0) increment = -1
               else increment = 1
-              let i = anfangx;
-              let j = anfangy;
+              let i = parseInt(anfangx)+increment;
+              let j = parseInt(anfangy)+increment;
+              console.log(increment);
               while (i != endex && j != endey) {
+                console.log(i, j);
                 if (await getposition(i, j, spiel_id)) {
+                  console.log("Wassss?");
                   spielzug = false;
                   break;
                 }
-                i += incrementx;
-                j += incrementy;
+                i += increment;
+                j += increment;
               }
-
+              console.log("www", i,j);
               if (i === endex && j === endey) {
+                console.log("Jeyyyy");
                 spielzug = true;
                 eat(endex, endey, spiel_id);
               }
@@ -485,14 +500,26 @@ app.post("/mache_move", async function (req, res) {
             if (anfangx === endex) {
               //Function checks if in the x axis is any piece
               let increment = (endey - anfangy) / Math.abs(endey - anfangy);
-              for (let i = anfangy + increment; i !== endey; i += increment) {
-                if (await getposition(anfangx, i, spiel_id)) {
-                  spielzug = true;
-                  eat(endex, endey, spiel_id);
+              for (let i = anfangy + increment; i != endey; i += increment) {
+                console.log(increment, i);
+                if (!(await getposition(anfangx, i, spiel_id))) {
+                  spielzug = false;
                   break;
                 }
               }
-            }
+              spielzug = true;
+              } 
+              else if (anfangy === endey) {
+              //Function checks if in the y axis is any piece
+              let increment = (endex - anfangx) / Math.abs(endex - anfangx);
+              for (let i = anfangx + increment; i === endex; i += increment) {
+                if (!(await getposition(i, anfangy, spiel_id))) {
+                  spielzug = false;
+                  break;
+                }
+              }
+              spielzug = true;
+              }
           } else {
             var richtung;
             if (anfangx - endex > 0) richtung = true;
@@ -746,15 +773,15 @@ app.post("/mache_move", async function (req, res) {
       move.run({endex, endey, anfangx, anfangy, spiel_id});
       var spiel_spieler = get_spielzug.get({spiel_id});
       if(spiel_spieler["aktueller_player"] === 1){
-        change_spielzug.run({player:0, spiel_id});
+       // change_spielzug.run({player:0, spiel_id});
       }
       else{
-        change_spielzug.run({player:1, spiel_id});
+       // change_spielzug.run({player:1, spiel_id});
       }
       res.send("Success");
     }
     else{
-      res.send("ungültiger Zug");
+      res.send("ungültiger Zug (Unerlaubter Spielzug)");
     }
   }
 }
