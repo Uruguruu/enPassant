@@ -45,7 +45,7 @@ antwort:
 ---
 description: `Shows Information about a specific game.`
 
-/get_spiel?{spiel_id}\
+/get_spiel/{spiel_id}\
 GET\
 antwort:
 1. {}
