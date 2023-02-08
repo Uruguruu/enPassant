@@ -257,6 +257,7 @@ app.post("/mache_move", async function (req, res) {
   try {
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
     anfangy = parseInt(anfangy);
+    anfangx = parseInt(anfangx);
     endex = parseInt(endex);
     endey =parseInt(endey);
     spiel_id =parseInt(spiel_id);
@@ -295,6 +296,15 @@ app.post("/mache_move", async function (req, res) {
           else if (g_color["Player"] != Player) farbe = false
           else res.send("Error");
           var spielzug;
+          // check if they arent the same and in the playground
+          if(anfangx === endex && anfangy === endey){
+            spielzug = false;
+            res.send("ungültiger Zug (beide Eingaben sind gleich)");
+          }
+          if(anfangx < 1 || anfangx > 8|| anfangy < 1 || anfangy > 8|| endex < 1 || endex > 8|| endex < 1 || endex > 8){
+            spielzug = false;
+            res.send("ungültiger Zug (Eingaben sind auserhalb des Feldes)");
+          }
           /*
           Switch for White Figures
           */
@@ -321,8 +331,9 @@ app.post("/mache_move", async function (req, res) {
                 break; 
               }
           
-              if (anfangx === 2 && !(await getposition(anfangx + 1))) {
-                anfangy + 2 || anfangy + 1; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
+              if (anfangy === 2 && !(await getposition(anfangy + 1)) && anfangy - endey === -2) {
+                spielzug = true;
+                break; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
               }
           
               if (await getposition(anfangx, anfangy + 1, spiel_id)) {
@@ -419,25 +430,23 @@ app.post("/mache_move", async function (req, res) {
                 spielzug = false;
                 break;
               }
-              var increment;
-              if(anfangx-endex > 0) increment = -1
-              else increment = 1
-              let i = parseInt(anfangx)+increment;
-              let j = parseInt(anfangy)+increment;
-              console.log(increment);
+              var incrementx;
+              var incrementy;
+              if(anfangx-endex > 0) incrementx = -1
+              else incrementx = 1
+              if(anfangy-endey > 0) incrementy = -1
+              else incrementy = 1
+              let i = parseInt(anfangx)+incrementx;
+              let j = parseInt(anfangy)+incrementy;
               while (i != endex && j != endey) {
-                console.log(i, j);
                 if (await getposition(i, j, spiel_id)) {
-                  console.log("Wassss?");
-                  spielzug = false;
-                  break;
+                spielzug = false;
+                break;
                 }
-                i += increment;
-                j += increment;
+                i += incrementx;
+                j += incrementy;
               }
-              console.log("www", i,j);
               if (i === endex && j === endey) {
-                console.log("Jeyyyy");
                 spielzug = true;
                 eat(endex, endey, spiel_id);
               }
@@ -492,12 +501,16 @@ app.post("/mache_move", async function (req, res) {
         Queen
         */
         case 6:
+          console.log(anfangx,endex, anfangy, endey);
           if (anfangx === endex && anfangy === endey) {
             spielzug = false;
+            console.log(11);
             break;
           }
           if (anfangx === endex || anfangy === endey) {
+            console.log(8);
             if (anfangx === endex) {
+              console.log(1);
               //Function checks if in the x axis is any piece
               let increment = (endey - anfangy) / Math.abs(endey - anfangy);
               for (let i = anfangy + increment; i != endey; i += increment) {
@@ -510,6 +523,7 @@ app.post("/mache_move", async function (req, res) {
               spielzug = true;
               } 
               else if (anfangy === endey) {
+                console.log(13);
               //Function checks if in the y axis is any piece
               let increment = (endex - anfangx) / Math.abs(endex - anfangx);
               for (let i = anfangx + increment; i === endex; i += increment) {
@@ -521,29 +535,27 @@ app.post("/mache_move", async function (req, res) {
               spielzug = true;
               }
           } else {
-            var richtung;
-            if (anfangx - endex > 0) richtung = true;
-            else richtung = false;
-            if (Math.abs(anfangx - endex) === Math.abs(anfangy - endey)) {
-              for (let i = 1; i < Math.abs(anfangx - endex); i++) {
-                if (
-                  getposition(anfangx + i, anfangy + i, spiel_id) &&
-                  !richtung
-                ) {
-                  spielzug = false;
-                  break;
-                }
-                if (
-                  getposition(anfangx - i, anfangy - i, spiel_id) &&
-                  richtung
-                ) {
-                  spielzug = false;
-                  break;
-                }
-              }
-            } else {
+            var incrementx;
+            var incrementy;
+            if(anfangx-endex > 0) incrementx = -1
+            else incrementx = 1
+            if(anfangy-endey > 0) incrementy = -1
+            else incrementy = 1
+            let i = parseInt(anfangx)+incrementx;
+            let j = parseInt(anfangy)+incrementy;
+            while (i != endex && j != endey) {
+              if (await getposition(i, j, spiel_id)) {
               spielzug = false;
+              break;
+              }
+              i += incrementx;
+              j += incrementy;
             }
+            if (i === endex && j === endey) {
+              spielzug = true;
+              eat(endex, endey, spiel_id);
+            }
+            break;
           }
           break;
       }
@@ -556,30 +568,38 @@ app.post("/mache_move", async function (req, res) {
         Pawn
         */
         case 1:
-          if (anfangx - endex != +1) {
+          if (anfangy - endey != 1) {
             spielzug = false; // Überprüfung ob der Bauer nach vorne geht
           }
-
           if (
-            ((await getposition(anfangx - 1, anfangy - 1, spiel_id)) &&
-              anfangx - 1 === endex &&
-              anfangy - 1 === endey) ||
-            ((await getposition(anfangx - 1, anfangy + 1, spiel_id)) &&
-              anfangx - 1 === endex &&
-              anfangy + 1 === endey)
-          ) {
+          ((await getposition(anfangx + 1, anfangy - 1, spiel_id)) &&
+          anfangx + 1 === endex &&
+          anfangy - 1 === endey) ||
+          ((await getposition(anfangx - 1, anfangy - 1, spiel_id)) &&
+          anfangx - 1 === endex &&
+          anfangy - 1 === endey)
+          )
+          {
             spielzug = true;
             eat(endex, endey, spiel_id); // Überprüfung ob der Bauer essen will und kann
+            break; 
           }
-
-          if (anfangx === 2 && !(await getposition(anfangx - 1))) {
-            (await anfangy) - 2 || anfangy - 1; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
+      
+          if (anfangy === 7 && !(await getposition(anfangy - 1)) && anfangy - endey === 2) {
+            spielzug = true;
+            break; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
           }
-
-          if (await getposition(anfangx + 1, anfangy, spiel_id)) {
+      
+          if (await getposition(anfangx, anfangy - 1, spiel_id)) {
             spielzug = false;
+            break;
           } // Überprüft ob eine Figur vor dem Bauer steht
+          if (anfangx - endex != 0) {
+            spielzug = false; // Überprüfung ob der Bauer nach vorne geht
+          }
+          if(spielzug != false) spielzug = true;
           break;
+        
         /*
         Rook
         */
@@ -588,25 +608,26 @@ app.post("/mache_move", async function (req, res) {
             spielzug = false;
           }
           if (anfangx === endex) {
-            //Function checks if in the x axis is any piece
-            let increment = (endey - anfangy) / Math.abs(endey - anfangy);
-            for (let i = anfangy + increment; i !== endey; i += increment) {
-              if (await getposition(anfangx, i, spiel_id)) {
-                spielzug = true;
-                eat(endex, endey, spiel_id);
-                break;
-              }
+          //Function checks if in the x axis is any piece
+          let increment = (endey - anfangy) / Math.abs(endey - anfangy);
+          for (let i = anfangy + increment; i !== endey; i += increment) {
+            if (!(await getposition(anfangx, i, spiel_id))) {
+              spielzug = false;
+              break;
             }
-          } else if (anfangy === endey) {
-            //Function checks if in the y axis is any piece
-            let increment = (endex - anfangx) / Math.abs(endex - anfangx);
-            for (let i = anfangx + increment; i !== endex; i += increment) {
-              if (await getposition(i, anfangy, spiel_id)) {
-                spielzug = true;
-                eat(endex, endey, spiel_id);
-                break;
-              }
+          }
+          spielzug = true;
+          } 
+          else if (anfangy === endey) {
+          //Function checks if in the y axis is any piece
+          let increment = (endex - anfangx) / Math.abs(endex - anfangx);
+          for (let i = anfangx + increment; i === endex; i += increment) {
+            if (!(await getposition(i, anfangy, spiel_id))) {
+              spielzug = false;
+              break;
             }
+          }
+          spielzug = true;
           }
           break;
         /*
@@ -615,34 +636,42 @@ app.post("/mache_move", async function (req, res) {
         case 3:
           if (anfangx + 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy - 2 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 2 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy - 2 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 2 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 2 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           spielzug = false;
@@ -651,28 +680,26 @@ app.post("/mache_move", async function (req, res) {
         Bishop
         */
         case 4:
-          if (anfangx !== endex && anfangy !== endey) {
+          if (Math.abs(endex - anfangx) != Math.abs(endey - anfangy)) {
             spielzug = false;
+            break;
           }
-          let incrementx = (endex - anfangx) / Math.abs(endex - anfangx);
-          let incrementy = (endey - anfangy) / Math.abs(endey - anfangy);
-
-          if (Math.abs(endex - anfangx) !== Math.abs(endey - anfangy)) {
-            spielzug = false;
-          }
-
-          let i = anfangx + incrementx;
-          let j = anfangy + incrementy;
-
-          while (i !== endex && j !== endey) {
+          var incrementx;
+          var incrementy;
+          if(anfangx-endex > 0) incrementx = -1
+          else incrementx = 1
+          if(anfangy-endey > 0) incrementy = -1
+          else incrementy = 1
+          let i = parseInt(anfangx)+incrementx;
+          let j = parseInt(anfangy)+incrementy;
+          while (i != endex && j != endey) {
             if (await getposition(i, j, spiel_id)) {
-              spielzug = false;
-              break;
+            spielzug = false;
+            break;
             }
             i += incrementx;
             j += incrementy;
           }
-
           if (i === endex && j === endey) {
             spielzug = true;
             eat(endex, endey, spiel_id);
@@ -684,84 +711,107 @@ app.post("/mache_move", async function (req, res) {
         case 5:
           if (anfangx + 1 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy + 0 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 1 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 0 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx + 0 === endex && anfangy - 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 1 === endey) {
             eat(endex, endey, spiel_id);
+            spielzug = true;
             break;
           }
           if (anfangx - 1 === endex && anfangy + 0 === endey) {
             eat(endex, endey, spiel_id);
-            break;
+            spielzug = true;
+        break;
+      }
+      if (anfangx - 1 === endex && anfangy - 1 === endey) {
+        eat(endex, endey, spiel_id);
+        spielzug = true;
+        break;
+      }
+      spielzug = false;
+      break;
+    /*
+    Queen
+    */
+    case 6:
+      console.log(anfangx,endex, anfangy, endey);
+      if (anfangx === endex && anfangy === endey) {
+        spielzug = false;
+        console.log(11);
+        break;
+      }
+      if (anfangx === endex || anfangy === endey) {
+        console.log(8);
+        if (anfangx === endex) {
+          console.log(1);
+          //Function checks if in the x axis is any piece
+          let increment = (endey - anfangy) / Math.abs(endey - anfangy);
+          for (let i = anfangy + increment; i != endey; i += increment) {
+            console.log(increment, i);
+            if (!(await getposition(anfangx, i, spiel_id))) {
+              spielzug = false;
+              break;
+            }
           }
-          if (anfangx - 1 === endex && anfangy - 1 === endey) {
-            eat(endex, endey, spiel_id);
-            break;
+          spielzug = true;
+          } 
+          else if (anfangy === endey) {
+            console.log(13);
+          //Function checks if in the y axis is any piece
+          let increment = (endex - anfangx) / Math.abs(endex - anfangx);
+          for (let i = anfangx + increment; i === endex; i += increment) {
+            if (!(await getposition(i, anfangy, spiel_id))) {
+              spielzug = false;
+              break;
+            }
           }
+          spielzug = true;
+          }
+      } else {
+        var incrementx;
+        var incrementy;
+        if(anfangx-endex > 0) incrementx = -1
+        else incrementx = 1
+        if(anfangy-endey > 0) incrementy = -1
+        else incrementy = 1
+        let i = parseInt(anfangx)+incrementx;
+        let j = parseInt(anfangy)+incrementy;
+        while (i != endex && j != endey) {
+          if (await getposition(i, j, spiel_id)) {
           spielzug = false;
           break;
-        /*
-        Queen
-        */
-        case 6:
-          if (anfangx === endex && anfangy === endey) {
-            spielzug = false;
-            break;
           }
-          if (anfangx === endex || anfangy === endey) {
-            if (anfangx === endex) {
-              //Function checks if in the x axis is any piece
-              let increment = (endey - anfangy) / Math.abs(endey - anfangy);
-              for (let i = anfangy + increment; i !== endey; i += increment) {
-                if (await getposition(anfangx, i, spiel_id)) {
-                  spielzug = true;
-                  eat(endex, endey, spiel_id);
-                  break;
-                }
-              }
-            }
-          } else {
-            var richtung;
-            if (anfangx - endex > 0) richtung = true;
-            else richtung = false;
-            if (Math.abs(anfangx - endex) === Math.abs(anfangy - endey)) {
-              for (let i = 1; i < Math.abs(anfangx - endex); i++) {
-                if (
-                  getposition(anfangx + i, anfangy + i, spiel_id) &&
-                  !richtung
-                ) {
-                  spielzug = false;
-                  break;
-                }
-                if (
-                  getposition(anfangx - i, anfangy - i, spiel_id) &&
-                  richtung
-                ) {
-                  spielzug = false;
-                  break;
-                }
-              }
-            } else {
-              spielzug = false;
-            }
-          }
-          break;
+          i += incrementx;
+          j += incrementy;
+        }
+        if (i === endex && j === endey) {
+          spielzug = true;
+          eat(endex, endey, spiel_id);
+        }
+        break;
+      }
+      break;
       }
     }
     // does the moving and the eating
@@ -773,10 +823,10 @@ app.post("/mache_move", async function (req, res) {
       move.run({endex, endey, anfangx, anfangy, spiel_id});
       var spiel_spieler = get_spielzug.get({spiel_id});
       if(spiel_spieler["aktueller_player"] === 1){
-       // change_spielzug.run({player:0, spiel_id});
+       change_spielzug.run({player:0, spiel_id});
       }
       else{
-       // change_spielzug.run({player:1, spiel_id});
+       change_spielzug.run({player:1, spiel_id});
       }
       res.send("Success");
     }
