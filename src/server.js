@@ -137,7 +137,7 @@ function game_start(Player_1, Player_2, game_id) {
 
 /*
 -------------------------------------------------------------------------------------------------------------------------------
-Beginn of the main code 
+Beginn of the main code
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 */
 /*
@@ -171,12 +171,12 @@ app.post("/login", async function (req, res) {
       insertKEY.run({ time, user_ID, Key: api_key });
 
       res.send(api_key);
-    } else 
+    } else
     {
       res.send("wrong user or password");
     }
-  } 
-  catch (error) 
+  }
+  catch (error)
   {
     console.log(error);
     res.send("wrong user or password");
