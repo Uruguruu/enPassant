@@ -326,6 +326,9 @@ app.post("/mache_move", async function (req, res) {
               Pawn
               */
             case 1:
+              console.log(await getposition(anfangx - 1, anfangy, spiel_id));
+              console.log(anfangx - 1 === endex &&
+                anfangy+1 === endey);
               console.log(1);
               if (anfangy - endey != -1) {
                 spielzug = false; // Überprüfung ob der Bauer nach vorne geht
@@ -333,18 +336,60 @@ app.post("/mache_move", async function (req, res) {
               if (
               ((await getposition(anfangx + 1, anfangy + 1, spiel_id)) &&
               anfangx + 1 === endex &&
-              anfangy + 1 === endey) ||
-              ((await getposition(anfangx - 1, anfangy + 1, spiel_id)) &&
-              anfangx - 1 === endex &&
-              anfangy + 1 === endey)
-              )
+              anfangy + 1 === endey))
               {
                 spielzug = true;
                  // Überprüfung ob der Bauer essen will und kann
                 break; 
               }
-          
+              if
+              ((await getposition(anfangx - 1, anfangy + 1, spiel_id)) &&
+              anfangx - 1 === endex &&
+              anfangy + 1 === endey)
+              {
+
+                spielzug = true;
+                 // Überprüfung ob der Bauer essen will und kann
+                break; 
+              }
+              // check if enPassant
+              if (
+                ((await getposition(anfangx + 1, anfangy, spiel_id)) &&
+                anfangx + 1 === endex &&
+                anfangy +1=== endey))
+                {
+                  const get_modus = db.prepare("SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1");
+                  if(get_modus.get({anfangx, anfangy, spiel_id})){
+                    spielzug = true;
+                    eat(anfangx, anfangy ,endex, endey-1, spiel_id); 
+                    break;
+                  }
+                }
+                console.log((await getposition(anfangx - 1, anfangy, spiel_id)) );
+                console.log(  anfangx - 1 === endex &&
+                  anfangy+1 === endey);
+               
+               
+                if(
+                ((await getposition(anfangx - 1, anfangy, spiel_id)) &&
+                anfangx - 1 === endex &&
+                anfangy+1 === endey)
+                )
+                {
+                  console.log(5);
+                  const get_modus = db.prepare("SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1");
+                  if(get_modus.get({anfangx, anfangy, spiel_id})){
+                    console.log(56);
+                    spielzug = true;
+                    eat(anfangx, anfangy ,endex, endey-1, spiel_id); 
+                    break;
+                  }
+                }
+
+                
               if (anfangy === 2 && !(await getposition(anfangy + 1)) && anfangy - endey === -2) {
+                const set_modus = db.prepare("UPDATE FIGUREN SET Modus = 1 WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
+                set_modus.run({anfangx, anfangy, spiel_id});
                 spielzug = true;
                 break; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
               }
@@ -586,24 +631,60 @@ app.post("/mache_move", async function (req, res) {
             spielzug = false; // Überprüfung ob der Bauer nach vorne geht
           }
           if (
-          ((await getposition(anfangx + 1, anfangy - 1, spiel_id)) &&
-          anfangx + 1 === endex &&
-          anfangy - 1 === endey) ||
-          ((await getposition(anfangx - 1, anfangy - 1, spiel_id)) &&
-          anfangx - 1 === endex &&
-          anfangy - 1 === endey)
-          )
-          {
-            spielzug = true;
-             // Überprüfung ob der Bauer essen will und kann
-            break; 
-          }
-      
-          if (anfangy === 7 && !(await getposition(anfangy - 1)) && anfangy - endey === 2) {
-            spielzug = true;
-            break; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
-          }
-      
+            ((await getposition(anfangx + 1, anfangy - 1, spiel_id)) &&
+            anfangx + 1 === endex &&
+            anfangy - 1 === endey))
+            {
+              spielzug = true;
+               // Überprüfung ob der Bauer essen will und kann
+              break; 
+            }
+            if
+            ((await getposition(anfangx - 1, anfangy - 1, spiel_id)) &&
+            anfangx - 1 === endex &&
+            anfangy - 1 === endey)
+            {
+
+              spielzug = true;
+               // Überprüfung ob der Bauer essen will und kann
+              break; 
+            }
+            // check if enPassant
+            if (
+              ((await getposition(anfangx + 1, anfangy, spiel_id)) &&
+              anfangx + 1 === endex &&
+              anfangy -1 === endey))
+              {
+                const get_modus = db.prepare("SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1");
+                if(get_modus.get({anfangx, anfangy, spiel_id})){
+                  spielzug = true;
+                  eat(anfangx, anfangy ,endex, endey+1, spiel_id); 
+                  break;
+                }
+              }
+              
+              if(
+              ((await getposition(anfangx - 1, anfangy, spiel_id)) &&
+              anfangx - 1 === endex &&
+              anfangy-1 === endey)
+              )
+              {
+                const get_modus = db.prepare("SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1");
+                if(get_modus.get({anfangx, anfangy, spiel_id})){
+                  spielzug = true;
+                  eat(anfangx, anfangy ,endex, endey+1, spiel_id);    
+                  break;
+                }
+              }
+
+
+            if (anfangy === 7 && !(await getposition(anfangy - 1)) && anfangy - endey === 2) {
+              const set_modus = db.prepare("UPDATE FIGUREN SET Modus = 1 WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
+              set_modus.run({anfangx, anfangy, spiel_id});
+              spielzug = true;
+              break; // Überprüfung ob der Bauer 2 Felder nach vorne gehen kann
+            }
+        
           if (await getposition(anfangx, anfangy - 1, spiel_id)) {
             spielzug = false;
             break;
@@ -886,21 +967,20 @@ function getposition(x, y, spiel_id) {
 function eat(ax, ay,ex,ey,id){
   return new Promise(function(myResolve) {
     const besitzer_figur_m = db.prepare("SELECT Player FROM Figuren WHERE X = @ax AND Y = @ay AND Games_ID = @id");
+    console.log(ax,ay,id);
     const check_gleich = besitzer_figur_m.get({ax,ay,id});
     const besitzer_figur_g = db.prepare("SELECT Player, Type FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
     const check_gleich_2 = besitzer_figur_g.get({ex,ey,id});
     console.log(check_gleich_2, check_gleich);
     try{
-      if(check_gleich === undefined ||  check_gleich["Player"] === check_gleich_2["Player"]){
+      if( check_gleich["Player"] === check_gleich_2["Player"]){
         myResolve(false);
       }
       else{
-        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         const deleten = db.prepare("DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
         console.log(check_gleich_2["Type"]);
         console.log(check_gleich_2["Type"]);
         if(check_gleich_2["Type"] === 5){
-          console.log("############################################################################");
           const check = deleten.run({ex,ey,id});  
           myResolve("gefallen");
         }

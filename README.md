@@ -153,8 +153,8 @@ Antwort:
 - enPassant
 - rochade (alle figuren zwischen dem König müssen weg sein und der König oder Turm darf sich noch nicht webegt haben. Geht auch nicht wenn der König im schach steht, oder nach der Rochade im Schach steht.)
 - König muss mind. 1 Feld abstand vom anderen König haben
-- Bauern dürfen, wenn sie noch nie bewegt wurden, zwei Felder nach vorne
-- Wenn ein bauer auf die andere seite gelangt, verwandelt er sich in eine belibige Figur
+- x Bauern dürfen, wenn sie noch nie bewegt wurden, zwei Felder nach vorne
+- x Wenn ein bauer auf die andere seite gelangt, verwandelt er sich in eine belibige Figur
 - Wenn nur noch zwei Könige auf dem Feld sind, ist es ein Remis
 - Wenn zu wenig Figuren vorhanden sind, ist es ein Remis
 - Wenn die gleiche Stellung drei mal wiederholt wird, ist es ein Remis
