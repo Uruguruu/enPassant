@@ -357,7 +357,7 @@ app.post("/mache_move", async function (req, res) {
               if (
                 ((await getposition(anfangx + 1, anfangy, spiel_id)) &&
                 anfangx + 1 === endex &&
-                anfangy +1=== endey))
+                anfangy +1=== endey) && endey === 6)
                 {
                   const get_modus = db.prepare("SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1");
                   if(get_modus.get({anfangx, anfangy, spiel_id})){
@@ -368,13 +368,13 @@ app.post("/mache_move", async function (req, res) {
                 }
                 console.log((await getposition(anfangx - 1, anfangy, spiel_id)) );
                 console.log(  anfangx - 1 === endex &&
-                  anfangy+1 === endey);
+                  anfangy+1 === endey );
                
                
                 if(
                 ((await getposition(anfangx - 1, anfangy, spiel_id)) &&
                 anfangx - 1 === endex &&
-                anfangy+1 === endey)
+                anfangy+1 === endey)  && endey === 6
                 )
                 {
                   console.log(5);
@@ -654,7 +654,9 @@ app.post("/mache_move", async function (req, res) {
             if (
               ((await getposition(anfangx + 1, anfangy, spiel_id)) &&
               anfangx + 1 === endex &&
-              anfangy -1 === endey))
+              anfangy -1 === endey)
+              && endey === 3
+              )
               {
                 const get_modus = db.prepare("SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1");
                 if(get_modus.get({anfangx, anfangy, spiel_id})){
@@ -668,6 +670,7 @@ app.post("/mache_move", async function (req, res) {
               ((await getposition(anfangx - 1, anfangy, spiel_id)) &&
               anfangx - 1 === endex &&
               anfangy-1 === endey)
+              && endey === 3
               )
               {
                 const get_modus = db.prepare("SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1");
