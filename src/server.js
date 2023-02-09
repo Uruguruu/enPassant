@@ -957,10 +957,11 @@ app.get('/home', function (req, res){
 })
 
 app.get("/get_spiel/:spiel_id", (req, res) => {
+  var spiel_id = req.params.spiel_id;
   const figures = db.prepare(
-    "SELECT * FROM Figuren"
+    "SELECT * FROM Figuren WHERE Games_ID = @spiel_id"
   );
-  var result = figures.all();
+  var result = figures.all({spiel_id});
   res.send(result);
 });
 
