@@ -71,13 +71,13 @@ headers: {
     console.log(response);
     data = response["data"];
     if(!(data === "Invalid wrong user or password")){
+      console.log(11);
+      document.getElementById("message").innerHTML = data;
+    }
+    else{
       console.log(1);
       localStorage.setItem('KEY', data);
       location.href = "/home";
-    }
-    else{
-      console.log(11);
-      document.getElementById("message").innerHTML = data;
     }
   })
 }
