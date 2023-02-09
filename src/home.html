@@ -87,9 +87,7 @@
   <body>
    
     <div id="spiele"></div>
-    <p>wasssssssssss</p>
     <script>
-        console.log(765);
     if(localStorage.getItem("KEY") === undefined) location.href = "/"
     async function loop(){
         await get_data();
@@ -102,7 +100,7 @@
                 console.log(4);
                 return new Promise ((resolveOuter) => {
                     console.log(2);
-                    axios.get('http://localhost:3004/your_live_games/'+localStorage.getItem("KEY"), {
+                    axios.get('http://raspisamuel.local:3004/your_live_games/'+localStorage.getItem("KEY"), {
                       headers: {
                        "Content-Type": "application/x-www-form-urlencoded"
                       }
@@ -128,8 +126,30 @@
         }
 
     function show_data(data){
-        var text = document.createElement("p");
-        text.innerHTML = data
+        var weiss = document.createElement("p");
+        var schwarz = document.createElement("p");
+        var aktueller_player = document.createElement("p");
+        var abstand = document.createElement("br");
+        var spielen = document.createElement("button");
+        spielen.onclick =  function() {spiel(data["Games_ID"])};
+        spielen.innerHTML = "Jetzt weiterspielen";
+        weiss.innerHTML = "Weiss spielt: "+data["weiss"];
+        schwarz.innerHTML = "Schwarz spielt: "+data["schwarz"];
+        if(data["aktueller_player"] === 0 && data["weiss"] === data["m_user"]){
+            aktueller_player.innerHTML = "Aktueller Spieler: "+"du";
+        }
+        else if(data["aktueller_player"] != 0 && data["weiss"] != data["m_user"]){
+            aktueller_player.innerHTML = "Aktueller Spieler: "+"du";
+        }
+        else{
+            aktueller_player.innerHTML = "Aktueller Spieler: "+"gegenspieler";
+        }
+        var main = document.getElementById("spiele");
+        main.appendChild(weiss)
+        main.appendChild(schwarz)
+        main.appendChild(aktueller_player)
+        main.appendChild(spielen);
+        main.appendChild(abstand);
     }
 
       function openForm() {
@@ -145,7 +165,10 @@
           .getElementById("ForumOpener")
           .setAttribute("onClick", "javascript: openForm();");
       }
-
+      function spiel(zahl){
+      //  localStorage.setItem('spiel', zahl);
+        location.href = "/spielen";
+      }
 
     </script>
 

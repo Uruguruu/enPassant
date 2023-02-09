@@ -7,7 +7,6 @@ var bodyParser = require("body-parser");
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
-
 // functions
 
 // check if key exist and update time
@@ -17,7 +16,10 @@ function check_key(Key){
     const check = check_key.get({Key});
     if(check != undefined){
         // check if key is not out time
-        if(new Date() / 1 - check["time"] > 100000000){
+        console.log(new Date() / 1);
+        console.log(check["time"]);
+        console.log(new Date() / 1 - check["time"]);
+        if(new Date() / 1 - check["time"] > 6000000){
             // delete Key
             const delete_key = db.prepare("DELETE FROM Key WHERE Key = @Key");
             delete_key.run({Key});
@@ -158,6 +160,7 @@ app.post("/login", async function (req, res) {
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   try {
+    console.log("login");
     let { name, password } = req.body;
     const check_key = db.prepare(
       "SELECT * FROM User WHERE Username= @name AND Password = @password"
@@ -972,9 +975,9 @@ app.get("/your_live_games/:KEY", async function (req, res) {
   else {
     var player = get_player(req.params.KEY);
     const lead_list = db.prepare(
-      "SELECT Games_ID, aktueller_player, u.Username AS weiss,  r.Username AS schwarz FROM Games g LEFT JOIN User u ON u.USER_ID = g.Player_1 LEFT JOIN User r ON r.USER_ID = g.Player_2WHERE Player_1 = @player OR Player_2 = @player"
+      "SELECT  (SELECT Username FROM User WHERE User_ID = @player ) AS m_user, g.Player_1, u.User_ID ,Games_ID, aktueller_player, u.Username AS weiss,  r.Username AS schwarz FROM Games g LEFT JOIN User u ON u.USER_ID = g.Player_1 LEFT JOIN User r ON r.USER_ID = g.Player_2 WHERE g.Player_1 = @player OR g.Player_2 = @player"
     );
-    var result = lead_list.all({ player,player });
+    var result = lead_list.all({ player ,player,player });
     res.send(result);
   }
 });
