@@ -114,8 +114,10 @@
                             }
                             else{
                                 console.log(response);
-                                var data = response["data"] 
-                                data.foreach(async function (element) {await show_data(element)});
+                                var data = response["data"];
+                                for (let i = 0; i < data.length; i++) {
+                                    show_data(data[i])
+                                } 
                             }
                         })
                 })
@@ -126,7 +128,8 @@
         }
 
     function show_data(data){
-        document.createElement("p");
+        var text = document.createElement("p");
+        text.innerHTML = data
     }
 
       function openForm() {
