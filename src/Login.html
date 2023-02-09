@@ -70,7 +70,7 @@ headers: {
   .then(function (response) {
     console.log(response);
     data = response["data"];
-    if(!(data === "wrong user or password")){
+    if(!(data === "Invalid wrong user or password")){
       console.log(1);
       localStorage.setItem('KEY', data);
       location.href = "/home";
