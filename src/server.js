@@ -875,10 +875,17 @@ function eat(ax, ay,ex,ey,id){
     const check_gleich = besitzer_figur_m.get({ax,ay,id});
     const besitzer_figur_g = db.prepare("SELECT Player FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
     const check_gleich_2 = besitzer_figur_g.get({ex,ey,id});
-    if(check_gleich["Player"] === check_gleich_2["Player"]){
-      myResolve(false);
+    try{
+      if(check_gleich === undefined ||  check_gleich["Player"] === check_gleich_2["Player"]){
+        myResolve(false);
+      }
+      else{
+        const deleten = db.prepare("DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
+        const check = deleten.run({ex,ey,id});  
+        myResolve(true);
+      }
     }
-    else{
+    catch{
       const deleten = db.prepare("DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
       const check = deleten.run({ex,ey,id});  
       myResolve(true);
