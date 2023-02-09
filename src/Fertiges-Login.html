@@ -109,9 +109,9 @@
           required
         />
 
-        <button type="submit" onclick="logvar()" class="btn">Login</button>
-        <button type="button" class="btn cancel" onclick="closeForm()">
-          Close
+       <p id="message"></p>
+        <button type="button" class="btn cancel" onclick="logvar()">
+          Login
         </button>
       </form>
     </div>
@@ -127,50 +127,30 @@
       async function login(eMail, password) {
   try {
 axios.post('http://localhost:3004/login',{
-  email: eMail,  password: password
+  name: eMail,  password: password
 }, {
 headers: {
  "Content-Type": "application/x-www-form-urlencoded"
 }
 })
-.then(function (response) {
- data = response["data"];
- alert(data);
- if(!(data === "wrong user or password")){
-  localStorage.setItem('key', data);
-  alert(data.includes("create_product"));
-  if(data.includes("create_product")){
-   // location.href = "/API/createproduct.html";
-  }
-  else{
-    location.href = "/Seiten/Html/Homepage.html";
-  }
-  alert("hell"+localStorage.getItem('key'))
- }
- console.log(response);
-})
-  }
-  catch{}}
+  .then(function (response) {
+    console.log(response);
+    data = response["data"];
+    if(!(data === "wrong user or password")){
+      console.log(1);
+      localStorage.setItem('KEY', data);
+      location.href = "/home";
+    }
+    else{
+      console.log(11);
+      document.getElementById("message").innerHTML = data;
+    }
+  })
+}
+catch{
 
-    /*  function login(Username, Password) {
-        axios
-          .post(
-            "http://localhost:3004/login",
-            {
-              "name": Username,
-              "password": Password,
-            },
-            {
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-            }
-          )
-          .then(function (response) {
-            data = response["data"];
-            console.log(data);
-          });
-      }*/
+}
+}
 
       function openForm() {
         document.getElementById("myForm").style.display = "block";
@@ -185,6 +165,8 @@ headers: {
           .getElementById("ForumOpener")
           .setAttribute("onClick", "javascript: openForm();");
       }
+
+
     </script>
 
     <script></script>

@@ -162,6 +162,7 @@ app.post("/login", async function (req, res) {
     const check_key = db.prepare(
       "SELECT * FROM User WHERE Username= @name AND Password = @password"
     );
+    console.log(name, password);
     const check = await check_key.get({ name, password });
     if (check != undefined) {
       let api_key = genAPIKey();
@@ -933,6 +934,15 @@ app.post("/bauer_zu", async function(req, res) {
   }
 })
 
+
+app.get('/', function (req, res){
+  res.sendFile(__dirname  + '/Fertiges-Login.html')
+})
+
+app.get('/home', function (req, res){
+  res.sendFile(__dirname  + '/home.html')
+})
+
 app.get("/get_spiel/:spiel_id", (req, res) => {
   const figures = db.prepare(
     "SELECT * FROM Figuren"
@@ -953,13 +963,18 @@ app.get("/leaderboard", (req, res) => {
 // ---Your Hosted games START---
 app.get("/your_live_games/:KEY", async function (req, res) {
   //KEY = TOKKEN
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   if (!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
   else {
     var player = get_player(req.params.KEY);
     const lead_list = db.prepare(
-      "SELECT * FROM Games WHERE Player_1 = @player;"
+      "SELECT * FROM Games WHERE Player_1 = @player OR Player_2 = @player;"
     );
-    var result = lead_list.all({ player });
+    var result = lead_list.all({ player,player });
     res.send(result);
   }
 });
@@ -983,3 +998,5 @@ app.get("/live_games_4u/:KEY", async function (req, res) {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+
