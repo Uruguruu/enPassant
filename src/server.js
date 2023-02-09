@@ -830,10 +830,24 @@ app.post("/mache_move", async function (req, res) {
     const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
     const get_spielzug = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
     const change_spielzug = db.prepare("UPDATE Games SET aktueller_player = @player WHERE Games_ID = @spiel_id");
+    const delete_game = db.prepare("DELETE FROM Games WHERE Games_ID = @spiel_id");
     if(spielzug === true){
-      if(await eat(anfangx, anfangy ,endex, endey, spiel_id)){
-        move.run({endex, endey, anfangx, anfangy, spiel_id});
+      var eat_value =await eat(anfangx, anfangy ,endex, endey, spiel_id); 
+      if(eat_value){
         var spiel_spieler = get_spielzug.get({spiel_id});
+        console.log(eat_value);
+        if(eat_value === "gefallen")
+        {
+          if(spiel_spieler["aktueller_player"] === 1){
+            res.send("Schwarz hat gewonnen!!!");  
+          }
+          else{
+          res.send("Weiss hat gewonnen!!!");
+          }
+          delete_game.run({spiel_id});
+          return;
+        }
+        move.run({endex, endey, anfangx, anfangy, spiel_id});
         if(spiel_spieler["aktueller_player"] === 1){
         change_spielzug.run({player:0, spiel_id});
         }
@@ -873,19 +887,29 @@ function eat(ax, ay,ex,ey,id){
   return new Promise(function(myResolve) {
     const besitzer_figur_m = db.prepare("SELECT Player FROM Figuren WHERE X = @ax AND Y = @ay AND Games_ID = @id");
     const check_gleich = besitzer_figur_m.get({ax,ay,id});
-    const besitzer_figur_g = db.prepare("SELECT Player FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
+    const besitzer_figur_g = db.prepare("SELECT Player, Type FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
     const check_gleich_2 = besitzer_figur_g.get({ex,ey,id});
+    console.log(check_gleich_2, check_gleich);
     try{
       if(check_gleich === undefined ||  check_gleich["Player"] === check_gleich_2["Player"]){
         myResolve(false);
       }
       else{
+        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         const deleten = db.prepare("DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
+        console.log(check_gleich_2["Type"]);
+        console.log(check_gleich_2["Type"]);
+        if(check_gleich_2["Type"] === 5){
+          console.log("############################################################################");
+          const check = deleten.run({ex,ey,id});  
+          myResolve("gefallen");
+        }
         const check = deleten.run({ex,ey,id});  
         myResolve(true);
       }
     }
-    catch{
+    catch(error){
+      console.log(error);
       const deleten = db.prepare("DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
       const check = deleten.run({ex,ey,id});  
       myResolve(true);
@@ -927,7 +951,7 @@ app.post("/bauer_zu", async function(req, res) {
         }
         console.log(anfangx, linie, spielfigur);
         if(anfangy === linie && spielfigur === 1){
-          if(zu > 1 && zu < 7){
+          if(zu > 1 && zu < 7 && zu != 5){
             const update = db.prepare("UPDATE Figuren SET Type = @zu WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
             update.run({spiel_id , anfangx, anfangy, zu});   
             res.send("Success");
