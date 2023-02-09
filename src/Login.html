@@ -20,25 +20,37 @@
         <span style="--i:4"><strong>I</strong></span>
         <span style="--i:5"><strong>N</strong></span>
       </div>
-        <form methode="post">
+    <form class="form-container"> 
             <div class="txt-field">
-                <input type="text" required>
+              <input
+              id="Username"
+              type="text" 
+              required
+            />
                 <span></span>
                 <label for="Username">Username</label>
             </div>
             <div class="txt-field">
-                <input type="password" required>
+              <input
+              type="Password"
+              id="Password"
+              required
+            />
                 <span></span>
                 <label for="Password">Password</label>
             </div>
-            <input type="submit" value="Login">
+            <!--<input type="submit" value="Login" onclick="logvar()">-->
+            <p id="message"></p>
+            <button type="button" class="btn cancel" onclick="logvar()">
+              Login
+            </button>
             <div class="signup_link">
               Not a member?  <a href="http://127.0.0.1:5501/Signup/Signup.html">Signup</a>
             </div>
         </form>
     </div>
     <script>
-      async function logvar() {
+            async function logvar() {
         var eMail = document.getElementById("Username").value;
         var password = document.getElementById("Password").value;
         console.log("The E-Mail typed in was: " + eMail);
@@ -47,6 +59,7 @@
       }
       async function login(eMail, password) {
   try {
+    console.log(5);
 axios.post('http://raspisamuel.local:3004/login',{
   name: eMail,  password: password
 }, {
@@ -68,22 +81,8 @@ headers: {
     }
   })
 }
-catch{
+catch{};
 }
-}
-      function openForm() {
-        document.getElementById("myForm").style.display = "block";
-        document
-          .getElementById("ForumOpener")
-          .setAttribute("onClick", "javascript: closeForm();");
-      }
-      function closeForm() {
-        document.getElementById("myForm").style.display = "none";
-        document
-          .getElementById("ForumOpener")
-          .setAttribute("onClick", "javascript: openForm();");
-      }
     </script>
-    <script></script>
   </body>
 </html>

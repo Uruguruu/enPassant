@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="Deleted live_games_4u">
+    <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="css issues fixed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/Login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/images/wallpaper.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/images/wallpaper.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/login.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/database.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/database.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +75,21 @@
       <option name="project" value="LOCAL" />
       <updated>1675946419283</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="css issues fixed">
+      <created>1675953450744</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1675953450744</updated>
+    </task>
+    <task id="LOCAL-00006" summary="css issues fixed">
+      <created>1675953463887</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1675953463887</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -94,6 +106,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="/live_games_4u/:KEY, /your_live_games/:KEY und /leaderboard fertig." />
     <MESSAGE value="Deleted live_games_4u" />
-    <option name="LAST_COMMIT_MESSAGE" value="Deleted live_games_4u" />
+    <MESSAGE value="css issues fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="css issues fixed" />
   </component>
 </project>
