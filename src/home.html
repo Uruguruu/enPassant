@@ -85,92 +85,52 @@
   </head>
 
   <body>
-    <button class="open-button" id="ForumOpener" onclick="openForm()">
-      Open Form
-    </button>
-
-    <div class="form-popup" id="myForm">
-      <form class="form-container">
-        <h1>Login</h1>
-
-        <label for="Username"><b>Username</b></label>
-        <input
-          id="Username"
-          type="text"
-          placeholder="Enter Username"
-          required
-        />
-
-        <label for="psw"><b>Password</b></label>
-        <input
-          type="Password"
-          placeholder="Enter Password"
-          id="Password"
-          required
-        />
-
-        <button type="submit" onclick="logvar()" class="btn">Login</button>
-        <button type="button" class="btn cancel" onclick="closeForm()">
-          Close
-        </button>
-      </form>
-    </div>
-
+   
+    <div id="spiele"></div>
+    <p>wasssssssssss</p>
     <script>
-      async function logvar() {
-        var eMail = document.getElementById("Username").value;
-        var password = document.getElementById("Password").value;
-        console.log("The E-Mail typed in was: " + eMail);
-        console.log("The Password typed in was: " + password);
-        login(eMail, password);
-      }
-      async function login(eMail, password) {
-  try {
-axios.post('http://localhost:3004/login',{
-  email: eMail,  password: password
-}, {
-headers: {
- "Content-Type": "application/x-www-form-urlencoded"
-}
-})
-.then(function (response) {
- data = response["data"];
- alert(data);
- if(!(data === "wrong user or password")){
-  localStorage.setItem('key', data);
-  alert(data.includes("create_product"));
-  if(data.includes("create_product")){
-   // location.href = "/API/createproduct.html";
-  }
-  else{
-    location.href = "/Seiten/Html/Homepage.html";
-  }
-  alert("hell"+localStorage.getItem('key'))
- }
- console.log(response);
-})
-  }
-  catch{}}
-
-    /*  function login(Username, Password) {
-        axios
-          .post(
-            "http://localhost:3004/login",
-            {
-              "name": Username,
-              "password": Password,
-            },
-            {
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
+        console.log(765);
+    if(localStorage.getItem("KEY") === undefined) location.href = "/"
+    async function loop(){
+        await get_data();
+        setInterval(await get_data(), 5000);
+    }
+    loop();
+        async function get_data() {
+            console.log();
+            try {
+                console.log(4);
+                return new Promise ((resolveOuter) => {
+                    console.log(2);
+                    axios.get('http://localhost:3004/your_live_games/'+localStorage.getItem("KEY"), {
+                      headers: {
+                       "Content-Type": "application/x-www-form-urlencoded"
+                      }
+                      })
+                        .then(function (response) {
+                            if(response["data"] === "ungültiger KEY"){
+                                localStorage.removeItem('KEY');
+                                location.href = "/"
+                            }
+                            else{
+                                console.log(response);
+                                var data = response["data"];
+                                for (let i = 0; i < data.length; i++) {
+                                    show_data(data[i])
+                                } 
+                            }
+                        })
+                })
             }
-          )
-          .then(function (response) {
-            data = response["data"];
-            console.log(data);
-          });
-      }*/
+            catch(error){  
+                console.log(error);
+            }
+        }
+
+    function show_data(data){
+        var text = document.createElement("p");
+        text.innerHTML = data
+    }
 
       function openForm() {
         document.getElementById("myForm").style.display = "block";
@@ -185,6 +145,8 @@ headers: {
           .getElementById("ForumOpener")
           .setAttribute("onClick", "javascript: openForm();");
       }
+
+
     </script>
 
     <script></script>
