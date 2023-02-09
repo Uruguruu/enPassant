@@ -949,7 +949,7 @@ app.post("/bauer_zu", async function(req, res) {
 
 
 app.get('/', function (req, res){
-  res.sendFile(__dirname  + '/Fertiges-Login.html')
+  res.sendFile(__dirname  + '/Login.html')
 })
 
 app.get('/home', function (req, res){
