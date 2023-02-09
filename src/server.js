@@ -272,6 +272,7 @@ app.post("/mache_move", async function (req, res) {
     endex = parseInt(endex);
     endey =parseInt(endey);
     spiel_id =parseInt(spiel_id);
+    console.log(KEY, spiel_id, anfangx, anfangy, endex, endey);
     if(!(await check_key(KEY))) res.send("ungültiger KEY");
     else{
       var Player = get_player(KEY);
@@ -325,6 +326,7 @@ app.post("/mache_move", async function (req, res) {
               Pawn
               */
             case 1:
+              console.log(1);
               if (anfangy - endey != -1) {
                 spielzug = false; // Überprüfung ob der Bauer nach vorne geht
               }
@@ -354,6 +356,7 @@ app.post("/mache_move", async function (req, res) {
               if (anfangx - endex != 0) {
                 spielzug = false; // Überprüfung ob der Bauer nach vorne geht
               }
+              console.log();
               if(spielzug != false) spielzug = true;
               break;
             
@@ -872,10 +875,17 @@ function eat(ax, ay,ex,ey,id){
     const check_gleich = besitzer_figur_m.get({ax,ay,id});
     const besitzer_figur_g = db.prepare("SELECT Player FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
     const check_gleich_2 = besitzer_figur_g.get({ex,ey,id});
-    if(check_gleich["Player"] === check_gleich_2["Player"]){
-      myResolve(false);
+    try{
+      if(check_gleich === undefined ||  check_gleich["Player"] === check_gleich_2["Player"]){
+        myResolve(false);
+      }
+      else{
+        const deleten = db.prepare("DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
+        const check = deleten.run({ex,ey,id});  
+        myResolve(true);
+      }
     }
-    else{
+    catch{
       const deleten = db.prepare("DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id");
       const check = deleten.run({ex,ey,id});  
       myResolve(true);
@@ -947,10 +957,11 @@ app.get('/home', function (req, res){
 })
 
 app.get("/get_spiel/:spiel_id", (req, res) => {
+  var spiel_id = req.params.spiel_id;
   const figures = db.prepare(
-    "SELECT * FROM Figuren"
+    "SELECT * FROM Figuren WHERE Games_ID = @spiel_id"
   );
-  var result = figures.all();
+  var result = figures.all({spiel_id});
   res.send(result);
 });
 
