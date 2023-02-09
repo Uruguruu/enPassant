@@ -272,6 +272,7 @@ app.post("/mache_move", async function (req, res) {
     endex = parseInt(endex);
     endey =parseInt(endey);
     spiel_id =parseInt(spiel_id);
+    console.log(KEY, spiel_id, anfangx, anfangy, endex, endey);
     if(!(await check_key(KEY))) res.send("ungültiger KEY");
     else{
       var Player = get_player(KEY);
@@ -325,6 +326,7 @@ app.post("/mache_move", async function (req, res) {
               Pawn
               */
             case 1:
+              console.log(1);
               if (anfangy - endey != -1) {
                 spielzug = false; // Überprüfung ob der Bauer nach vorne geht
               }
@@ -354,6 +356,7 @@ app.post("/mache_move", async function (req, res) {
               if (anfangx - endex != 0) {
                 spielzug = false; // Überprüfung ob der Bauer nach vorne geht
               }
+              console.log();
               if(spielzug != false) spielzug = true;
               break;
             
