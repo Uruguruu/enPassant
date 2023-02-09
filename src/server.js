@@ -7,6 +7,7 @@ var bodyParser = require("body-parser");
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static('public'));
 // functions
 
 // check if key exist and update time
@@ -973,7 +974,7 @@ app.post("/bauer_zu", async function(req, res) {
 
 
 app.get('/', function (req, res){
-  res.sendFile(__dirname  + '/Login.html')
+  res.sendFile(__dirname  + '/Login.html', '/Login.css')
 })
 
 app.get('/home', function (req, res){

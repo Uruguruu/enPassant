@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="Deleted live_games_4u">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/Login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/images/wallpaper.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/images/wallpaper.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/login.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -33,6 +35,11 @@
     &quot;last_opened_file_path&quot;: &quot;C:/01_ZLI Repository/sportferienprojekt/enPassant&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\01_ZLI Repository\sportferienprojekt\enPassant\src\public" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
