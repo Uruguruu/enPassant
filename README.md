@@ -23,8 +23,11 @@ description: `If feed with a name and a Password the register function checks if
 POST\
 braucht: {name: "mindestens 5 Stellig und einmalig", password: ""}\
 antwort:
-1. erfolgreich user erstellt
-2. fehler nicht erstellt
+1. Account created
+2. Username is too short!
+3. Username is to long!
+4. User already exists
+5. "Error"
 
 ### Beispiele
 ```
@@ -35,21 +38,22 @@ User already exists
 
 ---
 description: `If feed with the Accounts name and Password the login function checks if said account exists and sends back a Tokken for identification.`\
+
 /login\
 POST\
 braucht: {name: "", password: "" }\
 antwort:
 1. [API Key]
-2. login Daten falsch
+2. Invalid wrong user or password
 
 ---
+
 description: `Shows Information about a specific game.`
 
 /get_spiel/{spiel_id}\
 GET\
 antwort:
-1. {}
-2. ungultige spiel_id
+1. Array mit Spielen
 
 ---
 description: `Bewegt die Figuren und validiert zug (Ist der Zug erlaubt).`
@@ -58,10 +62,13 @@ description: `Bewegt die Figuren und validiert zug (Ist der Zug erlaubt).`
 POST\
 braucht: {KEY: "", spiel_id: "", anfangx: "Zahl", anfangy: "Zahl", endex: "Zahl", endey: "Zahl"}\EE
 antwort:
-1. Zug gemacht
-2. ungültiger Zug
-3. ungültige spiel_id
-4. ungültiger KEY
+1. Invalid KEY
+2. Invalid Game doesn't exist
+3. Invalid Move (No figure found)
+4. Invalid Move (wrong player)
+5. Invalid Move (The coordinates are equal)
+6. Invalid Move (Coordinates are not on the field)
+7. Success
 
 ---
 
@@ -71,10 +78,12 @@ description: `Wenn ein Bauer das Ende des Spielfeldes ereich kann er sich in ein
 POST\
 braucht: {KEY: "", spiel_id: "", anfangx: "Zahl", anfangy: "Zahl", zu: "1= queen, 2=turm..."}\
 antwort:
-1. Zug gemacht
-2. ungültiger Zug
-3. ungültige spiel_id
-4. ungültiger KEY
+1. Invalid KEY
+2. Invalid Game doesn't exist
+3. Invalid Move (No figure found)
+4. Success
+5. Invalid Type
+6. Invalid Position
 
 ---
 
@@ -104,7 +113,7 @@ description: `If given a The at Login generated KEY, the live_games_4u API spits
 GET\
 special: has parameter (:KEY)\
 Antwort:
-1. ungültiger KEY
+1. Invalid KEY
 2. Array mit: {Game_ID, Player_1, Player_2, aktueller_player, public}
 ## Beispiel
 ```
@@ -126,27 +135,25 @@ Antwort:
 ]
 ```
 ---
+description: `Creates Game in Database and send back Game ID`
 
-description: `If given a The at Login generated KEY, the live_games_4u API spits out every game that you haven't created but participating in.`
+/create_game\
+Post\
+braucht: {KEY} = Your Tokken, {public} = 0/1 für Public Game oder Private
+antwort:
+1. Invalid KEY
+2. GAME_ID
+3. "ERROR"
+---
+description: ``
 
-/live_games_4u/:KEY\
-GET\
-special: has parameter (:KEY)
-Antwort:
-1. ungültiger KEY
-2. Array mit: {Game_ID, Player_1, Player_2, aktueller_player, public}
-## Beispiel
-```
-[
-    {
-        "Games_ID": 3,
-        "Player_1": 1,
-        "Player_2": 1,
-        "aktueller_player": 1,
-        "public": 1
-    }
-]
-```
+/create_game\
+Post\
+braucht: {KEY} = Your Tokken, {public} = 0/1 für Public Game oder Private
+antwort:
+1. Invalid KEY
+2. GAME_ID
+3. "ERROR"
 ---
 ## Schachregeln:
 - normale Spielregeln (bewegung der Figuren)

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/login.css">
+    <title>Login und Register TEST</title>
+  </head>
+  <body>
+    <div class="banner">
+        <img src="/images/wallpaper.jpg">
+    </div>
+    <div class="center">
+      <div class="text-wrapper">
+        <span style="--i:1"><strong>L</strong></span>
+        <span style="--i:2"><strong>O</strong></span>
+        <span style="--i:3"><strong>G</strong></span>
+        <span style="--i:4"><strong>I</strong></span>
+        <span style="--i:5"><strong>N</strong></span>
+      </div>
+    <form class="form-container"> 
+            <div class="txt-field">
+              <input
+              id="Username"
+              type="text" 
+              required
+            />
+                <span></span>
+                <label for="Username">Username</label>
+            </div>
+            <div class="txt-field">
+              <input
+              type="Password"
+              id="Password"
+              required
+            />
+                <span></span>
+                <label for="Password">Password</label>
+            </div>
+            <!--<input type="submit" value="Login" onclick="logvar()">-->
+            <p id="message"></p>
+            <button type="button" class="btn cancel" onclick="logvar()">
+              Login
+            </button>
+            <div class="signup_link">
+              Not a member?  <a href="http://127.0.0.1:5501/Signup/Signup.html">Signup</a>
+            </div>
+        </form>
+    </div>
+    <script>
+            async function logvar() {
+        var eMail = document.getElementById("Username").value;
+        var password = document.getElementById("Password").value;
+        console.log("The E-Mail typed in was: " + eMail);
+        console.log("The Password typed in was: " + password);
+        login(eMail, password);
+      }
+      async function login(eMail, password) {
+  try {
+    console.log(5);
+axios.post('http://raspisamuel.local:3004/login',{
+  name: eMail,  password: password
+}, {
+headers: {
+ "Content-Type": "application/x-www-form-urlencoded"
+}
+})
+  .then(function (response) {
+    console.log(response);
+    data = response["data"];
+    if(!(data === "Invalid wrong user or password")){
+      console.log(11);
+      document.getElementById("message").innerHTML = data;
+    }
+    else{
+      console.log(1);
+      localStorage.setItem('KEY', data);
+      location.href = "/home";
+    }
+  })
+}
+catch{};
+}
+    </script>
+  </body>
+</html>
