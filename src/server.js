@@ -1018,21 +1018,6 @@ app.get("/your_live_games/:KEY", async function (req, res) {
 });
 // ---Your Hosted games END---
 
-// ---Games you participating START---
-app.get("/live_games_4u/:KEY", async function (req, res) {
-  //KEY = TOKKEN
-  if (!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
-  else {
-    var player = get_player(req.params.KEY);
-    const lead_list = db.prepare(
-      "SELECT * FROM Games WHERE Player_2 = @player;"
-    );
-    var result = lead_list.all({ player });
-    res.send(result);
-  }
-});
-// ---GAMES you participating END---
-
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
