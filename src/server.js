@@ -972,7 +972,7 @@ app.get("/your_live_games/:KEY", async function (req, res) {
   else {
     var player = get_player(req.params.KEY);
     const lead_list = db.prepare(
-      "SELECT * FROM Games WHERE Player_1 = @player OR Player_2 = @player;"
+      "SELECT Games_ID, aktueller_player, u.Username AS weiss,  r.Username AS schwarz FROM Games g LEFT JOIN User u ON u.USER_ID = g.Player_1 LEFT JOIN User r ON r.USER_ID = g.Player_2WHERE Player_1 = @player OR Player_2 = @player"
     );
     var result = lead_list.all({ player,player });
     res.send(result);
