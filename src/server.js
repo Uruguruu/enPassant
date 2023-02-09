@@ -148,8 +148,8 @@ Beginn of the main code
 Login
 Needs name and Password.
 Checks in Database if User and Password exists.
-No = "wrong user or Password"
-No connection = "wrong user or password"
+No = "Invalid wrong user or Password"
+No connection = "Invalid wrong user or password"
 Yes = sends api key
 */
 
@@ -179,13 +179,13 @@ app.post("/login", async function (req, res) {
       res.send(api_key);
     } else
     {
-      res.send("wrong user or password");
+      res.send("Invalid wrong user or password");
     }
   }
   catch (error)
   {
     console.log(error);
-    res.send("wrong user or password");
+    res.send("Invalid wrong user or password");
   }
 });
 
@@ -222,7 +222,7 @@ Register END
 app.post("/create_game", async function (req, res) {
   try{
       let {KEY, public} = req.body;
-      if(!(await check_key(KEY))) res.send("ungültiger KEY");
+      if(!(await check_key(KEY))) res.send("Invalid KEY");
       else{
           var Player = await get_player(KEY);
           response = await game_create(Player, public);
@@ -238,7 +238,7 @@ app.post("/create_game", async function (req, res) {
 app.post("/join_game", async function (req, res) {
   try{
     let {KEY, code} = req.body;
-    if(!(await check_key(KEY))) res.send("ungültiger KEY");
+    if(!(await check_key(KEY))) res.send("Invalid KEY");
     else{
       const check_code = db.prepare("SELECT * FROM Games WHERE Games_ID = @code");
       var check = check_code.get({code});
@@ -273,12 +273,12 @@ app.post("/mache_move", async function (req, res) {
     endey =parseInt(endey);
     spiel_id =parseInt(spiel_id);
     console.log(KEY, spiel_id, anfangx, anfangy, endex, endey);
-    if(!(await check_key(KEY))) res.send("ungültiger KEY");
+    if(!(await check_key(KEY))) res.send("Invalid KEY");
     else{
       var Player = get_player(KEY);
       if(spielexist(spiel_id, Player) === "k_spiel" || spielexist(spiel_id, Player) === "f_player")
       { 
-        res.send("ungültiges Spiel "+spielexist(spiel_id, Player));
+        res.send("Invalid Game doesn't exist " + spielexist(spiel_id, Player));
         return;
       }
       else{
@@ -288,7 +288,7 @@ app.post("/mache_move", async function (req, res) {
           spielfigur = get_type.get({spiel_id ,anfangx, anfangy})["Type"];
         }
         catch{
-          res.send("ungültiger Zug (Keine Figur gefunden)");
+          res.send("Invalid Move (No figure found)");
           return;
         }
         const get_player = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
@@ -297,7 +297,7 @@ app.post("/mache_move", async function (req, res) {
         }
         catch{}
         if(!(get_player_f === Player)){
-          res.send("ungültiger Zug (Falscher Player)");
+          res.send("Invalid Move (wrong player)");
           return;
         }
         else{
@@ -311,11 +311,11 @@ app.post("/mache_move", async function (req, res) {
           // check if they arent the same and in the playground
           if(anfangx === endex && anfangy === endey){
             spielzug = false;
-            res.send("ungültiger Zug (beide Eingaben sind gleich)");
+            res.send("Invalid Move (The coordinates are equal)");
           }
           if(anfangx < 1 || anfangx > 8|| anfangy < 1 || anfangy > 8|| endex < 1 || endex > 8|| endex < 1 || endex > 8){
             spielzug = false;
-            res.send("ungültiger Zug (Eingaben sind auserhalb des Feldes)");
+            res.send("Invalid Move (Coordinates are not on the field)");
           }
           /*
           Switch for White Figures
@@ -843,11 +843,11 @@ app.post("/mache_move", async function (req, res) {
         res.send("Success");
       }
       else{
-        res.send("Ungültiger Zug (Essen von eigenen Spieler)");
+        res.send("Invalid Move (You can't eat your own figure)");
       }
     }
     else{
-      res.send("ungültiger Zug (Unerlaubter Spielzug)");
+      res.send("Invalid Move (Move is impossible)");
     }
   }
 }
@@ -901,12 +901,12 @@ app.post("/bauer_zu", async function(req, res) {
     anfangx = parseInt(anfangx);
     zu = parseInt(zu);
     spiel_id =parseInt(spiel_id);
-    if(!(await check_key(KEY))) res.send("ungültiger KEY");
+    if(!(await check_key(KEY))) res.send("Invalid KEY");
     else{
       var Player = await get_player(KEY);
       if(spielexist(spiel_id, Player) === "k_spiel")
       { 
-        res.send("ungültiges Spiel "+spielexist(spiel_id, Player));
+        res.send("Invalid Game doesn't exist "+spielexist(spiel_id, Player));
         return;
       }
       else{
@@ -922,7 +922,7 @@ app.post("/bauer_zu", async function(req, res) {
           spielfigur = get_type.get({spiel_id ,anfangx, anfangy})["Type"];
         }
         catch{
-          res.send("ungültiger Zug (Keine Figur gefunden)");
+          res.send("Invalid Move (No figure found)");
           return;
         }
         console.log(anfangx, linie, spielfigur);
@@ -933,10 +933,10 @@ app.post("/bauer_zu", async function(req, res) {
             res.send("Success");
           }
           else{
-            res.send("Ungültiger Typ");
+            res.send("Invalid Type");
           }
         }
-        else res.send("Ungültige Position");
+        else res.send("Invalid Position");
         
       }
     }
@@ -982,7 +982,7 @@ app.get("/your_live_games/:KEY", async function (req, res) {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
-  if (!(await check_key(req.params.KEY))) res.send("ungültiger KEY");
+  if (!(await check_key(req.params.KEY))) res.send("Invalid KEY");
   else {
     var player = get_player(req.params.KEY);
     const lead_list = db.prepare(
