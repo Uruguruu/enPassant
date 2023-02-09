@@ -5,117 +5,38 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="login.css">
     <title>Login und Register TEST</title>
-    <style>
-      body {
-        font-family: Arial, Helvetica, sans-serif;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      /* Button used to open the contact form - fixed at the bottom of the page */
-      .open-button {
-        background-color: #555;
-        color: white;
-        padding: 16px 20px;
-        border: none;
-        cursor: pointer;
-        opacity: 0.8;
-        width: 280px;
-      }
-
-      /* The popup form - hidden by default */
-      .form-popup {
-        display: none;
-        position: absolute;
-
-        border: 3px solid #f1f1f1;
-        z-index: 9;
-      }
-
-      /* Add styles to the form container */
-      .form-container {
-        max-width: 300px;
-        padding: 10px;
-        background-color: white;
-      }
-
-      /* Full-width input fields */
-      .form-container input[type="text"],
-      .form-container input[type="Password"] {
-        width: 100%;
-        padding: 15px;
-        margin: 5px 0 22px 0;
-        border: none;
-        background: #f1f1f1;
-      }
-
-      /* When the inputs get focus, do something */
-      .form-container input[type="text"]:focus,
-      .form-container input[type="Password"]:focus {
-        background-color: #ddd;
-        outline: none;
-      }
-
-      /* Set a style for the submit/login button */
-      .form-container .btn {
-        background-color: #04aa6d;
-        color: white;
-        padding: 16px 20px;
-        border: none;
-        cursor: pointer;
-        width: 100%;
-        margin-bottom: 10px;
-        opacity: 0.8;
-      }
-
-      /* Add a red background color to the cancel button */
-      .form-container .cancel {
-        background-color: red;
-      }
-
-      /* Add some hover effects to buttons */
-      .form-container .btn:hover,
-      .open-button:hover {
-        opacity: 1;
-      }
-    </style>
   </head>
-
   <body>
-    <button class="open-button" id="ForumOpener" onclick="openForm()">
-      Open Form
-    </button>
-
-    <div class="form-popup" id="myForm">
-      <form class="form-container">
-        <h1>Login</h1>
-
-        <label for="Username"><b>Username</b></label>
-        <input
-          id="Username"
-          type="text"
-          placeholder="Enter Username"
-          required
-        />
-
-        <label for="psw"><b>Password</b></label>
-        <input
-          type="Password"
-          placeholder="Enter Password"
-          id="Password"
-          required
-        />
-
-       <p id="message"></p>
-        <button type="button" class="btn cancel" onclick="logvar()">
-          Login
-        </button>
-      </form>
+    <div class="banner">
+        <img src="images/wallpaper.jpg">
     </div>
-
+    <div class="center">
+      <div class="text-wrapper">
+        <span style="--i:1"><strong>L</strong></span>
+        <span style="--i:2"><strong>O</strong></span>
+        <span style="--i:3"><strong>G</strong></span>
+        <span style="--i:4"><strong>I</strong></span>
+        <span style="--i:5"><strong>N</strong></span>
+      </div>
+        <form methode="post">
+            <div class="txt-field">
+                <input type="text" required>
+                <span></span>
+                <label for="Username">Username</label>
+            </div>
+            <div class="txt-field">
+                <input type="password" required>
+                <span></span>
+                <label for="Password">Password</label>
+            </div>
+            <input type="submit" value="Login">
+            <div class="signup_link">
+              Not a member?  <a href="http://127.0.0.1:5501/Signup/Signup.html">Signup</a>
+            </div>
+        </form>
+    </div>
     <script>
       async function logvar() {
         var eMail = document.getElementById("Username").value;
@@ -126,7 +47,6 @@
       }
       async function login(eMail, password) {
   try {
-    console.log(5);
 axios.post('http://raspisamuel.local:3004/login',{
   name: eMail,  password: password
 }, {
@@ -148,26 +68,22 @@ headers: {
     }
   })
 }
-catch{}
+catch{
 }
-
+}
       function openForm() {
         document.getElementById("myForm").style.display = "block";
         document
           .getElementById("ForumOpener")
           .setAttribute("onClick", "javascript: closeForm();");
       }
-
       function closeForm() {
         document.getElementById("myForm").style.display = "none";
         document
           .getElementById("ForumOpener")
           .setAttribute("onClick", "javascript: openForm();");
       }
-
-
     </script>
-
     <script></script>
   </body>
 </html>
