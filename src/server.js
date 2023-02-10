@@ -1126,6 +1126,10 @@ app.get('/home', function (req, res){
   res.sendFile(__dirname  + '/home.html')
 })
 
+app.get('/signup', function (req, res){
+  res.sendFile(__dirname  + '/register.html')
+})
+
 app.get("/get_spiel/:spiel_id", (req, res) => {
   var spiel_id = req.params.spiel_id;
   const figures = db.prepare(
