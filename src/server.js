@@ -619,6 +619,10 @@ app.post("/mache_move", async function (req, res) {
           }
           break;
       }
+
+      // checks if you want to change Turm with the König
+      if(anfangx === 1 ){}
+
       /*
     Switch for black figures
     */

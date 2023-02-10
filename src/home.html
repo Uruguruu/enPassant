@@ -106,7 +106,7 @@
                       }
                       })
                         .then(function (response) {
-                            if(response["data"] === "ungültiger KEY"){
+                            if(response["data"] === "Invalid KEY"){
                                 localStorage.removeItem('KEY');
                                 location.href = "/"
                             }
