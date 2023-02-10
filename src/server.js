@@ -184,7 +184,6 @@ app.post("/register", async function (req, res) {
       res.send("Username is to long!");
     } else if (password.length < 7) {
       res.send("Password is too short!")
-    }
     } else {
       res.send("User already exists");
     }
