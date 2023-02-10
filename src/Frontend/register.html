@@ -31,7 +31,7 @@
               required
             />
                 <span></span>
-                <label for="Username">Username</label>
+                <label for="Username">New User</label>
             </div>
             <div class="txt-field">
               <input
@@ -40,12 +40,12 @@
               required
             />
                 <span></span>
-                <label for="Password">Password</label>
+                <label for="Password">New Password</label>
             </div>
             <!--<input type="submit" value="Login" onclick="logvar()">-->
             <p id="message"></p>
             <button type="button" class="btn cancel" onclick="logvar()">
-              Login
+              Create Account
         </form>
     </div>
     <script>
@@ -69,9 +69,9 @@ headers: {
   .then(function (response) {
     console.log(response);
     data = response["data"];
-    if(!(data === "Account created")){
+    if((data === "Account created")){
       console.log("Account created");
-      location.href = "/login"; 
+      location.href = "/"; 
     }
     else{
      alert(data);
