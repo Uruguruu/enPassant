@@ -254,7 +254,6 @@ app.post("/join_game", async function (req, res) {
   }
 });
 
-<<<<<<< HEAD
 //----- Validated and Moves Figures -----//
 /*
  Bei einem /mache_move Post mit den Variabeln(spiel_id, KEY, anfangx, anfangy, endex, endey), wird folgendes ausgeführt:
@@ -295,42 +294,6 @@ app.post("/mache_move", async function (req, res) {
         const get_type = db.prepare(
           "SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
         );
-=======
-// check if key, spiel_id is good and if user can make the move and then it makes the move
-app.post("/mache_move", async function (req, res) {
-  try {
-    // to allow croo things
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
-    // declare all the variables
-    const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
-    let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
-    anfangy = parseInt(anfangy);
-    anfangx = parseInt(anfangx);
-    endex = parseInt(endex);
-    endey =parseInt(endey);
-    spiel_id =parseInt(spiel_id);
-    const get_spielzug = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
-    const delete_game = db.prepare("DELETE FROM Games WHERE Games_ID = @spiel_id");
-    const change_spielzug = db.prepare("UPDATE Games SET aktueller_player = @player WHERE Games_ID = @spiel_id");
-    // checks key
-    if(!(await check_key(KEY))) res.send("Invalid KEY");
-    else{
-      // checks the player and if it's his move
-      var Player = get_player(KEY);
-      if(spielexist(spiel_id, Player) === "k_spiel" || spielexist(spiel_id, Player) === "f_player")
-      { 
-        // if game dosen't exist
-        res.send("Invalid Game doesn't exist " + spielexist(spiel_id, Player));
-        return;
-      }
-      else{
-        // gets the type of the figure
-        const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
->>>>>>> 326caef7e23e7fd3bce52451ffbd03b7c97155a1
         var spielfigur;
         try {
           spielfigur = get_type.get({ spiel_id, anfangx, anfangy })["Type"];
@@ -338,7 +301,6 @@ app.post("/mache_move", async function (req, res) {
           res.send("Invalid Move (No figure found)");
           return;
         }
-<<<<<<< HEAD
         const get_player = db.prepare(
           "SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
         );
@@ -358,26 +320,6 @@ app.post("/mache_move", async function (req, res) {
           console.log(g_color, Player);
           var farbe; // true = weiss false = schwarz
           if (g_color["Player_2"] === Player) farbe = false;
-=======
-        // checks if its your turn
-        const get_player = db.prepare("SELECT Player FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
-        try{
-        var get_player_f = get_player.get({spiel_id ,anfangx, anfangy})["Player"]
-        }
-        catch{}
-        if(!(get_player_f === Player)){
-          res.send("Invalid Move (wrong player)");
-          return;
-        }
-        else{
-          //------------begin with check the player move------------//
-
-          // gets all the data
-          const get_color = db.prepare("SELECT g.Player_2 FROM Figuren f LEFT JOIN Games g ON f.Player = g.Player_2 WHERE f.X = @anfangx AND f.Y = @anfangy AND f.Games_ID = @spiel_id");
-          var g_color = get_color.get({anfangx, anfangy, spiel_id});
-          var farbe // true = weiss false = schwarz
-          if(g_color["Player_2"] === Player) farbe = false;
->>>>>>> 326caef7e23e7fd3bce52451ffbd03b7c97155a1
           else farbe = true;
           var spielzug;
           // check if they arent the same and in the playground
@@ -398,7 +340,6 @@ app.post("/mache_move", async function (req, res) {
             spielzug = false;
             res.send("Invalid Move (Coordinates are not on the field)");
           }
-          // gebin with the check for the figures. separated white and black
           /*
           Switch for White Figures
           */
@@ -407,7 +348,6 @@ app.post("/mache_move", async function (req, res) {
               /*
               Pawn
               */
-<<<<<<< HEAD
               case 1:
                 console.log(await getposition(anfangx - 1, anfangy, spiel_id));
                 console.log(anfangx - 1 === endex && anfangy + 1 === endey);
@@ -444,45 +384,11 @@ app.post("/mache_move", async function (req, res) {
                     "SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1"
                   );
                   if (get_modus.get({ anfangx, anfangy, spiel_id })) {
-=======
-            case 1:
-              if (anfangy - endey != -1) {
-                spielzug = false; // Überprüfung ob der Bauer nach vorne geht
-              }
-              if (
-              ((await getposition(anfangx + 1, anfangy + 1, spiel_id)) &&
-              anfangx + 1 === endex &&
-              anfangy + 1 === endey))
-              {
-                spielzug = true;
-                 // Überprüfung ob der Bauer essen will und kann
-                break; 
-              }
-              if
-              ((await getposition(anfangx - 1, anfangy + 1, spiel_id)) &&
-              anfangx - 1 === endex &&
-              anfangy + 1 === endey)
-              {
-
-                spielzug = true;
-                 // Überprüfung ob der Bauer essen will und kann
-                break; 
-              }
-              // check if enPassant
-              if (
-                ((await getposition(anfangx + 1, anfangy, spiel_id)) &&
-                anfangx + 1 === endex &&
-                anfangy +1=== endey) && endey === 6)
-                {
-                  const get_modus = db.prepare("SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1");
-                  if(get_modus.get({anfangx, anfangy, spiel_id})){
->>>>>>> 326caef7e23e7fd3bce52451ffbd03b7c97155a1
                     spielzug = true;
                     eat(anfangx, anfangy, endex, endey - 1, spiel_id);
                     break;
                   }
                 }
-<<<<<<< HEAD
                 console.log(await getposition(anfangx - 1, anfangy, spiel_id));
                 console.log(anfangx - 1 === endex && anfangy + 1 === endey);
 
@@ -498,17 +404,6 @@ app.post("/mache_move", async function (req, res) {
                   );
                   if (get_modus.get({ anfangx, anfangy, spiel_id })) {
                     console.log(56);
-=======
-
-                if(
-                ((await getposition(anfangx - 1, anfangy, spiel_id)) &&
-                anfangx - 1 === endex &&
-                anfangy+1 === endey)  && endey === 6
-                )
-                {
-                  const get_modus = db.prepare("SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1");
-                  if(get_modus.get({anfangx, anfangy, spiel_id})){
->>>>>>> 326caef7e23e7fd3bce52451ffbd03b7c97155a1
                     spielzug = true;
                     eat(anfangx, anfangy, endex, endey - 1, spiel_id);
                     break;
@@ -823,45 +718,8 @@ app.post("/mache_move", async function (req, res) {
                 }
               }
             }
-<<<<<<< HEAD
 
             /*
-=======
-            break;
-          }
-          break;
-      }
-      const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
-      // checks if you want to change Turm with the König
-      try{
-        if((anfangx === 1 && anfangy === 1 && endex === 5 && endey === 1) || (anfangx === 5 && anfangy === 1 && endex === 8 && endey === 1)){
-          if(await !getposition(2,1,spiel_id) && await !getposition(3,1,spiel_id)){
-            if(get_type.get({spiel_id ,anfangx:1, anfangy:1})["Type"] === 2 && get_type.get({spiel_id ,anfangx:5, anfangy:1})["Type"] === 6 ){
-              change_player();
-              move.run({endex:3, endey:1, anfangx:1, anfangy:1, spiel_id});
-              move.run({endex:2, endey:1, anfangx:5, anfangy:1, spiel_id});
-              spielzug = true;
-              res.send("Success");
-              return;
-            }
-          }
-        }
-        if((anfangx === 8 && anfangy === 1 && endex === 5 && endey === 1) || (anfangx === 5 && anfangy === 1 && endex === 8 && endey === 1)){
-          if(await !getposition(5,1,spiel_id) && await !getposition(6,1,spiel_id) && await !getposition(7,1,spiel_id)){
-            if(get_type.get({spiel_id ,anfangx, anfangy})["Type"] === 2 && get_type.get({spiel_id ,anfangx, anfangy})["Type"] === 6 ){
-              change_player();
-              move.run({endex:8, endey:1, anfangx:5, anfangy:1, spiel_id});
-              move.run({endex:5, endey:1, anfangx:8, anfangy:1, spiel_id});
-              spielzug = true;
-              res.send("Success");
-              return;
-            }
-          }
-        }
-      }
-      catch{}
-      /*
->>>>>>> 326caef7e23e7fd3bce52451ffbd03b7c97155a1
     Switch for black figures
     */
           } else if (farbe === false) {
@@ -1269,64 +1127,8 @@ app.post("/mache_move", async function (req, res) {
               change_spielzug.run({ player: 1, spiel_id });
             }
           }
-<<<<<<< HEAD
-=======
-          spielzug = true;
-          }
-      } else {
-        var incrementx;
-        var incrementy;
-        if(anfangx-endex > 0) incrementx = -1
-        else incrementx = 1
-        if(anfangy-endey > 0) incrementy = -1
-        else incrementy = 1
-        let i = parseInt(anfangx)+incrementx;
-        let j = parseInt(anfangy)+incrementy;
-        while (i != endex && j != endey) {
-          if (await getposition(i, j, spiel_id)) {
-          spielzug = false;
-          break;
-          }
-          i += incrementx;
-          j += incrementy;
-        }
-        if (i === endex && j === endey) {
-          spielzug = true;
-        }
-        break;
-      }
-      break;
-      }
-      try{
-        const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
-        // checks if you want to change Turm with the König
-        if((anfangx === 8 && anfangy === 8 && endex === 5 && endey === 8) || (anfangx === 5 && anfangy === 8 && endex === 8 && endey === 8)){
-          if(await !getposition(2,8,spiel_id) && await !getposition(3,8,spiel_id)){
-            if(get_type.get({spiel_id ,anfangx:8, anfangy:8})["Type"] === 2 && get_type.get({spiel_id ,anfangx:5, anfangy:8})["Type"] === 6 ){
-              change_player();
-              move.run({endex:3, endey:8, anfangx:8, anfangy:8, spiel_id});
-              move.run({endex:2, endey:8, anfangx:5, anfangy:8, spiel_id});
-              spielzug = true;
-              res.send("Success");
-              return;
-            }
-          }
-        }
-        if((anfangx === 8 && anfangy === 8 && endex === 5 && endey === 8) || (anfangx === 5 && anfangy === 8 && endex === 8 && endey === 8)){
-          if(await !getposition(5,8,spiel_id) && await !getposition(6,8,spiel_id) && await !getposition(7,8,spiel_id)){
-            if(get_type.get({spiel_id ,anfangx, anfangy})["Type"] === 2 && get_type.get({spiel_id ,anfangx, anfangy})["Type"] === 6 ){
-              change_player();
-              move.run({endex:8, endey:8, anfangx:5, anfangy:8, spiel_id});
-              move.run({endex:5, endey:8, anfangx:8, anfangy:8, spiel_id});
-              spielzug = true;
-              res.send("Success");
-              return;
-            }
-          }
->>>>>>> 326caef7e23e7fd3bce52451ffbd03b7c97155a1
         }
       }
-      catch{}
     }
   } catch (error) {
     try {
