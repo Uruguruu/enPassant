@@ -18,3 +18,6 @@ git clone <url>
 sudo npm rebuild
 "warten"
 node server.js
+
+### Pull hell
+
