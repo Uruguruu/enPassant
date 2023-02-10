@@ -1,3 +1,4 @@
+// all imports and requires
 const express = require("express");
 const app = express();
 const port = 3004; // App running on Port 3004
@@ -10,33 +11,37 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('public'));
 // functions
 
-// check if key exist and update time
+/*
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+All custom functions
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+
+// checks if the key is correct and is't older than 10 minutes. Updates Time to now
 function check_key(Key){
-    // check if key is in database
-    const check_key = db.prepare("SELECT * FROM Key WHERE Key = @Key");
-    const check = check_key.get({Key});
-    if(check != undefined){
-        // check if key is not out time
-        console.log(new Date() / 1);
-        console.log(check["time"]);
-        console.log(new Date() / 1 - check["time"]);
-        if(new Date() / 1 - check["time"] > 6000000){
-            // delete Key
-            const delete_key = db.prepare("DELETE FROM Key WHERE Key = @Key");
-            delete_key.run({Key});
-            return false;
-        }
-        else{
-            // set new time for key
-            const update_key = db.prepare("UPDATE Key SET time = @Time WHERE Key = @Key");
-            var Time = new Date() / 1;
-            return true;
-        }
-      
+  // check if key is in database
+  const check_key = db.prepare("SELECT * FROM Key WHERE Key = @Key");
+  const check = check_key.get({Key});
+  if(check != undefined){
+    // check if key is not out time
+    if(new Date() / 1 - check["time"] > 6000000){
+      // delete Key
+      const delete_key = db.prepare("DELETE FROM Key WHERE Key = @Key");
+      delete_key.run({Key});
+      return false;
     }
     else{
-        return false;
+      // set new time for key
+      const update_key = db.prepare("UPDATE Key SET time = @Time WHERE Key = @Key");
+      var Time = new Date() / 1;
+      return true;
     }
+    
+  }
+  else{
+    return false;
+  }
 }
 
 // returns the User_ID from the Key
@@ -45,13 +50,15 @@ function get_player(Key) {
   return get_player.get({ Key })["User_FK"];
 }
 
-
-// check if spiel exist and if user has rights to access
+// check if spiel exist and if user has rights to access the game and it's user turn
 function spielexist(spiel_id, Player){
+  // the return variable
   var wf;
   const spielexist = db.prepare("SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id");
   var check_spiel = spielexist.get({Player, spiel_id});
+  // check if spiel exist
   if(check_spiel != undefined){
+    //check if it's player turn
     if(check_spiel["aktueller_player"] === 1 && check_spiel["Player_2"] === Player ){
       wf = true;
     }
@@ -78,17 +85,18 @@ const genAPIKey = () => {
     .join("");
 };
 
-// starts the game and insert all data to database
+// starts the game and insert all data to database. give back the game_id
 function game_create(Player_1, public){
-    const get_max = db.prepare("SELECT MAX(Games_ID) FROM Games");
-    var game_id = get_max.get();
-    game_id = parseInt(game_id["MAX(Games_ID)"]) + 1;
-    game_id++;
-    const insert_game = db.prepare("INSERT INTO GAMES (Player_1, aktueller_player, public) VALUES (@Player_1, false, @public)");
-    insert_game.run({Player_1, public, game_id});
-    return game_id -1;
+  const get_max = db.prepare("SELECT MAX(Games_ID) FROM Games");
+  var game_id = get_max.get();
+  game_id = parseInt(game_id["MAX(Games_ID)"]) + 1;
+  game_id++;
+  const insert_game = db.prepare("INSERT INTO GAMES (Player_1, aktueller_player, public) VALUES (@Player_1, false, @public)");
+  insert_game.run({Player_1, public, game_id});
+  return game_id -1;
 }
 
+// insert all the figures to the database
 function game_start(Player_1, Player_2, game_id) {
   const insert = db.prepare(
     "INSERT INTO Figuren (Games_ID, X, Y, Type, Player) VALUES (@game_id, @X, @Y, @type, @player) "
@@ -141,7 +149,7 @@ function game_start(Player_1, Player_2, game_id) {
 }
 
 /*
--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Beginn of the main code
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 */
@@ -155,20 +163,22 @@ Yes = sends api key
 */
 
 app.post("/login", async function (req, res) {
+  // to allow croo things
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   try {
-    console.log("login");
     let { name, password } = req.body;
+    // check if user is in database
     const check_key = db.prepare(
       "SELECT * FROM User WHERE Username= @name AND Password = @password"
     );
-    console.log(name, password);
     const check = await check_key.get({ name, password });
+    // if user exist
     if (check != undefined) {
+      // generate API KEY, insert it to databse and give it back to user
       let api_key = genAPIKey();
       var time = new Date() / 1;
       const user_ID = check["User_ID"];
@@ -180,11 +190,13 @@ app.post("/login", async function (req, res) {
       res.send(api_key);
     } else
     {
+      // if user was not found
       res.send("Invalid wrong user or password");
     }
   }
   catch (error)
   {
+    // if error happens
     console.log(error);
     res.send("Invalid wrong user or password");
   }
@@ -195,16 +207,25 @@ Register Start
 */
 app.post("/register", async function (req, res) {
   try {
+    // to allow croo things
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     let { name, password } = req.body;
     const check_key = db.prepare("SELECT * FROM User WHERE Username= @name");
     const check = await check_key.get({ name });
+    // checks if users not already exist and if it is longer that 5 and shorter than 200
     if (check === undefined && name.length >= 5 && name.length <= 200) {
+      // insert user into database
       const insertUser = db.prepare(
         "INSERT INTO User (Username, Password) VALUES (@name, @password)"
       );
       insertUser.run({ name, password });
       res.send("Account created");
     } else if (name.length <= 5) {
+      // tells the user what is wrong
       res.send("Username is too short!");
     } else if (name.length >= 200) {
       res.send("Username is to long!");
@@ -212,6 +233,7 @@ app.post("/register", async function (req, res) {
       res.send("User already exists");
     }
   } catch (error) {
+    // if error happens
     console.log(error);
     res.send("Error");
   }
@@ -220,42 +242,53 @@ app.post("/register", async function (req, res) {
 Register END
 */
 
+// if key is correct it's create a game and insert it into databasse
 app.post("/create_game", async function (req, res) {
   try{
+      // to allow croo things
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
       let {KEY, public} = req.body;
       if(!(await check_key(KEY))) res.send("Invalid KEY");
       else{
+          // insert data to database
           var Player = await get_player(KEY);
           response = await game_create(Player, public);
           res.send(response.toString());
       }
   }
   catch(error){
-      console.log(error);
-      res.send("Error");
+    // if error happens
+    console.log(error);
+    res.send("Error");
   }
 })
 
+// checks APi KEY and joins existing game
 app.post("/join_game", async function (req, res) {
   try{
     let {KEY, code} = req.body;
     if(!(await check_key(KEY))) res.send("Invalid KEY");
     else{
+      // when Key is correct
       const check_code = db.prepare("SELECT * FROM Games WHERE Games_ID = @code");
       var check = check_code.get({code});
       if(check != undefined){
+        // when game exist
         var Player = await get_player(KEY);
         const join_game = db.prepare("UPDATE Games SET Player_2 = @Player WHERE Games_ID = @code");
         join_game.run({Player, code});
         const get_player1 = db.prepare("SELECT Player_1 FROM Games WHERE Games_ID = @code");
         player1 = get_player1.get({code});
-        console.log("____________________________");
-        console.log(player1);
         await game_start(player1["Player_1"], Player, code)
         res.send("Success");
       }
       else{
-          res.send("Wrong Code");
+        // if game doesn't exist
+        res.send("Wrong Code");
       }
     }
   }
