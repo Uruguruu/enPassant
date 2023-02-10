@@ -35,7 +35,7 @@
               type="Password"
               id="Password"
               required
-            />
+            />  
                 <span></span>
                 <label for="Password">Password</label>
             </div>
@@ -60,6 +60,8 @@
       async function login(eMail, password) {
   try {
     console.log(5);
+    //http://localhost:3004/login
+    // http://raspisamuel.local:3004/login 
 axios.post('http://raspisamuel.local:3004/login',{
   name: eMail,  password: password
 }, {
@@ -70,7 +72,8 @@ headers: {
   .then(function (response) {
     console.log(response);
     data = response["data"];
-    if(!(data === "Invalid wrong user or password")){
+    console.log(data === "Invalid wrong user or password");
+    if((data === "Invalid wrong user or password")){
       console.log(11);
       document.getElementById("message").innerHTML = data;
     }
