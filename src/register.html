@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="/login.css">
+    <link rel="stylesheet" href="/register.css">
     <title>Login und Register TEST</title>
   </head>
   <body>
@@ -14,11 +14,14 @@
     </div>
     <div class="center">
       <div class="text-wrapper">
-        <span style="--i:1"><strong>L</strong></span>
-        <span style="--i:2"><strong>O</strong></span>
+        <span style="--i:1"><strong>R</strong></span>
+        <span style="--i:2"><strong>E</strong></span>
         <span style="--i:3"><strong>G</strong></span>
         <span style="--i:4"><strong>I</strong></span>
-        <span style="--i:5"><strong>N</strong></span>
+        <span style="--i:5"><strong>S</strong></span>
+        <span style="--i:6"><strong>T</strong></span>
+        <span style="--i:7"><strong>E</strong></span>
+        <span style="--i:8"><strong>R</strong></span>
       </div>
     <form class="form-container"> 
             <div class="txt-field">
@@ -35,7 +38,7 @@
               type="Password"
               id="Password"
               required
-            />  
+            />
                 <span></span>
                 <label for="Password">Password</label>
             </div>
@@ -43,10 +46,6 @@
             <p id="message"></p>
             <button type="button" class="btn cancel" onclick="logvar()">
               Login
-            </button>
-            <div class="signup_link">
-              Not a member?  <a href = "/signup" >Sign Up</a>
-            </div>
         </form>
     </div>
     <script>
@@ -60,9 +59,7 @@
       async function login(eMail, password) {
   try {
     console.log(5);
-    //http://localhost:3004/login
-    // http://raspisamuel.local:3004/login 
-axios.post('http://raspisamuel.local:3004/login',{
+axios.post('http://raspisamuel.local:3004/register',{
   name: eMail,  password: password
 }, {
 headers: {
@@ -72,15 +69,12 @@ headers: {
   .then(function (response) {
     console.log(response);
     data = response["data"];
-    console.log(data === "Invalid wrong user or password");
-    if((data === "Invalid wrong user or password")){
-      console.log(11);
-      document.getElementById("message").innerHTML = data;
+    if(!(data === "Account created")){
+      console.log("Account created");
+      location.href = "/login"; 
     }
     else{
-      console.log(1);
-      localStorage.setItem('KEY', data);
-      location.href = "/home";
+     alert(data);
     }
   })
 }

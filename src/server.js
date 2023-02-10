@@ -267,13 +267,16 @@ app.post("/join_game", async function (req, res) {
 
 app.post("/mache_move", async function (req, res) {
   try {
+    const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
     let {KEY, spiel_id, anfangx, anfangy, endex, endey} = req.body;
     anfangy = parseInt(anfangy);
     anfangx = parseInt(anfangx);
     endex = parseInt(endex);
     endey =parseInt(endey);
     spiel_id =parseInt(spiel_id);
-    console.log(KEY, spiel_id, anfangx, anfangy, endex, endey);
+    const get_spielzug = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
+    const delete_game = db.prepare("DELETE FROM Games WHERE Games_ID = @spiel_id");
+    const change_spielzug = db.prepare("UPDATE Games SET aktueller_player = @player WHERE Games_ID = @spiel_id");
     if(!(await check_key(KEY))) res.send("Invalid KEY");
     else{
       var Player = get_player(KEY);
@@ -619,6 +622,33 @@ app.post("/mache_move", async function (req, res) {
           }
           break;
       }
+      const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
+      // checks if you want to change Turm with the König
+      if((anfangx === 1 && anfangy === 1 && endex === 4 && endey === 1) || (anfangx === 4 && anfangy === 1 && endex === 8 && endey === 1)){
+        if(await !getposition(2,1,spiel_id) && await !getposition(3,1,spiel_id)){
+          if(get_type.get({spiel_id ,anfangx:1, anfangy:1})["Type"] === 2 && get_type.get({spiel_id ,anfangx:4, anfangy:1})["Type"] === 6 ){
+            change_player();
+            move.run({endex:3, endey:1, anfangx:1, anfangy:1, spiel_id});
+            move.run({endex:2, endey:1, anfangx:4, anfangy:1, spiel_id});
+            spielzug = true;
+            res.send("Success");
+            return;
+          }
+        }
+      }
+      if((anfangx === 8 && anfangy === 1 && endex === 4 && endey === 1) || (anfangx === 4 && anfangy === 1 && endex === 8 && endey === 1)){
+        if(await !getposition(5,1,spiel_id) && await !getposition(6,1,spiel_id) && await !getposition(7,1,spiel_id)){
+          if(get_type.get({spiel_id ,anfangx, anfangy})["Type"] === 2 && get_type.get({spiel_id ,anfangx, anfangy})["Type"] === 6 ){
+            change_player();
+            move.run({endex:8, endey:1, anfangx:4, anfangy:1, spiel_id});
+            move.run({endex:4, endey:1, anfangx:8, anfangy:1, spiel_id});
+            spielzug = true;
+            res.send("Success");
+            return;
+          }
+        }
+      }
+
       /*
     Switch for black figures
     */
@@ -910,12 +940,34 @@ app.post("/mache_move", async function (req, res) {
       }
       break;
       }
+      const get_type = db.prepare("SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy");
+      // checks if you want to change Turm with the König
+      if((anfangx === 8 && anfangy === 8 && endex === 4 && endey === 8) || (anfangx === 4 && anfangy === 8 && endex === 8 && endey === 8)){
+        if(await !getposition(2,8,spiel_id) && await !getposition(3,8,spiel_id)){
+          if(get_type.get({spiel_id ,anfangx:8, anfangy:8})["Type"] === 2 && get_type.get({spiel_id ,anfangx:4, anfangy:8})["Type"] === 6 ){
+            change_player();
+            move.run({endex:3, endey:8, anfangx:8, anfangy:8, spiel_id});
+            move.run({endex:2, endey:8, anfangx:4, anfangy:8, spiel_id});
+            spielzug = true;
+            res.send("Success");
+            return;
+          }
+        }
+      }
+      if((anfangx === 8 && anfangy === 8 && endex === 4 && endey === 8) || (anfangx === 4 && anfangy === 8 && endex === 8 && endey === 8)){
+        if(await !getposition(5,8,spiel_id) && await !getposition(6,8,spiel_id) && await !getposition(7,8,spiel_id)){
+          if(get_type.get({spiel_id ,anfangx, anfangy})["Type"] === 2 && get_type.get({spiel_id ,anfangx, anfangy})["Type"] === 6 ){
+            change_player();
+            move.run({endex:8, endey:8, anfangx:4, anfangy:8, spiel_id});
+            move.run({endex:4, endey:8, anfangx:8, anfangy:8, spiel_id});
+            spielzug = true;
+            res.send("Success");
+            return;
+          }
+        }
+      }
     }
     // does the moving and the eating
-    const move = db.prepare("UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id");
-    const get_spielzug = db.prepare("SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id");
-    const change_spielzug = db.prepare("UPDATE Games SET aktueller_player = @player WHERE Games_ID = @spiel_id");
-    const delete_game = db.prepare("DELETE FROM Games WHERE Games_ID = @spiel_id");
     if(spielzug === true){
       var eat_value =await eat(anfangx, anfangy ,endex, endey, spiel_id); 
       if(eat_value){
@@ -948,9 +1000,20 @@ app.post("/mache_move", async function (req, res) {
     else{
       res.send("Invalid Move (Move is impossible)");
     }
+      // the change player function
+      function change_player(){
+        var aktueller_spieler = get_spielzug.get({spiel_id});
+        if(aktueller_spieler["aktueller_player"] === 1){
+          change_spielzug.run({player:0, spiel_id});
+          }
+          else{
+          change_spielzug.run({player:1, spiel_id});
+          }
+      }
   }
 }
 }
+
   } catch (error) {
     try{
     console.log(error);
@@ -999,7 +1062,6 @@ function eat(ax, ay,ex,ey,id){
       myResolve(true);
     }
     });
-  
 }
 
 app.post("/bauer_zu", async function(req, res) {
@@ -1062,6 +1124,10 @@ app.get('/', function (req, res){
 
 app.get('/home', function (req, res){
   res.sendFile(__dirname  + '/home.html')
+})
+
+app.get('/signup', function (req, res){
+  res.sendFile(__dirname  + '/register.html')
 })
 
 app.get("/get_spiel/:spiel_id", (req, res) => {
