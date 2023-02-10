@@ -155,6 +155,16 @@ antwort:
 2. GAME_ID
 3. "ERROR"
 ---
+description: `Wenn ein Bauer das Ende des Spielfeldes ereich kann er sich in eine Andere Figur (alle ausser König und Bauer) verwandeln.`
+
+/draw\
+POST\
+braucht: {KEY, spiel_id}\
+antwort:
+1. Invalid KEY
+2. Invalid Game doesn't exist
+3. Success
+---
 ## Schachregeln:
 - normale Spielregeln (bewegung der Figuren)
 - enPassant
