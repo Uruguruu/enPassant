@@ -170,7 +170,7 @@ app.post("/register", async function (req, res) {
     const check_key = db.prepare("SELECT * FROM User WHERE Username= @name");
     const check = await check_key.get({ name });
     // checks if users not already exist and if it is longer that 5 and shorter than 200
-    if (check === undefined && name.length >= 5 && name.length <= 200) {
+    if (check === undefined && name.length >= 5 && name.length <= 200 && password.length > 7) {
       // insert user into database
       const insertUser = db.prepare(
         "INSERT INTO User (Username, Password) VALUES (@name, @password)"
@@ -183,7 +183,7 @@ app.post("/register", async function (req, res) {
     } else if (name.length >= 200) {
       res.send("Username is to long!");
     } else if (password.length < 7) {
-      res.send("Password is too short!")
+      res.send("Password is too short!");
     } else {
       res.send("User already exists");
     }
