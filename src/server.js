@@ -319,7 +319,6 @@ app.post("/mache_move", async function (req, res) {
             "SELECT g.Player_2 FROM Figuren f LEFT JOIN Games g ON f.Player = g.Player_2 WHERE f.X = @anfangx AND f.Y = @anfangy AND f.Games_ID = @spiel_id"
           );
           var g_color = get_color.get({ anfangx, anfangy, spiel_id });
-          console.log(g_color, Player);
           var farbe; // true = weiss false = schwarz
           if (g_color["Player_2"] === Player) farbe = false;
           else farbe = true;
@@ -351,9 +350,6 @@ app.post("/mache_move", async function (req, res) {
               Pawn
               */
               case 1:
-                console.log(await getposition(anfangx - 1, anfangy, spiel_id));
-                console.log(anfangx - 1 === endex && anfangy + 1 === endey);
-                console.log(1);
                 if (anfangy - endey != -1) {
                   spielzug = false; // Überprüfung ob der Bauer nach vorne geht
                 }
@@ -391,8 +387,6 @@ app.post("/mache_move", async function (req, res) {
                     break;
                   }
                 }
-                console.log(await getposition(anfangx - 1, anfangy, spiel_id));
-                console.log(anfangx - 1 === endex && anfangy + 1 === endey);
 
                 if (
                   (await getposition(anfangx - 1, anfangy, spiel_id)) &&
@@ -400,12 +394,10 @@ app.post("/mache_move", async function (req, res) {
                   anfangy + 1 === endey &&
                   endey === 6
                 ) {
-                  console.log(5);
                   const get_modus = db.prepare(
                     "SELECT Modus FROM Figuren WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id AND Modus = 1"
                   );
                   if (get_modus.get({ anfangx, anfangy, spiel_id })) {
-                    console.log(56);
                     spielzug = true;
                     eat(anfangx, anfangy, endex, endey - 1, spiel_id);
                     break;
@@ -432,7 +424,6 @@ app.post("/mache_move", async function (req, res) {
                 if (anfangx - endex != 0) {
                   spielzug = false; // Überprüfung ob der Bauer nach vorne geht
                 }
-                console.log();
                 if (spielzug != false) spielzug = true;
                 break;
 
@@ -581,16 +572,12 @@ app.post("/mache_move", async function (req, res) {
         Queen
         */
               case 6:
-                console.log(anfangx, endex, anfangy, endey);
                 if (anfangx === endex && anfangy === endey) {
                   spielzug = false;
-                  console.log(11);
                   break;
                 }
                 if (anfangx === endex || anfangy === endey) {
-                  console.log(8);
                   if (anfangx === endex) {
-                    console.log(1);
                     //Function checks if in the x axis is any piece
                     let increment =
                       (endey - anfangy) / Math.abs(endey - anfangy);
@@ -599,7 +586,6 @@ app.post("/mache_move", async function (req, res) {
                       i != endey;
                       i += increment
                     ) {
-                      console.log(increment, i);
                       if (!(await getposition(anfangx, i, spiel_id))) {
                         spielzug = false;
                         break;
@@ -607,7 +593,6 @@ app.post("/mache_move", async function (req, res) {
                     }
                     spielzug = true;
                   } else if (anfangy === endey) {
-                    console.log(13);
                     //Function checks if in the y axis is any piece
                     let increment =
                       (endex - anfangx) / Math.abs(endex - anfangx);
@@ -952,16 +937,12 @@ app.post("/mache_move", async function (req, res) {
     Queen
     */
               case 6:
-                console.log(anfangx, endex, anfangy, endey);
                 if (anfangx === endex && anfangy === endey) {
                   spielzug = false;
-                  console.log(11);
                   break;
                 }
                 if (anfangx === endex || anfangy === endey) {
-                  console.log(8);
                   if (anfangx === endex) {
-                    console.log(1);
                     //Function checks if in the x axis is any piece
                     let increment =
                       (endey - anfangy) / Math.abs(endey - anfangy);
@@ -970,7 +951,6 @@ app.post("/mache_move", async function (req, res) {
                       i != endey;
                       i += increment
                     ) {
-                      console.log(increment, i);
                       if (!(await getposition(anfangx, i, spiel_id))) {
                         spielzug = false;
                         break;
@@ -978,7 +958,6 @@ app.post("/mache_move", async function (req, res) {
                     }
                     spielzug = true;
                   } else if (anfangy === endey) {
-                    console.log(13);
                     //Function checks if in the y axis is any piece
                     let increment =
                       (endex - anfangx) / Math.abs(endex - anfangx);
@@ -1097,7 +1076,6 @@ app.post("/mache_move", async function (req, res) {
             var eat_value = await eat(anfangx, anfangy, endex, endey, spiel_id);
             if (eat_value) {
               var spiel_spieler = get_spielzug.get({ spiel_id });
-              console.log(eat_value);
               if (eat_value === "gefallen") {
                 if (spiel_spieler["aktueller_player"] === 1) {
                   res.send("Schwarz hat gewonnen!!!");
@@ -1141,7 +1119,6 @@ app.post("/mache_move", async function (req, res) {
 });
 
 function getposition(x, y, spiel_id) {
-  console.log(x, y, spiel_id, "______________");
   const check_position = db.prepare(
     "SELECT * FROM Figuren WHERE X = @x AND Y = @y AND Games_ID = @spiel_id"
   );
@@ -1155,13 +1132,11 @@ function eat(ax, ay, ex, ey, id) {
     const besitzer_figur_m = db.prepare(
       "SELECT Player FROM Figuren WHERE X = @ax AND Y = @ay AND Games_ID = @id"
     );
-    console.log(ax, ay, id);
     const check_gleich = besitzer_figur_m.get({ ax, ay, id });
     const besitzer_figur_g = db.prepare(
       "SELECT Player, Type FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id"
     );
     const check_gleich_2 = besitzer_figur_g.get({ ex, ey, id });
-    console.log(check_gleich_2, check_gleich);
     try {
       if (check_gleich["Player"] === check_gleich_2["Player"]) {
         myResolve(false);
@@ -1169,8 +1144,6 @@ function eat(ax, ay, ex, ey, id) {
         const deleten = db.prepare(
           "DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id"
         );
-        console.log(check_gleich_2["Type"]);
-        console.log(check_gleich_2["Type"]);
         if (check_gleich_2["Type"] === 5) {
           const check = deleten.run({ ex, ey, id });
           myResolve("gefallen");
@@ -1207,7 +1180,6 @@ app.post("/bauer_zu", async function (req, res) {
           "SELECT g.Player_2 FROM Figuren f LEFT JOIN Games g ON f.Player = g.Player_2 WHERE f.X = @anfangx AND f.Y = @anfangy AND f.Games_ID = @spiel_id"
         );
         var g_color = get_color.get({ anfangx, anfangy, spiel_id });
-        console.log(g_color, Player);
         var linie;
         if (g_color["Player_2"] === Player) linie = 1;
         else linie = 8;
@@ -1221,7 +1193,6 @@ app.post("/bauer_zu", async function (req, res) {
           res.send("Invalid Move (No figure found)");
           return;
         }
-        console.log(anfangx, linie, spielfigur);
         if (anfangy === linie && spielfigur === 1) {
           if (zu > 1 && zu < 7 && zu != 5) {
             const update = db.prepare(
@@ -1302,7 +1273,6 @@ app.post("/draw", async function (req, res) {
     else {
       var Player = get_player(KEY);
       if (spielexist(spiel_id, Player) == "k_spiel") {
-        console.log(spielexist(spiel_id, Player));
         res.send("Invalid Game doesn't exist " + spielexist(spiel_id, Player));
         return;
       } else {
