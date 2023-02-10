@@ -5,7 +5,7 @@ body {
     height: 100vh;
     overflow: hidden;
     box-sizing: border-box;
-    background: aqua;
+    background: rgb(255, 255, 255);
 }
 .banner {
     width: 100%;
@@ -29,6 +29,7 @@ body {
     left: 50%;
     transform: translate(-45%, -50%);
     width: 400px;
+    height: 400px;
     background-color: rgb(217, 217, 217);
     border-radius: 15px;
 }
@@ -134,8 +135,8 @@ input[type="submit"]:hover {
     position: relative;
     font-size: 30px;
     left: 10%;
-    top: 20%;
-    padding-top: 10%;
+    top: 0%;
+    padding-top: 5%;
     margin-bottom: 10%;
 }
 span{
