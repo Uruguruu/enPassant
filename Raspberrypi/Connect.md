@@ -20,3 +20,4 @@
 ### Verbindung
 1. Putty öffnen oder vieleicht noch installieren
 2. Hostname <gewünschter name>.local eingeben und Open klicken.
+3. Bereits eingerichtet: User: test Pasword: 1234

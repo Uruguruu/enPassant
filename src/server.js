@@ -1205,4 +1205,25 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
-
+app.post("/draw", async function(req, res) {
+  let {KEY, spiel_id} = req.body;
+  try {
+    if(!(await check_key(KEY))) res.send("Invalid KEY");
+    else{
+      var Player = get_player(KEY);
+      if(spielexist(spiel_id, Player) == "k_spiel")
+      { 
+        console.log(spielexist(spiel_id, Player)  )
+        res.send("Invalid Game doesn't exist " + spielexist(spiel_id, Player));
+        return;
+      }else{
+      const delete_game = db.prepare("DELETE FROM Games WHERE Games_ID = @spiel_id");
+      delete_game.run({spiel_id});
+      res.send("Your Draw has been confirmed")
+      }
+    }
+  }catch(error){
+    console.log(error);
+    res.send("Error");
+  }
+});
