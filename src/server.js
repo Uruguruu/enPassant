@@ -7,7 +7,6 @@ const db = new Database("./database.db", {});
 const start = new require("./start.js");
 var bodyParser = require("body-parser");
 
-
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
@@ -103,19 +102,16 @@ function game_create(Player_1, public) {
   return game_id - 1;
 }
 
-
 /*
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Beginn of the main code
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 */
+
+
 /*
-Login
-Needs name and Password.
-Checks in Database if User and Password exists.
-No = "Invalid wrong user or Password"
-No connection = "Invalid wrong user or password"
-Yes = sends api key
+Bei einem /login Post mit den Variabeln(name, password), wird folgendes ausgeführt:
+1.
 */
 
 app.post("/login", async function (req, res) {
@@ -170,7 +166,12 @@ app.post("/register", async function (req, res) {
     const check_key = db.prepare("SELECT * FROM User WHERE Username= @name");
     const check = await check_key.get({ name });
     // checks if users not already exist and if it is longer that 5 and shorter than 200
-    if (check === undefined && name.length >= 5 && name.length <= 200 && password.length > 7) {
+    if (
+      check === undefined &&
+      name.length >= 5 &&
+      name.length <= 200 &&
+      password.length > 7
+    ) {
       // insert user into database
       const insertUser = db.prepare(
         "INSERT INTO User (Username, Password) VALUES (@name, @password)"
