@@ -19,7 +19,16 @@
   </head>
 
   <body>
-    <a href="/Game">Create Game</a>
+    <button onclick="game_create()" href="/Game">Create Game</button>
+    <script>
+      async function game_create() {
+        var eMail = document.getElementById("Username").value;
+        var password = document.getElementById("Password").value;
+        console.log("The E-Mail typed in was: " + eMail);
+        console.log("The Password typed in was: " + password);
+        login(eMail, password);
+      }
+    </script>
 
     <script>
     if(localStorage.getItem("KEY") === undefined) location.href = "/"
@@ -85,27 +94,11 @@
         main.appendChild(spielen);
         main.appendChild(abstand);
     }
-
-      function openForm() {
-        document.getElementById("myForm").style.display = "block";
-        document
-          .getElementById("ForumOpener")
-          .setAttribute("onClick", "javascript: closeForm();");
-      }
-
-      function closeForm() {
-        document.getElementById("myForm").style.display = "none";
-        document
-          .getElementById("ForumOpener")
-          .setAttribute("onClick", "javascript: openForm();");
-      }
       function spiel(zahl){
       //  localStorage.setItem('spiel', zahl);
         location.href = "/spielen";
       }
 
     </script>
-
-    <script></script>
   </body>
 </html>
