@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/js/chess.js"></script>
     <title>Login und Register TEST</title>
     <style>
       body {
@@ -19,7 +20,7 @@
   </head>
 
   <body>
-    <button onclick="game_create()" href="/Game">Create Game</button>
+    <button onclick="game_create()">Create Game</button>
     <script>
       async function game_create() {
         var eMail = document.getElementById("Username").value;
