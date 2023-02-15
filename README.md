@@ -9,7 +9,7 @@ Project repository for a Chess Game made in two weeks.
 
 ##### Man kann auch ein neues Spiel erstellen. Dabei gibt es 2 Varianten
 1. Man macht es lokal und  spielt gegen sich selbst (optional)
-2. Man erstelt online ein Spiel und man kriegt dann einen Spiel Code den man dann bei jemandem anders eingeben kann und somit gegeneinander Schach spielt
+2. Man erstelt online ein Spiel und man kriegt dann einen Spiel-Code den man dann bei jemandem anders eingeben kann und somit gegeneinander Schach spielt
 
 ##### Wir haben ein Schachbrett das mit drag and drop funktioniert
 
