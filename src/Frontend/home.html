@@ -20,17 +20,17 @@
 </head>
 
 <body>
-<button onclick="get_create_game_prams()">Create Game</button>
+<button onclick="get_create_game_params()">Create Game</button>
 <script>
- async function get_create_game_prams() {
+ async function get_create_game_params() {
         const public = 1;
         var token = localStorage.getItem("KEY")
         console.log(token);
         console.log(public);
-        create_game(token, public)
+        create_game(token, public);
  }
 
- async function get_create_game_prams(token, public) {
+ async function create_game(token, public) {
     try {
     console.log(get_create_game_prams started);
     //http://localhost:3004/login
