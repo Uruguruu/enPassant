@@ -1,154 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <title>Login und Register TEST</title>
-    <style>
-      body {
-        font-family: Arial, Helvetica, sans-serif;
-      }
+    <link rel="stylesheet" href="/spielpage.css">
+</head>
 
-      * {
-        box-sizing: border-box;
-      }
 
-      /* Button used to open the contact form - fixed at the bottom of the page */
-      .open-button {
-        background-color: #555;
-        color: white;
-        padding: 16px 20px;
-        border: none;
-        cursor: pointer;
-        opacity: 0.8;
-        width: 280px;
-      }
+<body>
+    
+    <ul>
 
-      /* The popup form - hidden by default */
-      .form-popup {
-        display: none;
-        position: absolute;
+        <div class="divv" id="row8">
+            <li class="box" id="b801">Brook</li>
+            <li class="box" id="b802">Bknight</li>
+            <li class="box" id="b803">Bbishop</li>
+            <li class="box" id="b804">Bqueen</li>
+            <li class="box" id="b805">Bking</li>
+            <li class="box" id="b806">Bbishop</li>
+            <li class="box" id="b807">Bknight</li>
+            <li class="box" id="b808">Brook</li>
+        </div>
+        <div class="divv" id="row7">
+            <li class="box" id="b701">Bpawn</li>
+            <li class="box" id="b702">Bpawn</li>
+            <li class="box" id="b703">Bpawn</li>
+            <li class="box" id="b704">Bpawn</li>
+            <li class="box" id="b705">Bpawn</li>
+            <li class="box" id="b706">Bpawn</li>
+            <li class="box" id="b707">Bpawn</li>
+            <li class="box" id="b708">Bpawn</li>
+        </div>
+        <div class="divv" id="row6">
+            <li class="box" id="b601"></li>
+            <li class="box" id="b602"></li>
+            <li class="box" id="b603"></li>
+            <li class="box" id="b604"></li>
+            <li class="box" id="b605"></li>
+            <li class="box" id="b606"></li>
+            <li class="box" id="b607"></li>
+            <li class="box" id="b608"></li>
+        </div>
+        <div class="divv" id="row5">
+            <li class="box" id="b501"></li>
+            <li class="box" id="b502"></li>
+            <li class="box" id="b503"></li>
+            <li class="box" id="b504"></li>
+            <li class="box" id="b505"></li>
+            <li class="box" id="b506"></li>
+            <li class="box" id="b507"></li>
+            <li class="box" id="b508"></li>
+        </div>
+        <div class="divv" id="row4">
+            <li class="box" id="b401"></li>
+            <li class="box" id="b402"></li>
+            <li class="box" id="b403"></li>
+            <li class="box" id="b404"></li>
+            <li class="box" id="b405"></li>
+            <li class="box" id="b406"></li>
+            <li class="box" id="b407"></li>
+            <li class="box" id="b408"></li>
+        </div>
+        <div class="divv" id="row3">
+            <li class="box" id="b301"></li>
+            <li class="box" id="b302"></li>
+            <li class="box" id="b303"></li>
+            <li class="box" id="b304"></li>
+            <li class="box" id="b305"></li>
+            <li class="box" id="b306"></li>
+            <li class="box" id="b307"></li>
+            <li class="box" id="b308"></li>
+        </div>
 
-        border: 3px solid #f1f1f1;
-        z-index: 9;
-      }
+        <div class="divv" id="row2">
+            <li class="box Wpawn" id="b201">Wpawn</li>
+            <li class="box Wpawn" id="b202">Wpawn</li>
+            <li class="box Wpawn" id="b203">Wpawn</li>
+            <li class="box Wpawn" id="b204">Wpawn</li>
+            <li class="box Wpawn" id="b205">Wpawn</li>
+            <li class="box Wpawn" id="b206">Wpawn</li>
+            <li class="box Wpawn" id="b207">Wpawn</li>
+            <li class="box Wpawn" id="b208">Wpawn</li>
+        </div>
+        <div class="divv" id="row1">
+            <li class="box" id="b101">Wrook</li>
+            <li class="box" id="b102">Wknight</li>
+            <li class="box" id="b103">Wbishop</li>
+            <li class="box" id="b104">Wqueen</li>
+            <li class="box" id="b105">Wking</li>
+            <li class="box" id="b106">Wbishop</li>
+            <li class="box" id="b107">Wknight</li>
+            <li class="box" id="b108">Wrook</li>
+        </div>
 
-      /* Add styles to the form container */
-      .form-container {
-        max-width: 300px;
-        padding: 10px;
-        background-color: white;
-      }
+    </ul>
+</body>
 
-      /* Full-width input fields */
-      .form-container input[type="text"],
-      .form-container input[type="Password"] {
-        width: 100%;
-        padding: 15px;
-        margin: 5px 0 22px 0;
-        border: none;
-        background: #f1f1f1;
-      }
+<script>
 
-      /* When the inputs get focus, do something */
-      .form-container input[type="text"]:focus,
-      .form-container input[type="Password"]:focus {
-        background-color: #ddd;
-        outline: none;
-      }
+// Inserting the Images
+function insertImage() {
 
-      /* Set a style for the submit/login button */
-      .form-container .btn {
-        background-color: #04aa6d;
-        color: white;
-        padding: 16px 20px;
-        border: none;
-        cursor: pointer;
-        width: 100%;
-        margin-bottom: 10px;
-        opacity: 0.8;
-      }
+document.querySelectorAll('.box').forEach(image => {
 
-      /* Add a red background color to the cancel button */
-      .form-container .cancel {
-        background-color: red;
-      }
+    if (image.innerText.length !== 0) {
+        if (image.innerText == 'Wpawn' || image.innerText == 'Bpawn') {
+            image.innerHTML = `${image.innerText} <img class='allimg allpawn' src="images/chessPieces/${image.innerText}.png" alt="">`
+            image.style.cursor = 'pointer'
 
-      /* Add some hover effects to buttons */
-      .form-container .btn:hover,
-      .open-button:hover {
-        opacity: 1;
-      }
-    </style>
-  </head>
-
-  <body>
-   
-    <div id="spiele"></div>
-    <p>wasssssssssss</p>
-    <script>
-        console.log(765);
-    if(localStorage.getItem("KEY") === undefined) location.href = "/"
-    async function loop(){
-        await get_data();
-        setInterval(await get_data(), 5000);
-    }
-    loop();
-        async function get_data() {
-            console.log();
-            try {
-                console.log(4);
-                return new Promise ((resolveOuter) => {
-                    console.log(2);
-                    axios.get('http://localhost:3004/your_live_games/'+localStorage.getItem("KEY"), {
-                      headers: {
-                       "Content-Type": "application/x-www-form-urlencoded"
-                      }
-                      })
-                        .then(function (response) {
-                            if(response["data"] === "ungültiger KEY"){
-                                localStorage.removeItem('KEY');
-                                location.href = "/"
-                            }
-                            else{
-                                console.log(response);
-                                var data = response["data"];
-                                for (let i = 0; i < data.length; i++) {
-                                    show_data(data[i])
-                                } 
-                            }
-                        })
-                })
-            }
-            catch(error){  
-                console.log(error);
-            }
         }
 
-    function show_data(data){
-        var text = document.createElement("p");
-        text.innerHTML = data
+        else {
+
+            image.innerHTML = `${image.innerText} <img class='allimg' src="images/chessPieces/${image.innerText}.png" alt="">`
+            image.style.cursor = 'pointer'
+        }
     }
+})
+}
+insertImage()
 
-      function openForm() {
-        document.getElementById("myForm").style.display = "block";
-        document
-          .getElementById("ForumOpener")
-          .setAttribute("onClick", "javascript: closeForm();");
-      }
+// Chessboard coloring
+function coloring() {
+    const color = document.querySelectorAll('.box')
 
-      function closeForm() {
-        document.getElementById("myForm").style.display = "none";
-        document
-          .getElementById("ForumOpener")
-          .setAttribute("onClick", "javascript: openForm();");
-      }
+    color.forEach(color => {
 
+        getId = color.id
+        arr = Array.from(getId)
+        arr.shift()
+        aside = eval(arr.pop())
+        aup = eval(arr.shift())
+        a = aside + aup
 
-    </script>
+        if (a % 2 == 0) {
+            color.style.backgroundColor = '#8c9ea3'
+        }
+        if (a % 2 !== 0) {
+            color.style.backgroundColor = '#22272c'
+        }
 
-    <script></script>
-  </body>
+    })
+}
+coloring()
+   
+</script>
+
+<script src="../server.js"></script>
+
 </html>

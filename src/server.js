@@ -11,7 +11,7 @@ var bodyParser = require("body-parser");
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
-// functions
+// functionss
 
 /*
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1241,6 +1241,10 @@ app.get("/leaderboard", (req, res) => {
   res.send(result);
 });
 // ---Leaderboard END---
+
+app.get("/Game", function (req, res) {
+  res.sendFile(__dirname + "/Frontend/Spielpage.html", "/spielpage.css");
+});
 
 // ---Your Hosted games START---
 app.get("/your_live_games/:KEY", async function (req, res) {
