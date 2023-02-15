@@ -32,10 +32,10 @@
 
  async function create_game(token, public) {
     try {
-    console.log(get_create_game_prams started);
+    console.log("get_create_game_prams started");
     //http://localhost:3004/login
     // http://raspisamuel.local:3004/login
-      axios.post('http://raspisamuel.local:3004/login',{
+      axios.post('http://localhost:3004/create_game',{
         KEY: token,  public: public
           }, {
        headers: {
@@ -53,12 +53,11 @@
     }
     else{
       console.log(1);
-      location.href = "/Game"; //going to game
+      //location.href = "/Game"; //going to game
     }
   })
 }
 catch{};
-}
 }
 </script>
 
