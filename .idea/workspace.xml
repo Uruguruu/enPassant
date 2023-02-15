@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="css issues fixed" />
+    <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="testing js">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Frontend/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frontend/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Frontend/js/chess.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frontend/js/chess.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,7 +30,8 @@
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/01_ZLI Repository/Bits_N_Bytes"
+    "last_opened_file_path": "D:/Programmieren/Repos/enPassant",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -85,7 +90,21 @@
       <option name="project" value="LOCAL" />
       <updated>1675953463887</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="new file chess.js for all Frontend javascript functions">
+      <created>1676475608720</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1676475608720</updated>
+    </task>
+    <task id="LOCAL-00008" summary="testing js">
+      <created>1676475920314</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1676475920314</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -103,6 +122,8 @@
     <MESSAGE value="/live_games_4u/:KEY, /your_live_games/:KEY und /leaderboard fertig." />
     <MESSAGE value="Deleted live_games_4u" />
     <MESSAGE value="css issues fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="css issues fixed" />
+    <MESSAGE value="new file chess.js for all Frontend javascript functions" />
+    <MESSAGE value="testing js" />
+    <option name="LAST_COMMIT_MESSAGE" value="testing js" />
   </component>
 </project>

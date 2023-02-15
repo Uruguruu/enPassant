@@ -1,3 +1,3 @@
-function test(){
-    window.location.href = "http://www.w3schools.com";
+function JSTest(){
+    alert("hi");
 }

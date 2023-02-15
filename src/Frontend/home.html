@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="/js/chess.js"></script>
     <title>Login und Register TEST</title>
     <style>
       body {
@@ -16,22 +15,54 @@
         box-sizing: border-box;
       }
 
+
     </style>
-  </head>
+</head>
 
-  <body>
-    <button onclick="game_create()">Create Game</button>
-    <script>
-      async function game_create() {
-        var eMail = document.getElementById("Username").value;
-        var password = document.getElementById("Password").value;
-        console.log("The E-Mail typed in was: " + eMail);
-        console.log("The Password typed in was: " + password);
-        login(eMail, password);
-      }
-    </script>
+<body>
+<button onclick="get_create_game_prams()">Create Game</button>
+<script>
+ async function get_create_game_prams() {
+        const public = 1;
+        var token = localStorage.getItem("KEY")
+        console.log(token);
+        console.log(public);
+        create_game(token, public)
+ }
 
-    <script>
+ async function get_create_game_prams(token, public) {
+    try {
+    console.log(get_create_game_prams started);
+    //http://localhost:3004/login
+    // http://raspisamuel.local:3004/login
+      axios.post('http://raspisamuel.local:3004/login',{
+        KEY: token,  public: public
+          }, {
+       headers: {
+ "Content-Type": "application/x-www-form-urlencoded"
+}
+})
+  .then(function (response) {
+    console.log(response);
+    data = response["data"];
+    console.log(data === "Invalid KEY");
+    if((data === "Invalid KEY")){
+      console.log(11);
+      //document.getElementById("message").innerHTML = data;
+      //ERROR could be displayed in Frontend
+    }
+    else{
+      console.log(1);
+      location.href = "/Game"; //going to game
+    }
+  })
+}
+catch{};
+}
+}
+</script>
+
+<script>
     if(localStorage.getItem("KEY") === undefined) location.href = "/"
     async function loop(){
         await get_data();
@@ -100,6 +131,7 @@
         location.href = "/spielen";
       }
 
-    </script>
-  </body>
+
+</script>
+</body>
 </html>
