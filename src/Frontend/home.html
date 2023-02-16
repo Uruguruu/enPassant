@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <title>Login und Register TEST</title>
+    <title>Homepage</title>
     <style>
       body {
         font-family: Arial, Helvetica, sans-serif;
@@ -20,6 +20,225 @@
 </head>
 
 <body>
+
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Homepage</title>
+    <link rel="stylesheet" href="test.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-section">
+        <h2>Deine Spiele</h2>
+      </div>
+      <div class="center-section">
+        <img src="images/enPassant.png" alt="Logo">
+      </div>
+      <div class="right-section">
+        <h2>Leaderboard</h2>
+      </div>
+    </div>
+  
+    <div class="button-container">
+      <button id="create-game-button" class="game-button">Create Game</button>
+      <span class="or-separator">OR</span>
+      <button id="join-game-button" class="game-button">Join Game</button>
+    </div>
+  
+    <div id="join-game-input" style="display:none"> 
+      <label for="game-id-input">Enter game ID:</label>
+      <input type="number" id="game-id-input" />
+      <button id="join-game-submit-button">Join</button>
+    </div>
+  
+    <script>
+      const joinGameButton = document.getElementById('join-game-button');
+      const joinGameInput = document.getElementById('join-game-input');
+      const joinGameSubmitButton = document.getElementById('join-game-submit-button');
+  
+      joinGameButton.addEventListener('click', () => {
+        joinGameInput.style.display = 'block';
+      });
+  
+      joinGameSubmitButton.addEventListener('click', () => {
+        const gameId = document.getElementById('game-id-input').value;
+        // Hier könntest du den HTTP-Request absenden, um dem Spiel mit der Game-ID beizutreten
+      });
+    </script>
+  </body>
+  </html>
+  <style>
+body {
+  background-image: url('images/wallpaper.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: White;
+  background-color: black;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  padding: 20px;
+  border: 1px solid transparent ;
+  box-shadow: white;
+}
+
+.left-section, .right-section {
+  flex-basis: 30%;
+  text-align: center;
+}
+
+.center-section {
+  flex-basis: 40%;
+  text-align: center;
+}
+
+h2 {
+  color: #958a56;
+  font-size: 24px;
+  margin-top: 0;
+}
+
+img {
+  width: 350px;
+  height: 350px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.or-separator {
+  margin: 0 20px;
+  font-size: 24px;
+  padding: 50px 0px 50px 0px;
+}
+
+.game-button {
+  width: 225px;
+  height: 50px;
+  padding: 0px 10px 0px 10px;
+  background: #2a4158;
+  color: #ffffff;
+  border-color: #cccccc;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 3px 3px 3px 3px;
+  font-family: "Helvetica";
+  font-weight: 400;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#create-game-button {
+  font-size: 32px;
+  height: 70px;
+}
+
+#join-game-button {
+  height: 70px;
+}
+
+#join-game-input {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#game-id-input {
+  width: 200px;
+  height: 30px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#join-game-submit-button {
+  width: 100px;
+  height: 30px;
+  margin-top: 10px;
+  background-color: #2a4158;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-family: "Helvetica";
+  font-weight: 400;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.or-separator {
+  margin: 0 20px;
+  font-size: 24px;
+  padding: 50px 0px 50px 0px;
+  color: #958a56;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  padding: 20px;
+  border: 1px solid transparent;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  background-color: transparent;
+}
+
+.left-section, .right-section {
+  flex-basis: 30%;
+  text-align: center;
+  color: #958a56;
+  font-weight: bold;
+}
+
+.center-section {
+  flex-basis: 40%;
+  text-align: center;
+}
+
+h2 {
+  color: #958a56;
+  font-size: 24px;
+  margin-top: 0;
+}
+
+img {
+  width: 350px;
+  height: 350px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+.game-button:hover {
+  filter: brightness(80%);
+}
+
+
+  </style>
+
+
+
+
 <button onclick="get_create_game_params()">Create Game</button>
 <script>
  async function get_create_game_params() {
