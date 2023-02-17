@@ -1243,7 +1243,7 @@ app.get("/leaderboard", (req, res) => {
 });
 // ---Leaderboard END---
 
-app.get("/Game" + data, function (req, res) {
+app.get("/Game", function (req, res) {
   res.sendFile(__dirname + "/Frontend/Spielpage.html", "/spielpage.css");
 });
 
