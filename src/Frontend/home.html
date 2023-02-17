@@ -29,7 +29,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <title>Homepage</title>
-    <link rel="stylesheet" href="test.css">
   </head>
   <body>
     <div class="container">
@@ -45,7 +44,7 @@
     </div>
   
     <div class="button-container">
-      <button id="create-game-button" class="game-button">Create Game</button>
+      <button id="create-game-button" onclick="get_create_game_params()" class="game-button">Create Game</button>
       <span class="or-separator">OR</span>
       <button id="join-game-button" class="game-button">Join Game</button>
     </div>
@@ -230,10 +229,9 @@ h2 {
 }
 
 
-  </style>
+</style>
 
 
-<button onclick="get_create_game_params()">Create Game</button>
 <script>
  async function get_create_game_params() {
         const public = 1;
@@ -248,7 +246,7 @@ h2 {
     console.log("get_create_game_prams started");
     //http://localhost:3004/login
     // http://raspisamuel.local:3004/login
-      axios.post('http://localhost:3004/create_game',{
+      axios.post('http://raspisamuel.local:3004/create_game',{
         KEY: token,  public: public
           }, {
        headers: {
@@ -266,13 +264,15 @@ h2 {
     }
     else{
       console.log(1);
-      //location.href = "/Game"; //going to game
+      localStorage.setItem('KEY', data);
+      console.log(data);
+      location.href = "/Game" + data; //going to game
     }
   })
 }
 catch{};
 }
-</script>
+</script> 
 
 <script>
     if(localStorage.getItem("KEY") === undefined) location.href = "/"
@@ -345,5 +345,4 @@ catch{};
 
 
 </script>
-</body>
 </html>
