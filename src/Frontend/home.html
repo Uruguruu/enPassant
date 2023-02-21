@@ -32,7 +32,7 @@
   </head>
   <body>
     <div class="container">
-      <div class="left-section">
+      <div id="spiele" class="left-section">
         <h2>Deine Spiele</h2>
       </div>
       <div class="center-section">
@@ -44,6 +44,7 @@
     </div>
   
     <div class="button-container">
+      <p id="game_id"></p>
       <button id="create-game-button" onclick="get_create_game_params()" class="game-button">Create Game</button>
       <span class="or-separator">OR</span>
       <button id="join-game-button" class="game-button">Join Game</button>
@@ -53,6 +54,7 @@
       <label for="game-id-input">Enter game ID:</label>
       <input type="number" id="game-id-input" />
       <button id="join-game-submit-button" onclick="join()">Join</button>
+      <p id="message"></p>
     </div>
   
     <script>
@@ -228,6 +230,9 @@ h2 {
   filter: brightness(80%);
 }
 
+p {
+  color: white;
+}
 
 </style>
 
@@ -246,7 +251,7 @@ h2 {
     console.log("get_create_game_prams started");
     //http://localhost:3004/login
     // http://raspisamuel.local:3004/login
-      axios.post('http://raspisamuel.local:3004/create_game',{
+      axios.post('http://localhost:3004/create_game',{
         KEY: token,  public: public
           }, {
        headers: {
@@ -258,15 +263,12 @@ h2 {
     data = response["data"];
     console.log(data === "Invalid KEY");
     if((data === "Invalid KEY")){
-      console.log(11);
-      //document.getElementById("message").innerHTML = data;
-      //ERROR could be displayed in Frontend
+      location.href = "/";
     }
     else{
-      console.log(1);
-      localStorage.setItem('KEY', data);
+      document.getElementById("game_id").innerHTML = "Dein Game Code lautet: "+data;
       console.log(data);
-      location.href = "/Game"; //going to game
+    //  location.href = "/Game"; //going to game
     }
   })
 }
@@ -283,14 +285,14 @@ async function join() {
         var GameCode = document.getElementById("game-id-input").value;
         console.log("Your game id is " + GameCode);
         console.log("Your KEY is " + token);
-        joinGame(GameCode);
+        joinGame(token,GameCode);
       }
       async function joinGame(token, GameCode) {
   try {
-    console.log(15);
+    console.log("Dein Key ist "+token);
     //http://localhost:3004/login
     // http://raspisamuel.local:3004/login 
-axios.post('http://raspisamuel.local:3004/join_game',{
+axios.post('http://localhost:3004/join_game',{
   KEY: token,  code: GameCode
 }, {
 headers: {
@@ -301,24 +303,25 @@ headers: {
     console.log(response);
     data = response["data"];
     console.log(data === "Wrong Code");
-    if((data === "Wrong Code")){
+    if((data === "Invalid KEY")){
+      location.href = "/";
+    }
+    else if((data === "Wrong Code")){
       console.log(11);
-      //document.getElementById("message").innerHTML = data;
+      document.getElementById("message").innerHTML = data;
       //ERROR could be displayed in Frontend
     }
     else{
       console.log(1);
-      localStorage.setItem(GameCode, data);
+      localStorage.setItem("spiel", data);
       console.log(data);
-      location.href = "/Game" + data; //going to game
+      location.href = "/Game"; //going to game
     }
   })
 }
 catch{};
 }
-</script>
 
-<script>
     if(localStorage.getItem("KEY") === undefined) location.href = "/"
     async function loop(){
         await get_data();
@@ -331,14 +334,14 @@ catch{};
                 console.log(4);
                 return new Promise ((resolveOuter) => {
                     console.log(2);
-                    axios.get('http://raspisamuel.local:3004/your_live_games/'+localStorage.getItem("KEY"), {
+                    axios.get('http://localhost:3004/your_live_games/'+localStorage.getItem("KEY"), {
                       headers: {
                        "Content-Type": "application/x-www-form-urlencoded"
                       }
                       })
                         .then(function (response) {
                             if(response["data"] === "Invalid KEY"){
-                                localStorage.removeItem('KEY');
+                                // localStorage.removeItem('KEY');
                                 location.href = "/"
                             }
                             else{
@@ -359,11 +362,13 @@ catch{};
     function show_data(data){
         var weiss = document.createElement("p");
         var schwarz = document.createElement("p");
+        var game_id_text = document.createElement("p");
         var aktueller_player = document.createElement("p");
         var abstand = document.createElement("br");
         var spielen = document.createElement("button");
         spielen.onclick =  function() {spiel(data["Games_ID"])};
         spielen.innerHTML = "Jetzt weiterspielen";
+        game_id_text.innerHTML = "Game ID: "+data["Games_ID"];
         weiss.innerHTML = "Weiss spielt: "+data["weiss"];
         schwarz.innerHTML = "Schwarz spielt: "+data["schwarz"];
         if(data["aktueller_player"] === 0 && data["weiss"] === data["m_user"]){
@@ -376,6 +381,7 @@ catch{};
             aktueller_player.innerHTML = "Aktueller Spieler: "+"gegenspieler";
         }
         var main = document.getElementById("spiele");
+        main.appendChild(game_id_text)
         main.appendChild(weiss)
         main.appendChild(schwarz)
         main.appendChild(aktueller_player)
@@ -383,8 +389,8 @@ catch{};
         main.appendChild(abstand);
     }
       function spiel(zahl){
-      //  localStorage.setItem('spiel', zahl);
-        location.href = "/spielen";
+        localStorage.setItem('spiel', zahl);
+        location.href = "/game";
       }
 
 

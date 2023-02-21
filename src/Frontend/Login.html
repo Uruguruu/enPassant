@@ -50,7 +50,7 @@
         </form>
     </div>
     <script>
-            async function logvar() {
+        async function logvar() {
         var eMail = document.getElementById("Username").value;
         var password = document.getElementById("Password").value;
         console.log("The E-Mail typed in was: " + eMail);
@@ -62,7 +62,7 @@
     console.log(5);
     //http://localhost:3004/login
     // http://raspisamuel.local:3004/login 
-axios.post('http://raspisamuel.local:3004/login',{
+axios.post('http://localhost:3004/login',{
   name: eMail,  password: password
 }, {
 headers: {

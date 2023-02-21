@@ -101,6 +101,29 @@
 
 <script>
 
+function getdata(){
+    try {
+        alert(localStorage.getItem("spiel"));
+        console.log(5);
+        axios.get('http://localhost:3004/get_spiel/'+localStorage.getItem("spiel"))
+        .then(function (response) {
+        console.log(response);
+        data = response["data"];
+        
+        for (let i = 0; i < data.length; i++) {
+            var x = data[i]["X"];
+            var y = data[i]["Y"];
+            var type = data[i]["Type"];
+            console.log(data[i]);  
+        } 
+        insertImage();
+      
+      })
+    }
+    catch{};
+}
+
+getdata();
 // Inserting the Images
 function insertImage() {
 

@@ -225,6 +225,12 @@ app.post("/create_game", async function (req, res) {
 // checks APi KEY and joins existing game
 app.post("/join_game", async function (req, res) {
   try {
+    // to allow croo things
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     let { KEY, code } = req.body;
     if (!(await check_key(KEY))) res.send("Invalid KEY");
     else {
@@ -1226,6 +1232,12 @@ app.get("/signup", function (req, res) {
 });
 
 app.get("/get_spiel/:spiel_id", (req, res) => {
+    // to allow croo things
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
   var spiel_id = req.params.spiel_id;
   const figures = db.prepare(
     "SELECT * FROM Figuren WHERE Games_ID = @spiel_id"
