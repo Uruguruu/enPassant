@@ -313,8 +313,8 @@ headers: {
     }
     else{
       console.log(1);
-      localStorage.setItem("spiel", data);
-      console.log(data);
+      localStorage.setItem("spiel", GameCode);
+      console.log(GameCode);
       location.href = "/Game"; //going to game
     }
   })
@@ -323,13 +323,7 @@ catch{};
 }
 
     if(localStorage.getItem("KEY") === undefined) location.href = "/"
-    async function loop(){
-        await get_data();
-        setInterval(await get_data(), 5000);
-    }
-    loop();
         async function get_data() {
-            console.log();
             try {
                 console.log(4);
                 return new Promise ((resolveOuter) => {
@@ -393,6 +387,7 @@ catch{};
         location.href = "/game";
       }
 
-
+      setInterval(get_data, 5000);
+      get_data();
 </script>
 </html>

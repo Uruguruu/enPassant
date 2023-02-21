@@ -272,10 +272,17 @@ app.post("/join_game", async function (req, res) {
 
 app.post("/mache_move", async function (req, res) {
   try {
+     // to allow croo things
+     res.header("Access-Control-Allow-Origin", "*");
+     res.header(
+       "Access-Control-Allow-Headers",
+       "Origin, X-Requested-With, Content-Type, Accept"
+     );
     const move = db.prepare(
       "UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id"
     );
     let { KEY, spiel_id, anfangx, anfangy, endex, endey } = req.body;
+    console.log("____",spiel_id, anfangx, anfangy, endex, endey);
     anfangy = parseInt(anfangy);
     anfangx = parseInt(anfangx);
     endex = parseInt(endex);
@@ -323,10 +330,12 @@ app.post("/mache_move", async function (req, res) {
           return;
         } else {
           const get_color = db.prepare(
-            "SELECT g.Player_2 FROM Figuren f LEFT JOIN Games g ON f.Player = g.Player_2 WHERE f.X = @anfangx AND f.Y = @anfangy AND f.Games_ID = @spiel_id"
+            "SELECT g.Player_2 FROM Figuren f LEFT JOIN Games g ON f.Games_ID = g.Games_ID WHERE f.X = @anfangx AND f.Y = @anfangy AND f.Games_ID = @spiel_id"
           );
+          console.log(anfangx, anfangy, spiel_id);
           var g_color = get_color.get({ anfangx, anfangy, spiel_id });
           var farbe; // true = weiss false = schwarz
+          console.log(g_color, Player);
           if (g_color["Player_2"] === Player) farbe = false;
           else farbe = true;
           var spielzug;
@@ -351,12 +360,15 @@ app.post("/mache_move", async function (req, res) {
           /*
           Switch for White Figures
           */
+         console.log(farbe);
           if (farbe === true) {
+            console.log(spielfigur);
             switch (spielfigur) {
               /*
               Pawn
               */
               case 1:
+                console.log("Pawn");
                 if (anfangy - endey != -1) {
                   spielzug = false; // Überprüfung ob der Bauer nach vorne geht
                 }

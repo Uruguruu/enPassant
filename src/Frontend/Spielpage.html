@@ -103,27 +103,43 @@
 
 function getdata(){
     try {
-        alert(localStorage.getItem("spiel"));
-        console.log(5);
         axios.get('http://localhost:3004/get_spiel/'+localStorage.getItem("spiel"))
         .then(function (response) {
-        console.log(response);
         data = response["data"];
-        
+        var white
+        try{
+            white = data[0]["Player"];
+        }
+        catch(error){
+            console.log(error);
+            location.href = "/home"; 
+        }        
+        document.querySelectorAll('.box').forEach(image => {
+            image.innerText = "";
+        });
         for (let i = 0; i < data.length; i++) {
             var x = data[i]["X"];
             var y = data[i]["Y"];
             var type = data[i]["Type"];
-            console.log(data[i]);  
+            var list;
+            if(white === data[i]["Player"]){
+                list = ["","Wpawn","Wrook","Wknight","Wbishop","Wking","Wqueen"]
+            }
+            else{
+                list = ["","Bpawn","Brook","Bknight","Bbishop","Bking","Bqueen"]
+            }
+            document.getElementById("b"+y+"0"+x).innerHTML = list[type]
+            
         } 
         insertImage();
-      
       })
     }
     catch{};
 }
+setInterval(getdata, 1000);
 
 getdata();
+
 // Inserting the Images
 function insertImage() {
 
@@ -170,6 +186,52 @@ function coloring() {
 }
 coloring()
    
+
+// for move
+var schon_markiert = false;
+document.addEventListener("mouseup", mousfunction);
+function mousfunction(){
+    var mous_element = mouseover;
+    if(mous_element.tagName === "IMG"){
+        mous_element = mous_element.parentElement
+    }
+    if(mous_element.tagName === "LI"){
+        if(schon_markiert)  mache_move(mous_element)
+        else{        
+            mous_element.style.border =  "solid #0000FF";
+            schon_markiert = mous_element;
+        }
+    }
+    console.log(mous_element);
+}
+
+var mouseover;
+document.addEventListener('mousemove', e => {
+    mouseover = document.elementFromPoint(e.clientX, e.clientY)
+  }, {passive: true})
+
+  function mache_move(mous_element){
+    console.log( localStorage.getItem("spiel"),  schon_markiert.id.charAt(3),  schon_markiert.id.charAt(1),  mous_element.id.charAt(3),  mous_element.id.charAt(1));
+    axios.post('http://localhost:3004/mache_move/',
+    {
+        KEY: localStorage.getItem("KEY"), spiel_id: localStorage.getItem("spiel"), anfangx: schon_markiert.id.charAt(3), anfangy: schon_markiert.id.charAt(1), endex: mous_element.id.charAt(3), endey: mous_element.id.charAt(1)
+    }, 
+    {
+       headers: 
+       {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+    }
+    )
+    .then(function (response) {
+    data = response["data"]
+    if(data != "Success") alert(data);
+    // müssen noch alle Fehlermeldungen gemacht werden
+    })
+    schon_markiert.style.border =  "";
+    schon_markiert = false;
+    getdata();
+  }
 </script>
 
 </html>
