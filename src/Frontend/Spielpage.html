@@ -1,237 +1,299 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="/spielpage.css">
-</head>
+    <script src="./js/errorhandler.js"></script>
+    <link rel="stylesheet" href="/spielpage.css" />
+  </head>
 
+  <body>
+    <div class="topnav">
+      <a class="active" href="/home">Home</a>
+      <a onclick="DrawFunction()">Draw</a>
+      <a onclick="getdata()" title="Reload the positions of all Figures"
+        >Reload</a
+      >
+      <a
+        href="https://en.wikipedia.org/wiki/Rules_of_chess"
+        target="_blank"
+        title="Open a offical Rule site"
+        >Rules</a
+      >
+    </div>
 
-<body>
-    
     <ul>
+      <div class="divv" id="row8">
+        <li class="box" id="b801">Brook</li>
+        <li class="box" id="b802">Bknight</li>
+        <li class="box" id="b803">Bbishop</li>
+        <li class="box" id="b804">Bqueen</li>
+        <li class="box" id="b805">Bking</li>
+        <li class="box" id="b806">Bbishop</li>
+        <li class="box" id="b807">Bknight</li>
+        <li class="box" id="b808">Brook</li>
+      </div>
+      <div class="divv" id="row7">
+        <li class="box" id="b701">Bpawn</li>
+        <li class="box" id="b702">Bpawn</li>
+        <li class="box" id="b703">Bpawn</li>
+        <li class="box" id="b704">Bpawn</li>
+        <li class="box" id="b705">Bpawn</li>
+        <li class="box" id="b706">Bpawn</li>
+        <li class="box" id="b707">Bpawn</li>
+        <li class="box" id="b708">Bpawn</li>
+      </div>
+      <div class="divv" id="row6">
+        <li class="box" id="b601"></li>
+        <li class="box" id="b602"></li>
+        <li class="box" id="b603"></li>
+        <li class="box" id="b604"></li>
+        <li class="box" id="b605"></li>
+        <li class="box" id="b606"></li>
+        <li class="box" id="b607"></li>
+        <li class="box" id="b608"></li>
+      </div>
+      <div class="divv" id="row5">
+        <li class="box" id="b501"></li>
+        <li class="box" id="b502"></li>
+        <li class="box" id="b503"></li>
+        <li class="box" id="b504"></li>
+        <li class="box" id="b505"></li>
+        <li class="box" id="b506"></li>
+        <li class="box" id="b507"></li>
+        <li class="box" id="b508"></li>
+      </div>
+      <div class="divv" id="row4">
+        <li class="box" id="b401"></li>
+        <li class="box" id="b402"></li>
+        <li class="box" id="b403"></li>
+        <li class="box" id="b404"></li>
+        <li class="box" id="b405"></li>
+        <li class="box" id="b406"></li>
+        <li class="box" id="b407"></li>
+        <li class="box" id="b408"></li>
+      </div>
+      <div class="divv" id="row3">
+        <li class="box" id="b301"></li>
+        <li class="box" id="b302"></li>
+        <li class="box" id="b303"></li>
+        <li class="box" id="b304"></li>
+        <li class="box" id="b305"></li>
+        <li class="box" id="b306"></li>
+        <li class="box" id="b307"></li>
+        <li class="box" id="b308"></li>
+      </div>
 
-        <div class="divv" id="row8">
-            <li class="box" id="b801">Brook</li>
-            <li class="box" id="b802">Bknight</li>
-            <li class="box" id="b803">Bbishop</li>
-            <li class="box" id="b804">Bqueen</li>
-            <li class="box" id="b805">Bking</li>
-            <li class="box" id="b806">Bbishop</li>
-            <li class="box" id="b807">Bknight</li>
-            <li class="box" id="b808">Brook</li>
-        </div>
-        <div class="divv" id="row7">
-            <li class="box" id="b701">Bpawn</li>
-            <li class="box" id="b702">Bpawn</li>
-            <li class="box" id="b703">Bpawn</li>
-            <li class="box" id="b704">Bpawn</li>
-            <li class="box" id="b705">Bpawn</li>
-            <li class="box" id="b706">Bpawn</li>
-            <li class="box" id="b707">Bpawn</li>
-            <li class="box" id="b708">Bpawn</li>
-        </div>
-        <div class="divv" id="row6">
-            <li class="box" id="b601"></li>
-            <li class="box" id="b602"></li>
-            <li class="box" id="b603"></li>
-            <li class="box" id="b604"></li>
-            <li class="box" id="b605"></li>
-            <li class="box" id="b606"></li>
-            <li class="box" id="b607"></li>
-            <li class="box" id="b608"></li>
-        </div>
-        <div class="divv" id="row5">
-            <li class="box" id="b501"></li>
-            <li class="box" id="b502"></li>
-            <li class="box" id="b503"></li>
-            <li class="box" id="b504"></li>
-            <li class="box" id="b505"></li>
-            <li class="box" id="b506"></li>
-            <li class="box" id="b507"></li>
-            <li class="box" id="b508"></li>
-        </div>
-        <div class="divv" id="row4">
-            <li class="box" id="b401"></li>
-            <li class="box" id="b402"></li>
-            <li class="box" id="b403"></li>
-            <li class="box" id="b404"></li>
-            <li class="box" id="b405"></li>
-            <li class="box" id="b406"></li>
-            <li class="box" id="b407"></li>
-            <li class="box" id="b408"></li>
-        </div>
-        <div class="divv" id="row3">
-            <li class="box" id="b301"></li>
-            <li class="box" id="b302"></li>
-            <li class="box" id="b303"></li>
-            <li class="box" id="b304"></li>
-            <li class="box" id="b305"></li>
-            <li class="box" id="b306"></li>
-            <li class="box" id="b307"></li>
-            <li class="box" id="b308"></li>
-        </div>
-
-        <div class="divv" id="row2">
-            <li class="box Wpawn" id="b201">Wpawn</li>
-            <li class="box Wpawn" id="b202">Wpawn</li>
-            <li class="box Wpawn" id="b203">Wpawn</li>
-            <li class="box Wpawn" id="b204">Wpawn</li>
-            <li class="box Wpawn" id="b205">Wpawn</li>
-            <li class="box Wpawn" id="b206">Wpawn</li>
-            <li class="box Wpawn" id="b207">Wpawn</li>
-            <li class="box Wpawn" id="b208">Wpawn</li>
-        </div>
-        <div class="divv" id="row1">
-            <li class="box" id="b101">Wrook</li>
-            <li class="box" id="b102">Wknight</li>
-            <li class="box" id="b103">Wbishop</li>
-            <li class="box" id="b104">Wqueen</li>
-            <li class="box" id="b105">Wking</li>
-            <li class="box" id="b106">Wbishop</li>
-            <li class="box" id="b107">Wknight</li>
-            <li class="box" id="b108">Wrook</li>
-        </div>
-
+      <div class="divv" id="row2">
+        <li class="box Wpawn" id="b201">Wpawn</li>
+        <li class="box Wpawn" id="b202">Wpawn</li>
+        <li class="box Wpawn" id="b203">Wpawn</li>
+        <li class="box Wpawn" id="b204">Wpawn</li>
+        <li class="box Wpawn" id="b205">Wpawn</li>
+        <li class="box Wpawn" id="b206">Wpawn</li>
+        <li class="box Wpawn" id="b207">Wpawn</li>
+        <li class="box Wpawn" id="b208">Wpawn</li>
+      </div>
+      <div class="divv" id="row1">
+        <li class="box" id="b101">Wrook</li>
+        <li class="box" id="b102">Wknight</li>
+        <li class="box" id="b103">Wbishop</li>
+        <li class="box" id="b104">Wqueen</li>
+        <li class="box" id="b105">Wking</li>
+        <li class="box" id="b106">Wbishop</li>
+        <li class="box" id="b107">Wknight</li>
+        <li class="box" id="b108">Wrook</li>
+      </div>
     </ul>
-</body>
+  </body>
 
-<script>
-
-function getdata(){
-    try {
-        axios.get('http://localhost:3004/get_spiel/'+localStorage.getItem("spiel"))
-        .then(function (response) {
-        data = response["data"];
-        var white
-        try{
-            white = data[0]["Player"];
-        }
-        catch(error){
-            console.log(error);
-            location.href = "/home"; 
-        }        
-        document.querySelectorAll('.box').forEach(image => {
-            image.innerText = "";
-        });
-        for (let i = 0; i < data.length; i++) {
-            var x = data[i]["X"];
-            var y = data[i]["Y"];
-            var type = data[i]["Type"];
-            var list;
-            if(white === data[i]["Player"]){
-                list = ["","Wpawn","Wrook","Wknight","Wbishop","Wking","Wqueen"]
+  <script>
+    function getdata() {
+      try {
+        axios
+          .get(
+            "http://localhost:3004/get_spiel/" + localStorage.getItem("spiel")
+          )
+          .then(function (response) {
+            data = response["data"];
+            var white;
+            try {
+              white = data[0]["Player"];
+            } catch (error) {
+              console.log(error);
+              console.log(localStorage.getItem("spiel"));
+              //location.href = "/home";
             }
-            else{
-                list = ["","Bpawn","Brook","Bknight","Bbishop","Bking","Bqueen"]
+            document.querySelectorAll(".box").forEach((image) => {
+              image.innerText = "";
+            });
+            for (let i = 0; i < data.length; i++) {
+              var x = data[i]["X"];
+              var y = data[i]["Y"];
+              var type = data[i]["Type"];
+              var list;
+              if (white === data[i]["Player"]) {
+                list = [
+                  "",
+                  "Wpawn",
+                  "Wrook",
+                  "Wknight",
+                  "Wbishop",
+                  "Wking",
+                  "Wqueen",
+                ];
+              } else {
+                list = [
+                  "",
+                  "Bpawn",
+                  "Brook",
+                  "Bknight",
+                  "Bbishop",
+                  "Bking",
+                  "Bqueen",
+                ];
+              }
+              document.getElementById("b" + y + "0" + x).innerHTML = list[type];
             }
-            document.getElementById("b"+y+"0"+x).innerHTML = list[type]
-            
-        } 
-        insertImage();
-      })
+            insertImage();
+          });
+      } catch {}
     }
-    catch{};
-}
-setInterval(getdata, 1000);
+    setInterval(getdata, 1000);
 
-getdata();
+    getdata();
 
-// Inserting the Images
-function insertImage() {
-
-document.querySelectorAll('.box').forEach(image => {
-
-    if (image.innerText.length !== 0) {
-        if (image.innerText == 'Wpawn' || image.innerText == 'Bpawn') {
-            image.innerHTML = `${image.innerText} <img class='allimg allpawn' src="images/chessPieces/${image.innerText}.png" alt="">`
-            image.style.cursor = 'pointer'
-
+    // Inserting the Images
+    function insertImage() {
+      document.querySelectorAll(".box").forEach((image) => {
+        if (image.innerText.length !== 0) {
+          if (image.innerText == "Wpawn" || image.innerText == "Bpawn") {
+            image.innerHTML = `${image.innerText} <img class='allimg allpawn' src="images/chessPieces/${image.innerText}.png" alt="">`;
+            image.style.cursor = "pointer";
+          } else {
+            image.innerHTML = `${image.innerText} <img class='allimg' src="images/chessPieces/${image.innerText}.png" alt="">`;
+            image.style.cursor = "pointer";
+          }
         }
-
-        else {
-
-            image.innerHTML = `${image.innerText} <img class='allimg' src="images/chessPieces/${image.innerText}.png" alt="">`
-            image.style.cursor = 'pointer'
-        }
+      });
     }
-})
-}
-insertImage()
+    insertImage();
 
-// Chessboard coloring
-function coloring() {
-    const color = document.querySelectorAll('.box')
+    // Chessboard coloring
+    function coloring() {
+      const color = document.querySelectorAll(".box");
 
-    color.forEach(color => {
-
-        getId = color.id
-        arr = Array.from(getId)
-        arr.shift()
-        aside = eval(arr.pop())
-        aup = eval(arr.shift())
-        a = aside + aup
+      color.forEach((color) => {
+        getId = color.id;
+        arr = Array.from(getId);
+        arr.shift();
+        aside = eval(arr.pop());
+        aup = eval(arr.shift());
+        a = aside + aup;
 
         if (a % 2 == 0) {
-            color.style.backgroundColor = '#22272c'
+          color.style.backgroundColor = "#22272c";
         }
         if (a % 2 !== 0) {
-            color.style.backgroundColor = '#8c9ea3'
+          color.style.backgroundColor = "#8c9ea3";
         }
-
-    })
-}
-coloring()
-   
-
-// for move
-var schon_markiert = false;
-document.addEventListener("mouseup", mousfunction);
-function mousfunction(){
-    var mous_element = mouseover;
-    if(mous_element.tagName === "IMG"){
-        mous_element = mous_element.parentElement
+      });
     }
-    if(mous_element.tagName === "LI"){
-        if(schon_markiert)  mache_move(mous_element)
-        else{        
-            mous_element.style.border =  "solid #0000FF";
-            schon_markiert = mous_element;
+    coloring();
+
+    // for move
+    var schon_markiert = false;
+    document.addEventListener("mouseup", mousfunction);
+    function mousfunction() {
+      var mous_element = mouseover;
+      if (mous_element.tagName === "IMG") {
+        mous_element = mous_element.parentElement;
+      }
+      if (mous_element.tagName === "LI") {
+        if (schon_markiert) mache_move(mous_element);
+        else {
+          mous_element.style.border = "solid #0000FF";
+          schon_markiert = mous_element;
         }
+      }
+      console.log(mous_element);
     }
-    console.log(mous_element);
-}
 
-var mouseover;
-document.addEventListener('mousemove', e => {
-    mouseover = document.elementFromPoint(e.clientX, e.clientY)
-  }, {passive: true})
+    var mouseover;
+    document.addEventListener(
+      "mousemove",
+      (e) => {
+        mouseover = document.elementFromPoint(e.clientX, e.clientY);
+      },
+      { passive: true }
+    );
 
-  function mache_move(mous_element){
-    console.log( localStorage.getItem("spiel"),  schon_markiert.id.charAt(3),  schon_markiert.id.charAt(1),  mous_element.id.charAt(3),  mous_element.id.charAt(1));
-    axios.post('http://localhost:3004/mache_move/',
-    {
-        KEY: localStorage.getItem("KEY"), spiel_id: localStorage.getItem("spiel"), anfangx: schon_markiert.id.charAt(3), anfangy: schon_markiert.id.charAt(1), endex: mous_element.id.charAt(3), endey: mous_element.id.charAt(1)
-    }, 
-    {
-       headers: 
-       {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
+    function mache_move(mous_element) {
+      console.log(
+        localStorage.getItem("spiel"),
+        schon_markiert.id.charAt(3),
+        schon_markiert.id.charAt(1),
+        mous_element.id.charAt(3),
+        mous_element.id.charAt(1)
+      );
+      axios
+        .post(
+          "http://localhost:3004/mache_move/",
+          {
+            KEY: localStorage.getItem("KEY"),
+            spiel_id: localStorage.getItem("spiel"),
+            anfangx: schon_markiert.id.charAt(3),
+            anfangy: schon_markiert.id.charAt(1),
+            endex: mous_element.id.charAt(3),
+            endey: mous_element.id.charAt(1),
+          },
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        )
+        .then(function (response) {
+          data = response["data"];
+          if (data != "Success") alert(data);
+          // müssen noch alle Fehlermeldungen gemacht werden
+        });
+      schon_markiert.style.border = "";
+      schon_markiert = false;
+      getdata();
     }
-    )
-    .then(function (response) {
-    data = response["data"]
-    if(data != "Success") alert(data);
-    // müssen noch alle Fehlermeldungen gemacht werden
-    })
-    schon_markiert.style.border =  "";
-    schon_markiert = false;
-    getdata();
-  }
-</script>
 
+    function DrawFunction() {
+      if (confirm("Do you want to draw?") == true) {
+        axios
+        .post(
+          "http://localhost:3004/draw",
+          {
+            KEY: localStorage.getItem("KEY"),
+            spiel_id: localStorage.getItem("spiel"),
+          },
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        )
+        .then(function (response) {
+          data = response["data"];
+          if (data != "Your Draw has been confirmed") {
+            alert("Error drawing");
+          } else {
+            location.href = "/home";
+          }
+
+          // müssen noch alle Fehlermeldungen gemacht werden
+        });
+      } else {
+        text = "You canceled!";
+      }
+
+    }
+  </script>
 </html>

@@ -1,3 +1,0 @@
-function JSTest(){
-    alert("hi");
-}
