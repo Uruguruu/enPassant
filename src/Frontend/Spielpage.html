@@ -112,14 +112,26 @@
         <li class="box" id="b108">Wrook</li>
       </div>
     </ul>
+    <div>
+        <div>
+            <div id="chat_text">
+
+            </div>
+        </div>
+        <div>
+            <input id="chat_input">
+            <button onclick="send_chat()">Senden</button>
+        </div>
+    </div>
   </body>
 
   <script>
+    var adresse = "http://localhost:3004";
     function getdata() {
       try {
         axios
           .get(
-            "http://raspisamuel:3004/get_spiel/" + localStorage.getItem("spiel")
+            adresse+"/get_spiel/" + localStorage.getItem("spiel")
           )
           .then(function (response) {
             data = response["data"];
@@ -164,6 +176,32 @@
             }
             insertImage();
           });
+
+        // for the chat
+        axios
+          .post(
+            adresse+"/get_chat", {
+            KEY: localStorage.getItem("KEY"),
+            spiel_id: localStorage.getItem("spiel"),
+            },
+            {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                }
+            }
+           )
+            .then(function (response) {
+                response = response["data"]
+                document.getElementById("chat_text").innerHTML = "";
+                for (let i = 0; i < response.length; i++) {
+                    var data = response[i];
+                    
+                    console.log(data);
+                    var p_element = document.createElement("p");
+                    p_element.innerHTML = data["Username"] + ": "+data["Text"];
+                    document.getElementById("chat_text").appendChild(p_element);
+                } 
+            })  
       } catch {}
     }
     setInterval(getdata, 1000);
@@ -246,7 +284,7 @@
       );
       axios
         .post(
-          "http://raspisamuel:3004/mache_move/",
+          adresse+"/mache_move/",
           {
             KEY: localStorage.getItem("KEY"),
             spiel_id: localStorage.getItem("spiel"),
@@ -280,7 +318,7 @@
       if (confirm("Do you want to draw?") == true) {
         axios
         .post(
-          "http://raspisamuel:3004/draw",
+          adresse+"/draw",
           {
             KEY: localStorage.getItem("KEY"),
             spiel_id: localStorage.getItem("spiel"),
@@ -333,6 +371,24 @@
         // want to be respectful there is no need to bother them anymore.
       }
       notifyMe();
+
+      function send_chat(){
+        axios
+        .post(
+          adresse+"/send_chat",
+          {
+            KEY: localStorage.getItem("KEY"),
+            spiel_id: localStorage.getItem("spiel"),
+            message: document.getElementById("chat_input").value
+          },
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        )
+      }
   </script>
+
   <script src="../error.js"></script>
 </html>

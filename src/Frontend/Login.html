@@ -50,6 +50,7 @@
         </form>
     </div>
     <script>
+      var adresse = "http://localhost:3004";
         async function logvar() {
         var eMail = document.getElementById("Username").value;
         var password = document.getElementById("Password").value;
@@ -61,7 +62,7 @@
   try {
     //http://localhost:3004/login
     // http://raspisamuel.local:3004/login 
-axios.post('http://raspisamuel:3004/login',{
+axios.post(adresse+'/login',{
   name: eMail,  password: password
 }, {
 headers: {
