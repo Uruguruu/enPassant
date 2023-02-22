@@ -114,7 +114,7 @@
       try {
         axios
           .get(
-            "http://localhost:3004/get_spiel/" + localStorage.getItem("spiel")
+            "http://raspisamuel.local:3004/get_spiel/" + localStorage.getItem("spiel")
           )
           .then(function (response) {
             data = response["data"];
@@ -241,7 +241,7 @@
       );
       axios
         .post(
-          "http://localhost:3004/mache_move/",
+          "http://raspisamuel.local:3004/mache_move/",
           {
             KEY: localStorage.getItem("KEY"),
             spiel_id: localStorage.getItem("spiel"),
@@ -275,7 +275,7 @@
       if (confirm("Do you want to draw?") == true) {
         axios
         .post(
-          "http://localhost:3004/draw",
+          "http://raspisamuel.local:3004/draw",
           {
             KEY: localStorage.getItem("KEY"),
             spiel_id: localStorage.getItem("spiel"),
