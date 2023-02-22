@@ -1351,6 +1351,11 @@ app.post("/draw", async function (req, res) {
 // beginn of the chat
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 app.post("/get_chat", async function(req, res){
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   try{
     let {KEY, spiel_id} = req.body;
     if (!(await check_key(KEY))) res.send("Invalid KEY");
@@ -1377,6 +1382,11 @@ app.post("/get_chat", async function(req, res){
 })
 
 app.post("/send_chat", async function(req, res){
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   try{
     let {KEY, spiel_id, message} = req.body;
     if (!(await check_key(KEY))) res.send("Invalid KEY");
