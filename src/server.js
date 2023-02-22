@@ -1345,3 +1345,60 @@ app.post("/draw", async function (req, res) {
     res.send("Error");
   }
 });
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// beginn of the chat
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+app.post("/get_chat", async function(req, res){
+  try{
+    let {KEY, spiel_id} = req.body;
+    if (!(await check_key(KEY))) res.send("Invalid KEY");
+    else{
+      var Player = get_player(KEY);
+      const spielexist = db.prepare(
+        "SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id"
+      );
+      var check_spiel = spielexist.get({ Player, spiel_id });
+      // check if spiel exist
+      if (check_spiel != undefined) {
+        const get_chat = db.prepare(
+          "SELECT Text, Username FROM messages m LEFT JOIN User u ON m.Spieler_ID = u.User_ID WHERE m.Game_ID = @spiel_id"
+        );
+        res.send(get_chat.all({spiel_id }))
+      }
+      else res.send("not found");   
+    }
+  }
+  catch(error){
+    console.log(error);
+    res.send("Error");
+  }
+})
+
+app.post("/send_chat", async function(req, res){
+  try{
+    let {KEY, spiel_id, message} = req.body;
+    if (!(await check_key(KEY))) res.send("Invalid KEY");
+    else{
+      var Player = get_player(KEY);
+      const spielexist = db.prepare(
+        "SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id"
+      );
+      var check_spiel = spielexist.get({ Player, spiel_id });
+      // check if spiel exist
+      if (check_spiel != undefined) {
+        const get_chat = db.prepare(
+          "INSERT INTO messages (Game_ID, Text, Spieler_ID) VALUES (@spiel_id, @message, @Player)"
+        );
+        get_chat.run({spiel_id, message, Player })
+        res.send("Success")
+      }
+      else res.send("not found");   
+    }
+  }
+  catch(error){
+    console.log(error);
+    res.send("Error");
+  }
+})
