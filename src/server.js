@@ -155,7 +155,7 @@ app.post("/login", async function (req, res) {
 Register Start
 */
 console.log(1234567);
-app.post("/ ", async function (req, res) {
+app.post("/register", async function (req, res) {
   try {
     console.log("register");
     // to allow croo things
@@ -231,6 +231,7 @@ app.post("/create_game", async function (req, res) {
 // checks APi KEY and joins existing game
 app.post("/join_game", async function (req, res) {
   try {
+    console.log("*************");
     // to allow croo things
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
@@ -238,7 +239,14 @@ app.post("/join_game", async function (req, res) {
       "Origin, X-Requested-With, Content-Type, Accept"
     );
     let { KEY, code } = req.body;
+    const full_game = db.prepare(
+      "SELECT Player_2 FROM Games WHERE Games_ID = @code AND Player_2 IS NOT NULL;"
+    );
+    const result = full_game.get({ code });
+    console.log(result)
+    //console.log(block_game.run({ code }));
     if (!(await check_key(KEY))) res.send("Invalid KEY");
+    else if (result != undefined) res.send("game full");
     else {
       // when Key is correct
       const check_code = db.prepare(
@@ -258,6 +266,10 @@ app.post("/join_game", async function (req, res) {
         player1 = get_player1.get({ code });
         await start.game_start(player1["Player_1"], Player, code);
         res.send("Success");
+        /*const block_game = db.prepare(
+          "SELECT Player_2 FROM Games WHERE Games_ID = @code"
+        );
+        block_game.run({ code });*/
       } else {
         // if game doesn't exist
         res.send("Wrong Code");
@@ -1281,6 +1293,10 @@ app.get("/leaderboard", (req, res) => {
 
 app.get("/Game", function (req, res) {
   res.sendFile(__dirname + "/Frontend/Spielpage.html", "/spielpage.css");
+});
+
+app.get("/watch", function (req, res) {
+  res.sendFile(__dirname + "/Frontend/watch.html", "/spielpage.css");
 });
 
 // ---Your Hosted games START---

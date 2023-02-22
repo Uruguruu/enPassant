@@ -135,6 +135,15 @@ headers: {
       document.getElementById("message").innerHTML = data;
       //ERROR could be displayed in Frontend
     }
+    else if((data === "game full")){
+      console.log(full);
+      document.getElementById("message").innerHTML = data;
+      if (confirm("Press a button!") == true) {
+      location.href="/watch"
+      } else {
+      text = "You canceled!";
+      }
+    }
     else{
       console.log(1);
       localStorage.setItem("spiel", GameCode);

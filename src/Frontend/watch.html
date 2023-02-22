@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="./js/errorhandler.js"></script>
     <link rel="stylesheet" href="/spielpage.css" />
   </head>
 
@@ -17,7 +16,6 @@
     </style>
     <div class="topnav">
       <a class="active" href="/">Home</a>
-      <a onclick="DrawFunction()">Draw</a>
       <a onclick="getdata()" title="Reload the positions of all Figures"
         >Reload</a
       >
@@ -75,7 +73,7 @@
         <li class="box" id="b402"></li>
         <li class="box" id="b403"></li>
         <li class="box" id="b404"></li>
-        <li class="box" id="b405"></li>
+        <li class="box" id="b405">Wpawn</li>
         <li class="box" id="b406"></li>
         <li class="box" id="b407"></li>
         <li class="box" id="b408"></li>
@@ -92,14 +90,14 @@
       </div>
 
       <div class="divv" id="row2">
-        <li class="box Wpawn" id="b201">Wpawn</li>
-        <li class="box Wpawn" id="b202">Wpawn</li>
-        <li class="box Wpawn" id="b203">Wpawn</li>
+        <li class="box " id="b201">Wpawn</li>
+        <li class="box " id="b202">Wpawn</li>
+        <li class="box " id="b203">Wpawn</li>
         <li class="box Wpawn" id="b204">Wpawn</li>
-        <li class="box Wpawn" id="b205">Wpawn</li>
-        <li class="box Wpawn" id="b206">Wpawn</li>
-        <li class="box Wpawn" id="b207">Wpawn</li>
-        <li class="box Wpawn" id="b208">Wpawn</li>
+        <li class="box " id="b205">Wpawn</li>
+        <li class="box " id="b206">Wpawn</li>
+        <li class="box " id="b207">Wpawn</li>
+        <li class="box" id="b208">Wpawn</li>
       </div>
       <div class="divv" id="row1">
         <li class="box" id="b101">Wrook</li>
@@ -208,131 +206,6 @@
     }
     coloring();
 
-    // for move
-    var schon_markiert = false;
-    document.addEventListener("mouseup", mousfunction);
-    function mousfunction() {
-      var mous_element = mouseover;
-      if (mous_element.tagName === "IMG") {
-        mous_element = mous_element.parentElement;
-      }
-      if (mous_element.tagName === "LI") {
-        if (schon_markiert) mache_move(mous_element);
-        else {
-          mous_element.style.border = "solid #0000FF";
-          schon_markiert = mous_element;
-        }
-      }
-      console.log(mous_element);
-    }
-
-
-    var mouseover;
-    document.addEventListener(
-      "mousemove",
-      (e) => {
-        mouseover = document.elementFromPoint(e.clientX, e.clientY);
-      },
-      { passive: true }
-    );
-
-    function mache_move(mous_element) {
-      console.log(
-        localStorage.getItem("spiel"),
-        schon_markiert.id.charAt(3),
-        schon_markiert.id.charAt(1),
-        mous_element.id.charAt(3),
-        mous_element.id.charAt(1)
-      );
-      axios
-        .post(
-          "http://raspisamuel:3004/mache_move/",
-          {
-            KEY: localStorage.getItem("KEY"),
-            spiel_id: localStorage.getItem("spiel"),
-            anfangx: schon_markiert.id.charAt(3),
-            anfangy: schon_markiert.id.charAt(1),
-            endex: mous_element.id.charAt(3),
-            endey: mous_element.id.charAt(1),
-          },
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-          }
-        )
-        .then(function (response) {
-          data = response["data"];
-          if (data != "Success"){
-            if(data === "Invalid Game doesn't exist k_spiel") location.href = "/";
-            if(data === "Invalid KEY") location.href = "/";
-            new Notification(data);
-
-          } 
-          // müssen noch alle Fehlermeldungen gemacht werden
-        });
-      schon_markiert.style.border = "";
-      schon_markiert = false;
-      getdata();
-    }
-
-    function DrawFunction() {
-      if (confirm("Do you want to draw?") == true) {
-        axios
-        .post(
-          "http://raspisamuel:3004/draw",
-          {
-            KEY: localStorage.getItem("KEY"),
-            spiel_id: localStorage.getItem("spiel"),
-          },
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-          }
-        )
-        .then(function (response) {
-          data = response["data"];
-          if (data != "Your Draw has been confirmed") {
-            if(data === "Invalid Game doesn't exist k_spiel") location.href = "/";
-            if(data === "Invalid KEY") location.href = "/";
-            new Notification("Error drawing");
-          } else {
-            location.href = "/";
-          }
-
-          // müssen noch alle Fehlermeldungen gemacht werden
-        });
-      } else {
-        text = "You canceled!";
-      }
-
-    }
-
-    function notifyMe() {
-        if (!("Notification" in window)) {
-          // Check if the browser supports notifications
-          alert("This browser does not support desktop notification");
-        } else if (Notification.permission === "granted") {
-          // Check whether notification permissions have already been granted;
-          // if so, create a notification
-          const notification = new Notification("Hi there!");
-          // …
-        } else if (Notification.permission !== "denied") {
-          // We need to ask the user for permission
-          Notification.requestPermission().then((permission) => {
-            // If the user accepts, let's create a notification
-            if (permission === "granted") {
-              const notification = new Notification("Hi there!");
-              // …
-            }
-          });
-        }
-      
-        // At last, if the user has denied notifications, and you
-        // want to be respectful there is no need to bother them anymore.
-      }
-      notifyMe();
   </script>
-  <script src="../error.js"></script>
+
 </html>
