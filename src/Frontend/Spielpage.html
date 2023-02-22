@@ -95,7 +95,6 @@
             <li class="box" id="b107">Wknight</li>
             <li class="box" id="b108">Wrook</li>
         </div>
-
     </ul>
 </body>
 
@@ -195,13 +194,16 @@ function mousfunction(){
     if(mous_element.tagName === "IMG"){
         mous_element = mous_element.parentElement
     }
-    if(mous_element.tagName === "LI"){
-        if(schon_markiert)  mache_move(mous_element)
-        else{        
-            mous_element.style.border =  "solid #0000FF";
-            schon_markiert = mous_element;
+    try{
+        if(mous_element.tagName === "LI"){
+            if(schon_markiert)  mache_move(mous_element)
+            else{        
+                mous_element.style.border =  "solid #0000FF";
+                schon_markiert = mous_element;
+            }
         }
     }
+    catch{}
     console.log(mous_element);
 }
 

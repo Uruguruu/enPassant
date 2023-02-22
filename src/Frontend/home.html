@@ -334,6 +334,7 @@ catch{};
                       }
                       })
                         .then(function (response) {
+                            document.getElementById("spiele").innerHTML = '';
                             if(response["data"] === "Invalid KEY"){
                                 // localStorage.removeItem('KEY');
                                 location.href = "/"
