@@ -124,7 +124,7 @@
             } catch (error) {
               console.log(error);
               console.log(localStorage.getItem("spiel"));
-              //location.href = "/home";
+              location.href = "/home";
             }
             document.querySelectorAll(".box").forEach((image) => {
               image.innerText = "";
@@ -221,6 +221,7 @@
       console.log(mous_element);
     }
 
+
     var mouseover;
     document.addEventListener(
       "mousemove",
@@ -257,7 +258,12 @@
         )
         .then(function (response) {
           data = response["data"];
-          if (data != "Success") alert(data);
+          if (data != "Success"){
+            if(data === "Invalid Game doesn't exist k_spiel") location.href = "/home";
+            if(data === "Invalid KEY") location.href = "/";
+            alert(data);
+
+          } 
           // müssen noch alle Fehlermeldungen gemacht werden
         });
       schon_markiert.style.border = "";
@@ -283,6 +289,8 @@
         .then(function (response) {
           data = response["data"];
           if (data != "Your Draw has been confirmed") {
+            if(data === "Invalid Game doesn't exist k_spiel") location.href = "/home";
+            if(data === "Invalid KEY") location.href = "/";
             alert("Error drawing");
           } else {
             location.href = "/home";
@@ -296,4 +304,5 @@
 
     }
   </script>
+  <script src="../error.js"></script>
 </html>

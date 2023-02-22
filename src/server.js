@@ -72,7 +72,7 @@ function spielexist(spiel_id, Player) {
       wf = true;
     } else {
       // falscher spieler
-      wf = "f_player";
+      wf = "du bist nicht an der Reihe";
     }
   } else {
     // falsches Spiel
@@ -302,9 +302,9 @@ app.post("/mache_move", async function (req, res) {
       var Player = get_player(KEY);
       if (
         spielexist(spiel_id, Player) === "k_spiel" ||
-        spielexist(spiel_id, Player) === "f_player"
+        spielexist(spiel_id, Player) === "du bist nicht an der Reihe"
       ) {
-        res.send("Invalid Game doesn't exist " + spielexist(spiel_id, Player));
+        res.send(spielexist(spiel_id, Player));
         return;
       } else {
         const get_type = db.prepare(

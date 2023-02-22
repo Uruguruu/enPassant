@@ -15,6 +15,16 @@
         box-sizing: border-box;
       }
 
+      /*hide scrollbar*/
+      html {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      html::-webkit-scrollbar {
+        display: none;
+      }
+
 
     </style>
 </head>
@@ -241,7 +251,6 @@ p {
 
 <script>
   function get_data_again() {
-    document.getElementById("spiele").innerHTML = "<h2>Deine Spiele</h2> <a onclick='get_data_again()''>🔃</a>";
     get_data();
   }
  async function get_create_game_params() {
@@ -340,6 +349,7 @@ catch{};
                       }
                       })
                         .then(function (response) {
+                          document.getElementById("spiele").innerHTML = "<h2>Deine Spiele</h2> <a onclick='get_data_again()''>🔃</a>";
                             if(response["data"] === "Invalid KEY"){
                                 // localStorage.removeItem('KEY');
                                 location.href = "/"
@@ -393,6 +403,8 @@ catch{};
         location.href = "/game";
       }
 
-      get_data();
+      get_data_again();
+      setInterval(get_data_again, 4000);
 </script>
+<script src="../public/error.js"></script>
 </html>
