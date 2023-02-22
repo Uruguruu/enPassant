@@ -88,7 +88,7 @@
     data = response["data"];
     console.log(data === "Invalid KEY");
     if((data === "Invalid KEY")){
-      location.href = "/";
+      location.href = "/login";
     }
     else{
       document.getElementById("game_id").innerHTML = "Dein Game Code lautet: "+data;
@@ -129,7 +129,7 @@ headers: {
     data = response["data"];
     console.log(data === "Wrong Code");
     if((data === "Invalid KEY")){
-      location.href = "/";
+      location.href = "/login";
     }
     else if((data === "Wrong Code")){
       console.log(11);
@@ -147,7 +147,7 @@ headers: {
 catch{};
 }
 
-    if(localStorage.getItem("KEY") === undefined) location.href = "/"
+    if(localStorage.getItem("KEY") === undefined) location.href = "/login"
         async function get_data() {
             try {
                 console.log(4);
@@ -162,7 +162,7 @@ catch{};
                           document.getElementById("spiele").innerHTML = "";
                             if(response["data"] === "Invalid KEY"){
                                 // localStorage.removeItem('KEY');
-                                location.href = "/"
+                                location.href = "/login"
                             }
                             else{
                                 console.log(response);
@@ -221,7 +221,7 @@ catch{};
 //---Leaderboard START---
 
 
-if(localStorage.getItem("KEY") === undefined) location.href = "/"
+if(localStorage.getItem("KEY") === undefined) location.href = "/login"
         async function leaderboard_get_data() {
             try {
                 console.log("leaderboard_get_data_called");

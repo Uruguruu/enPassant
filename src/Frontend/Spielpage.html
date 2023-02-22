@@ -141,7 +141,7 @@
             } catch (error) {
               console.log(error);
               console.log(localStorage.getItem("spiel"));
-              location.href = "/home";
+              location.href = "/";
             }
             document.querySelectorAll(".box").forEach((image) => {
               image.innerText = "";
@@ -302,7 +302,7 @@
         .then(function (response) {
           data = response["data"];
           if (data != "Success"){
-            if(data === "Invalid Game doesn't exist k_spiel") location.href = "/home";
+            if(data === "Invalid Game doesn't exist k_spiel") location.href = "/";
             if(data === "Invalid KEY") location.href = "/";
             new Notification(data);
 
@@ -332,11 +332,11 @@
         .then(function (response) {
           data = response["data"];
           if (data != "Your Draw has been confirmed") {
-            if(data === "Invalid Game doesn't exist k_spiel") location.href = "/home";
+            if(data === "Invalid Game doesn't exist k_spiel") location.href = "/";
             if(data === "Invalid KEY") location.href = "/";
             new Notification("Error drawing");
           } else {
-            location.href = "/home";
+            location.href = "/";
           }
 
           // müssen noch alle Fehlermeldungen gemacht werden
