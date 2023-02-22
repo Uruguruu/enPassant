@@ -155,7 +155,7 @@ app.post("/login", async function (req, res) {
 Register Start
 */
 console.log(1234567);
-app.post("/register", async function (req, res) {
+app.post("/ ", async function (req, res) {
   try {
     console.log("register");
     // to allow croo things
