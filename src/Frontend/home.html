@@ -32,30 +32,32 @@
   </head>
   <body>
     <div class="container">
-      <div id="spiele" class="left-section">
+      <div id="spiele" class="left-section" style="height: 500px; overflow: auto">
         <h2>Deine Spiele</h2>
+        <a onclick="get_data_again()">🔃</a>
       </div>
       <div class="center-section">
         <img src="images/enPassant.png" alt="Logo">
+        <div class="button-container">
+          <p id="game_id"></p>
+          <button id="create-game-button" onclick="get_create_game_params()" class="game-button">Create Game</button>
+          <span class="or-separator">OR</span>
+          <button id="join-game-button" class="game-button">Join Game</button>
+        </div>
+      
+        <div id="join-game-input" style="display:none"> 
+          <label for="game-id-input">Enter game ID:</label>
+          <input type="number" id="game-id-input" />
+          <button id="join-game-submit-button" onclick="join()">Join</button>
+          <p id="message"></p>
+        </div>
       </div>
       <div class="right-section">
         <h2>Leaderboard</h2>
       </div>
     </div>
   
-    <div class="button-container">
-      <p id="game_id"></p>
-      <button id="create-game-button" onclick="get_create_game_params()" class="game-button">Create Game</button>
-      <span class="or-separator">OR</span>
-      <button id="join-game-button" class="game-button">Join Game</button>
-    </div>
-  
-    <div id="join-game-input" style="display:none"> 
-      <label for="game-id-input">Enter game ID:</label>
-      <input type="number" id="game-id-input" />
-      <button id="join-game-submit-button" onclick="join()">Join</button>
-      <p id="message"></p>
-    </div>
+
   
     <script>
       const joinGameButton = document.getElementById('join-game-button');
@@ -238,6 +240,10 @@ p {
 
 
 <script>
+  function get_data_again() {
+    document.getElementById("spiele").innerHTML = "<h2>Deine Spiele</h2> <a onclick='get_data_again()''>🔃</a>";
+    get_data();
+  }
  async function get_create_game_params() {
         const public = 1;
         var token = localStorage.getItem("KEY")
@@ -388,7 +394,6 @@ catch{};
         location.href = "/game";
       }
 
-      setInterval(get_data, 5000);
       get_data();
 </script>
 </html>
