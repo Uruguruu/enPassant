@@ -1260,6 +1260,11 @@ app.get("/get_spiel/:spiel_id", (req, res) => {
 });
 
 app.get("/leaderboard", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   const lead_list = db.prepare(
     "SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10"
   );
