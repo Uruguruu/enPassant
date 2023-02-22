@@ -451,6 +451,7 @@ app.post("/mache_move", async function (req, res) {
             Rook
             */
               case 2:
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 if (anfangx !== endex && anfangy !== endey) {
                   spielzug = false;
                 }
@@ -462,18 +463,21 @@ app.post("/mache_move", async function (req, res) {
                     i !== endey;
                     i += increment
                   ) {
+                    console.log("%%%%%%%%%%%%%%%%%%%%%",anfangx, i, getposition(anfangx, i, spiel_id));
                     if (!(await getposition(anfangx, i, spiel_id))) {
                       spielzug = false;
                       break;
                     }
                   }
-                  spielzug = true;
+                  if(spielzug ) spielzug = true;;
                 } else if (anfangy === endey) {
+                  console.log("$$$$$$$$$$$$$$$$$$$");
                   //Function checks if in the y axis is any piece
                   let increment = (endex - anfangx) / Math.abs(endex - anfangx);
+                  console.log(anfangx, increment, endex);
                   for (
                     let i = anfangx + increment;
-                    i === endex;
+                    i != endex;
                     i += increment
                   ) {
                     if (!(await getposition(i, anfangy, spiel_id))) {
@@ -481,7 +485,7 @@ app.post("/mache_move", async function (req, res) {
                       break;
                     }
                   }
-                  spielzug = true;
+                  if(spielzug ) spielzug = true;
                 }
                 break;
               /*
@@ -611,7 +615,7 @@ app.post("/mache_move", async function (req, res) {
                         break;
                       }
                     }
-                    spielzug = true;
+                    if(spielzug ) spielzug = true;
                   } else if (anfangy === endey) {
                     //Function checks if in the y axis is any piece
                     let increment =
@@ -626,7 +630,7 @@ app.post("/mache_move", async function (req, res) {
                         break;
                       }
                     }
-                    spielzug = true;
+                    if(spielzug ) spielzug = true;
                   }
                 } else {
                   var incrementx;
@@ -646,7 +650,7 @@ app.post("/mache_move", async function (req, res) {
                     j += incrementy;
                   }
                   if (i === endex && j === endey) {
-                    spielzug = true;
+                    if(spielzug ) spielzug = true;
                   }
                   break;
                 }
@@ -832,7 +836,7 @@ app.post("/mache_move", async function (req, res) {
                       break;
                     }
                   }
-                  spielzug = true;
+                  if(spielzug ) spielzug = true;
                 } else if (anfangy === endey) {
                   //Function checks if in the y axis is any piece
                   let increment = (endex - anfangx) / Math.abs(endex - anfangx);
@@ -846,7 +850,7 @@ app.post("/mache_move", async function (req, res) {
                       break;
                     }
                   }
-                  spielzug = true;
+                  if(spielzug ) spielzug = true;
                 }
                 break;
               /*
@@ -912,7 +916,7 @@ app.post("/mache_move", async function (req, res) {
                   j += incrementy;
                 }
                 if (i === endex && j === endey) {
-                  spielzug = true;
+                  if(spielzug ) spielzug = true;
                 }
                 break;
               /*
@@ -976,7 +980,7 @@ app.post("/mache_move", async function (req, res) {
                         break;
                       }
                     }
-                    spielzug = true;
+                    if(spielzug ) spielzug = true;
                   } else if (anfangy === endey) {
                     //Function checks if in the y axis is any piece
                     let increment =
@@ -991,7 +995,7 @@ app.post("/mache_move", async function (req, res) {
                         break;
                       }
                     }
-                    spielzug = true;
+                    if(spielzug ) spielzug = true;
                   }
                 } else {
                   var incrementx;
@@ -1011,7 +1015,7 @@ app.post("/mache_move", async function (req, res) {
                     j += incrementy;
                   }
                   if (i === endex && j === endey) {
-                    spielzug = true;
+                    if(spielzug ) spielzug = true;
                   }
                   break;
                 }
@@ -1172,7 +1176,6 @@ function eat(ax, ay, ex, ey, id) {
         myResolve(true);
       }
     } catch (error) {
-      console.log(error);
       const deleten = db.prepare(
         "DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id"
       );
