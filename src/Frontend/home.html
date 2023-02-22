@@ -5,46 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/home.css">
     <title>Homepage</title>
-    <style>
-      body {
-        font-family: Arial, Helvetica, sans-serif;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      /*hide scrollbar*/
-      html {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-
-      html::-webkit-scrollbar {
-        display: none;
-      }
-
-
-    </style>
 </head>
 
 <body>
-
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <title>Homepage</title>
-  </head>
-  <body>
     <div class="container">
-      <div id="spiele" class="left-section" style="height: 500px; overflow: auto">
+      <div class="left-section">
         <h2>Deine Spiele</h2>
         <a onclick="get_data_again()">🔃</a>
+        <div id="spiele" class="List"></div>
       </div>
       <div class="center-section">
         <img src="images/enPassant.png" alt="Logo">
@@ -62,8 +32,10 @@
           <p id="message"></p>
         </div>
       </div>
-      <div  id="Leaderboard" class="right-section" style="margin-bottom: 300px;">
+      <div class="right-section" style="margin-top: 5%;">
         <h2>Leaderboard</h2>
+        <a onclick='leaderboard_get_data()'>🔃</a>
+        <div id="Leaderboard" class="List"></div>
       </div>
     </div>
   
@@ -87,169 +59,6 @@
     <!--Button Functionality END-->
 
   </body>
-  </html>
-  <style>
-body {
-  background-image: url('images/wallpaper.jpg');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: White;
-  background-color: black;
-}
-
-.container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: transparent;
-  padding: 20px;
-  border: 1px solid transparent ;
-  box-shadow: white;
-}
-
-.left-section, .right-section {
-  flex-basis: 30%;
-  text-align: center;
-}
-
-.center-section {
-  flex-basis: 40%;
-  text-align: center;
-}
-
-h2 {
-  color: #958a56;
-  font-size: 24px;
-  margin-top: 0;
-}
-
-img {
-  width: 250px;
-  height: 250px;
-}
-
-.button-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 50px;
-}
-
-.or-separator {
-  margin: 0 20px;
-  font-size: 24px;
-  padding: 50px 0px 50px 0px;
-}
-
-.game-button {
-  width: 225px;
-  height: 50px;
-  padding: 0px 10px 0px 10px;
-  background: #2a4158;
-  color: #ffffff;
-  border-color: #cccccc;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 3px 3px 3px 3px;
-  font-family: "Helvetica";
-  font-weight: 400;
-  font-size: 24px;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-#create-game-button {
-  font-size: 32px;
-  height: 70px;
-}
-
-#join-game-button {
-  height: 70px;
-}
-
-#join-game-input {
-  margin-top: 20px;
-  text-align: center;
-}
-
-#game-id-input {
-  width: 200px;
-  height: 30px;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-#join-game-submit-button {
-  width: 100px;
-  height: 30px;
-  margin-top: 10px;
-  background-color: #2a4158;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  font-family: "Helvetica";
-  font-weight: 400;
-  font-size: 16px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.or-separator {
-  margin: 0 20px;
-  font-size: 24px;
-  padding: 50px 0px 50px 0px;
-  color: #958a56;
-  font-weight: bold;
-}
-
-.container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: transparent;
-  padding: 20px;
-  border: 1px solid transparent;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-  background-color: transparent;
-}
-
-.left-section, .right-section {
-  flex-basis: 30%;
-  text-align: center;
-  color: #958a56;
-  font-weight: bold;
-}
-
-.center-section {
-  flex-basis: 40%;
-  text-align: center;
-}
-
-h2 {
-  color: #958a56;
-  font-size: 24px;
-  margin-top: 0;
-}
-
-.button-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 50px;
-}
-.game-button:hover {
-  filter: brightness(80%);
-}
-
-p {
-  color: white;
-}
-
-</style>
 
 
 <script>
@@ -349,7 +158,7 @@ catch{};
                       }
                       })
                         .then(function (response) {
-                          document.getElementById("spiele").innerHTML = "<h2>Deine Spiele</h2> <a onclick='get_data()''>🔃</a>";
+                          document.getElementById("spiele").innerHTML = "";
                             if(response["data"] === "Invalid KEY"){
                                 // localStorage.removeItem('KEY');
                                 location.href = "/"
@@ -370,6 +179,7 @@ catch{};
         }
 
     function show_data(data){
+      console.log("+++++++++++++++++++++", data, data["Games_ID"]);
         var weiss = document.createElement("p");
         var schwarz = document.createElement("p");
         var game_id_text = document.createElement("p");
@@ -413,7 +223,7 @@ catch{};
 if(localStorage.getItem("KEY") === undefined) location.href = "/"
         async function leaderboard_get_data() {
             try {
-                console.log(4);
+                console.log("leaderboard_get_data_called");
                 return new Promise ((resolveOuter) => {
                     console.log(2);
                     axios.get('http://localhost:3004/leaderboard', {
@@ -422,11 +232,11 @@ if(localStorage.getItem("KEY") === undefined) location.href = "/"
                       }
                       })
                         .then(function (response) {
-                          document.getElementById("spiele").innerHTML = "<h2>Leaderboard</h2> <a onclick='leaderboard_get_data()'>🔃</a>";
+                          document.getElementById("Leaderboard").innerHTML = "";
                                 console.log(response);
                                 var data = response["data"];
                                 for (let i = 0; i < data.length; i++) {
-                                    show_data(data[i])
+                                    leaderboard_show_data(data[i])
                             }
                         })
                 })
@@ -438,14 +248,17 @@ if(localStorage.getItem("KEY") === undefined) location.href = "/"
       
 
         function leaderboard_show_data(data){
+        var Place = document.createElement("h2");
         var Username = document.createElement("p");
         var Wins = document.createElement("p");
         var abstand = document.createElement("br");
-        weiss.innerHTML = "Name: "+data["Username"];
-        weiss.innerHTML = "Amount of Wins: "+data["Wins"];
-        var leaderboard = document.getElementById("leaderboard");
-        leaderboard.appendChild(Username)
-        leaderboard.appendChild(Wins)
+        Place.innerHTML = ""
+        Username.innerHTML = "Name: "+data["Username"];
+        Wins.innerHTML = "Amount of Wins: "+data["Wins"];
+        var leaderboard = document.getElementById("Leaderboard");
+        console.log("leaderboard")
+        leaderboard.appendChild(Username);
+        leaderboard.appendChild(Wins);
         leaderboard.appendChild(abstand);
     }
 
