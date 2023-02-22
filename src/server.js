@@ -426,7 +426,8 @@ app.post("/mache_move", async function (req, res) {
                 if (
                   anfangy === 2 &&
                   !(await getposition(anfangy + 1)) &&
-                  anfangy - endey === -2
+                  anfangy - endey === -2 &&
+                  anfangx === endex
                 ) {
                   const set_modus = db.prepare(
                     "UPDATE FIGUREN SET Modus = 1 WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id"

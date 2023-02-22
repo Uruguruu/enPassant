@@ -261,7 +261,7 @@
           if (data != "Success"){
             if(data === "Invalid Game doesn't exist k_spiel") location.href = "/home";
             if(data === "Invalid KEY") location.href = "/";
-            alert(data);
+            new Notification(data);
 
           } 
           // müssen noch alle Fehlermeldungen gemacht werden
@@ -291,7 +291,7 @@
           if (data != "Your Draw has been confirmed") {
             if(data === "Invalid Game doesn't exist k_spiel") location.href = "/home";
             if(data === "Invalid KEY") location.href = "/";
-            alert("Error drawing");
+            new Notification("Error drawing");
           } else {
             location.href = "/home";
           }
@@ -303,6 +303,32 @@
       }
 
     }
+
+    function notifyMe() {
+        if (!("Notification" in window)) {
+          // Check if the browser supports notifications
+          alert("This browser does not support desktop notification");
+        } else if (Notification.permission === "granted") {
+          // Check whether notification permissions have already been granted;
+          // if so, create a notification
+          const notification = new Notification("Hi there!");
+          // …
+        } else if (Notification.permission !== "denied") {
+            alert("Bitte Erlaube dem Browser Benachrichtigungen zu machen");
+          // We need to ask the user for permission
+          Notification.requestPermission().then((permission) => {
+            // If the user accepts, let's create a notification
+            if (permission === "granted") {
+              const notification = new Notification("Hi there!");
+              // …
+            }
+          });
+        }
+      
+        // At last, if the user has denied notifications, and you
+        // want to be respectful there is no need to bother them anymore.
+      }
+      notifyMe();
   </script>
   <script src="../error.js"></script>
 </html>
