@@ -154,8 +154,10 @@ app.post("/login", async function (req, res) {
 /*
 Register Start
 */
+console.log(1234567);
 app.post("/register", async function (req, res) {
   try {
+    console.log("register");
     // to allow croo things
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
@@ -176,8 +178,12 @@ app.post("/register", async function (req, res) {
       const insertUser = db.prepare(
         "INSERT INTO User (Username, Password) VALUES (@name, @password)"
       );
+      var Filter = require('bad-words'),
+      filter = new Filter();
+      name = filter.clean(name);
+      console.log(name);
       insertUser.run({ name, password });
-      res.send("Account created");
+      res.send("Account created, Your Username is: "+name);
     } else if (name.length <= 5) {
       // tells the user what is wrong
       res.send("Username is too short!");
