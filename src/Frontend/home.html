@@ -62,7 +62,7 @@
 
 
 <script>
-  var adresse = "http://localhost:3004";
+  var adresse = "http://raspisamuel.local:3004";
  async function get_create_game_params() {
         const public = 1;
         var token = localStorage.getItem("KEY")
@@ -135,6 +135,15 @@ headers: {
       console.log(11);
       document.getElementById("message").innerHTML = data;
       //ERROR could be displayed in Frontend
+    }
+    else if((data === "game full")){
+      console.log(full);
+      document.getElementById("message").innerHTML = data;
+      if (confirm("Press a button!") == true) {
+      location.href="/watch"
+      } else {
+      text = "You canceled!";
+      }
     }
     else{
       console.log(1);
