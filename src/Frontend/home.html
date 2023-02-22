@@ -266,7 +266,7 @@ p {
     console.log("get_create_game_prams started");
     //http://localhost:3004/login
     // http://raspisamuel.local:3004/login
-      axios.post('http://raspisamuel.local:3004/create_game',{
+      axios.post('http://localhost:3004/create_game',{
         KEY: token,  public: public
           }, {
        headers: {
@@ -307,7 +307,7 @@ async function join() {
     console.log("Dein Key ist "+token);
     //http://localhost:3004/login
     // http://raspisamuel.local:3004/login 
-axios.post('http://raspisamuel.local:3004/join_game',{
+axios.post('http://localhost:3004/join_game',{
   KEY: token,  code: GameCode
 }, {
 headers: {
@@ -343,7 +343,7 @@ catch{};
                 console.log(4);
                 return new Promise ((resolveOuter) => {
                     console.log(2);
-                    axios.get('http://raspisamuel.local:3004/your_live_games/'+localStorage.getItem("KEY"), {
+                    axios.get('http://localhost:3004/your_live_games/'+localStorage.getItem("KEY"), {
                       headers: {
                        "Content-Type": "application/x-www-form-urlencoded"
                       }
