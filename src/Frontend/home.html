@@ -416,7 +416,7 @@ if(localStorage.getItem("KEY") === undefined) location.href = "/"
                 console.log(4);
                 return new Promise ((resolveOuter) => {
                     console.log(2);
-                    axios.get('http://raspisamuel.local:3004//leaderboard', {
+                    axios.get('http://localhost:3004/leaderboard', {
                       headers: {
                        "Content-Type": "application/x-www-form-urlencoded"
                       }
