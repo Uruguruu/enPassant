@@ -154,8 +154,10 @@ app.post("/login", async function (req, res) {
 /*
 Register Start
 */
+console.log(1234567);
 app.post("/register", async function (req, res) {
   try {
+    console.log("register");
     // to allow croo things
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
@@ -176,8 +178,12 @@ app.post("/register", async function (req, res) {
       const insertUser = db.prepare(
         "INSERT INTO User (Username, Password) VALUES (@name, @password)"
       );
+      var Filter = require('bad-words'),
+      filter = new Filter();
+      name = filter.clean(name);
+      console.log(name);
       insertUser.run({ name, password });
-      res.send("Account created");
+      res.send("Account created, Your Username is: "+name);
     } else if (name.length <= 5) {
       // tells the user what is wrong
       res.send("Username is too short!");
@@ -451,7 +457,6 @@ app.post("/mache_move", async function (req, res) {
             Rook
             */
               case 2:
-                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 if (anfangx !== endex && anfangy !== endey) {
                   spielzug = false;
                 }
@@ -463,29 +468,26 @@ app.post("/mache_move", async function (req, res) {
                     i !== endey;
                     i += increment
                   ) {
-                    console.log("%%%%%%%%%%%%%%%%%%%%%",anfangx, i, getposition(anfangx, i, spiel_id));
-                    if (!(await getposition(anfangx, i, spiel_id))) {
+                    if ((await getposition(anfangx, i, spiel_id))) {
                       spielzug = false;
                       break;
                     }
                   }
-                  if(spielzug ) spielzug = true;;
+                  if(spielzug === undefined) spielzug = true;
                 } else if (anfangy === endey) {
-                  console.log("$$$$$$$$$$$$$$$$$$$");
                   //Function checks if in the y axis is any piece
                   let increment = (endex - anfangx) / Math.abs(endex - anfangx);
-                  console.log(anfangx, increment, endex);
                   for (
                     let i = anfangx + increment;
                     i != endex;
                     i += increment
                   ) {
-                    if (!(await getposition(i, anfangy, spiel_id))) {
+                    if ((await getposition(i, anfangy, spiel_id))) {
                       spielzug = false;
                       break;
                     }
                   }
-                  if(spielzug ) spielzug = true;
+                  if(spielzug === undefined) spielzug = true;
                 }
                 break;
               /*
@@ -558,6 +560,7 @@ app.post("/mache_move", async function (req, res) {
             King
             */
               case 5:
+                console.log("******************************");
                 if (anfangx + 1 === endex && anfangy + 1 === endey) {
                   spielzug = true;
                   break;
@@ -591,6 +594,79 @@ app.post("/mache_move", async function (req, res) {
                   break;
                 }
                 spielzug = false;
+                const get_type = db.prepare(
+                  "SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
+                );
+                // checks if you want to change Turm with the König
+                if (
+                  (anfangx === 5 && anfangy === 1 && endex === 1 && endey === 1)
+                ) {
+                  if (
+                    (await !getposition(4, 1, spiel_id)) &&
+                    (await !getposition(2, 1, spiel_id)) &&
+                    (await !getposition(3, 1, spiel_id))
+                  ) {
+                    if (
+                      get_type.get({ spiel_id, anfangx: 1, anfangy: 1 })["Type"] ===
+                        2 &&
+                      get_type.get({ spiel_id, anfangx: 5, anfangy: 1 })["Type"] ===
+                        5
+                    ) {
+                      change_player();
+                      move.run({
+                        endex: 3,
+                        endey: 1,
+                        anfangx: 1,
+                        anfangy: 1,
+                        spiel_id,
+                      });
+                      move.run({
+                        endex: 2,
+                        endey: 1,
+                        anfangx: 5,
+                        anfangy: 1,
+                        spiel_id,
+                      });
+                      spielzug = true;
+                      res.send("Success");
+                      return;
+                    }
+                  }
+                }
+                if (
+                  (anfangx === 5 && anfangy === 1 && endex === 8 && endey === 1)
+                ) {
+                  if (
+                    (await !getposition(6, 1, spiel_id)) &&
+                    (await !getposition(7, 1, spiel_id))
+                  ) {
+                    if (
+                      get_type.get({ spiel_id, anfangx: 8, anfangy: 1 })["Type"] ===
+                        2 &&
+                      get_type.get({ spiel_id, anfangx: 5, anfangy: 1 })["Type"] ===
+                        5
+                    ) {
+                      change_player();
+                      move.run({
+                        endex: 7,
+                        endey: 1,
+                        anfangx: 5,
+                        anfangy: 1,
+                        spiel_id,
+                      });
+                      move.run({
+                        endex: 6,
+                        endey: 1,
+                        anfangx: 8,
+                        anfangy: 1,
+                        spiel_id,
+                      });
+                      spielzug = true;
+                      res.send("Success");
+                      return;
+                    }
+                  }
+                }
                 break;
               /*
         Queen
@@ -610,12 +686,12 @@ app.post("/mache_move", async function (req, res) {
                       i != endey;
                       i += increment
                     ) {
-                      if (!(await getposition(anfangx, i, spiel_id))) {
+                      if ((await getposition(anfangx, i, spiel_id))) {
                         spielzug = false;
                         break;
                       }
                     }
-                    if(spielzug ) spielzug = true;
+                    if(spielzug === undefined) spielzug = true;
                   } else if (anfangy === endey) {
                     //Function checks if in the y axis is any piece
                     let increment =
@@ -625,12 +701,12 @@ app.post("/mache_move", async function (req, res) {
                       i === endex;
                       i += increment
                     ) {
-                      if (!(await getposition(i, anfangy, spiel_id))) {
+                      if ((await getposition(i, anfangy, spiel_id))) {
                         spielzug = false;
                         break;
                       }
                     }
-                    if(spielzug ) spielzug = true;
+                    if(spielzug === undefined) spielzug = true;
                   }
                 } else {
                   var incrementx;
@@ -650,86 +726,12 @@ app.post("/mache_move", async function (req, res) {
                     j += incrementy;
                   }
                   if (i === endex && j === endey) {
-                    if(spielzug ) spielzug = true;
+                    spielzug = true;
                   }
                   break;
                 }
                 break;
             }
-            const get_type = db.prepare(
-              "SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
-            );
-            // checks if you want to change Turm with the König
-            if (
-              (anfangx === 1 && anfangy === 1 && endex === 4 && endey === 1) ||
-              (anfangx === 4 && anfangy === 1 && endex === 8 && endey === 1)
-            ) {
-              if (
-                (await !getposition(2, 1, spiel_id)) &&
-                (await !getposition(3, 1, spiel_id))
-              ) {
-                if (
-                  get_type.get({ spiel_id, anfangx: 1, anfangy: 1 })["Type"] ===
-                    2 &&
-                  get_type.get({ spiel_id, anfangx: 4, anfangy: 1 })["Type"] ===
-                    6
-                ) {
-                  change_player();
-                  move.run({
-                    endex: 3,
-                    endey: 1,
-                    anfangx: 1,
-                    anfangy: 1,
-                    spiel_id,
-                  });
-                  move.run({
-                    endex: 2,
-                    endey: 1,
-                    anfangx: 4,
-                    anfangy: 1,
-                    spiel_id,
-                  });
-                  spielzug = true;
-                  res.send("Success");
-                  return;
-                }
-              }
-            }
-            if (
-              (anfangx === 8 && anfangy === 1 && endex === 4 && endey === 1) ||
-              (anfangx === 4 && anfangy === 1 && endex === 8 && endey === 1)
-            ) {
-              if (
-                (await !getposition(5, 1, spiel_id)) &&
-                (await !getposition(6, 1, spiel_id)) &&
-                (await !getposition(7, 1, spiel_id))
-              ) {
-                if (
-                  get_type.get({ spiel_id, anfangx, anfangy })["Type"] === 2 &&
-                  get_type.get({ spiel_id, anfangx, anfangy })["Type"] === 6
-                ) {
-                  change_player();
-                  move.run({
-                    endex: 8,
-                    endey: 1,
-                    anfangx: 4,
-                    anfangy: 1,
-                    spiel_id,
-                  });
-                  move.run({
-                    endex: 4,
-                    endey: 1,
-                    anfangx: 8,
-                    anfangy: 1,
-                    spiel_id,
-                  });
-                  spielzug = true;
-                  res.send("Success");
-                  return;
-                }
-              }
-            }
-
             /*
     Switch for black figures
     */
@@ -831,12 +833,12 @@ app.post("/mache_move", async function (req, res) {
                     i !== endey;
                     i += increment
                   ) {
-                    if (!(await getposition(anfangx, i, spiel_id))) {
+                    if ((await getposition(anfangx, i, spiel_id))) {
                       spielzug = false;
                       break;
                     }
                   }
-                  if(spielzug ) spielzug = true;
+                  if(spielzug === undefined) spielzug = true;
                 } else if (anfangy === endey) {
                   //Function checks if in the y axis is any piece
                   let increment = (endex - anfangx) / Math.abs(endex - anfangx);
@@ -845,12 +847,12 @@ app.post("/mache_move", async function (req, res) {
                     i === endex;
                     i += increment
                   ) {
-                    if (!(await getposition(i, anfangy, spiel_id))) {
+                    if ((await getposition(i, anfangy, spiel_id))) {
                       spielzug = false;
                       break;
                     }
                   }
-                  if(spielzug ) spielzug = true;
+                  if(spielzug === undefined) spielzug = true;
                 }
                 break;
               /*
@@ -916,7 +918,7 @@ app.post("/mache_move", async function (req, res) {
                   j += incrementy;
                 }
                 if (i === endex && j === endey) {
-                  if(spielzug ) spielzug = true;
+                  spielzug = true;
                 }
                 break;
               /*
@@ -956,7 +958,81 @@ app.post("/mache_move", async function (req, res) {
                   break;
                 }
                 spielzug = false;
+               
+
+                const get_type = db.prepare(
+                  "SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
+                );
+                // checks if you want to change Turm with the König
+                if (
+                  (anfangx === 1 && anfangy === 8 && endex === 5 && endey === 8)
+                ) {
+                  if (
+                    (await !getposition(4, 8, spiel_id)) &&
+                    (await !getposition(2, 8, spiel_id)) &&
+                    (await !getposition(3, 8, spiel_id))
+                  ) {
+                    if (
+                      get_type.get({ spiel_id, anfangx: 1, anfangy: 8 })["Type"] ===
+                        2 &&
+                      get_type.get({ spiel_id, anfangx: 5, anfangy: 8 })["Type"] ===
+                        5
+                    ) {
+                      change_player();
+                      move.run({
+                        endex: 3,
+                        endey: 8,
+                        anfangx: 1,
+                        anfangy: 8,
+                        spiel_id,
+                      });
+                      move.run({
+                        endex: 2,
+                        endey: 8,
+                        anfangx: 5,
+                        anfangy: 8,
+                        spiel_id,
+                      });
+                      spielzug = true;
+                      res.send("Success");
+                      return;
+                    }
+                  }
+                }
+                if (
+                  (anfangx === 5 && anfangy === 8 && endex === 8 && endey === 8)
+                ) {
+                  if (
+                    (await !getposition(6, 8, spiel_id)) &&
+                    (await !getposition(7, 8, spiel_id))
+                  ) {
+                    if (
+                      get_type.get({ spiel_id, anfangx, anfangy })["Type"] === 5 &&
+                      get_type.get({ spiel_id, anfangx: endex, anfangy })["Type"] === 2
+                    ) {
+                      change_player();
+                      move.run({
+                        endex: 7,
+                        endey: 8,
+                        anfangx: 5,
+                        anfangy: 8,
+                        spiel_id,
+                      });
+                      move.run({
+                        endex: 6,
+                        endey: 8,
+                        anfangx: 8,
+                        anfangy: 8,
+                        spiel_id,
+                      });
+                      spielzug = true;
+                      res.send("Success");
+                      return;
+                    }
+                  }
+                }
                 break;
+        
               /*
     Queen
     */
@@ -975,12 +1051,12 @@ app.post("/mache_move", async function (req, res) {
                       i != endey;
                       i += increment
                     ) {
-                      if (!(await getposition(anfangx, i, spiel_id))) {
+                      if ((await getposition(anfangx, i, spiel_id))) {
                         spielzug = false;
                         break;
                       }
                     }
-                    if(spielzug ) spielzug = true;
+                    if(spielzug === undefined) spielzug = true;
                   } else if (anfangy === endey) {
                     //Function checks if in the y axis is any piece
                     let increment =
@@ -990,12 +1066,12 @@ app.post("/mache_move", async function (req, res) {
                       i === endex;
                       i += increment
                     ) {
-                      if (!(await getposition(i, anfangy, spiel_id))) {
+                      if ((await getposition(i, anfangy, spiel_id))) {
                         spielzug = false;
                         break;
                       }
                     }
-                    if(spielzug ) spielzug = true;
+                    if(spielzug === undefined) spielzug = true;
                   }
                 } else {
                   var incrementx;
@@ -1015,84 +1091,11 @@ app.post("/mache_move", async function (req, res) {
                     j += incrementy;
                   }
                   if (i === endex && j === endey) {
-                    if(spielzug ) spielzug = true;
+                    spielzug = true;
                   }
                   break;
                 }
                 break;
-            }
-            const get_type = db.prepare(
-              "SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
-            );
-            // checks if you want to change Turm with the König
-            if (
-              (anfangx === 8 && anfangy === 8 && endex === 4 && endey === 8) ||
-              (anfangx === 4 && anfangy === 8 && endex === 8 && endey === 8)
-            ) {
-              if (
-                (await !getposition(2, 8, spiel_id)) &&
-                (await !getposition(3, 8, spiel_id))
-              ) {
-                if (
-                  get_type.get({ spiel_id, anfangx: 8, anfangy: 8 })["Type"] ===
-                    2 &&
-                  get_type.get({ spiel_id, anfangx: 4, anfangy: 8 })["Type"] ===
-                    6
-                ) {
-                  change_player();
-                  move.run({
-                    endex: 3,
-                    endey: 8,
-                    anfangx: 8,
-                    anfangy: 8,
-                    spiel_id,
-                  });
-                  move.run({
-                    endex: 2,
-                    endey: 8,
-                    anfangx: 4,
-                    anfangy: 8,
-                    spiel_id,
-                  });
-                  spielzug = true;
-                  res.send("Success");
-                  return;
-                }
-              }
-            }
-            if (
-              (anfangx === 8 && anfangy === 8 && endex === 4 && endey === 8) ||
-              (anfangx === 4 && anfangy === 8 && endex === 8 && endey === 8)
-            ) {
-              if (
-                (await !getposition(5, 8, spiel_id)) &&
-                (await !getposition(6, 8, spiel_id)) &&
-                (await !getposition(7, 8, spiel_id))
-              ) {
-                if (
-                  get_type.get({ spiel_id, anfangx, anfangy })["Type"] === 2 &&
-                  get_type.get({ spiel_id, anfangx, anfangy })["Type"] === 6
-                ) {
-                  change_player();
-                  move.run({
-                    endex: 8,
-                    endey: 8,
-                    anfangx: 4,
-                    anfangy: 8,
-                    spiel_id,
-                  });
-                  move.run({
-                    endex: 4,
-                    endey: 8,
-                    anfangx: 8,
-                    anfangy: 8,
-                    spiel_id,
-                  });
-                  spielzug = true;
-                  res.send("Success");
-                  return;
-                }
-              }
             }
           }
           // does the moving and the eating

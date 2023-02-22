@@ -59,7 +59,7 @@
       async function login(eMail, password) {
   try {
     console.log(5);
-axios.post('http://raspisamuel.local:3004/register',{
+axios.post('http://localhost:3004/register',{
   name: eMail,  password: password
 }, {
 headers: {
@@ -69,9 +69,12 @@ headers: {
   .then(function (response) {
     console.log(response);
     data = response["data"];
-    if((data === "Account created")){
+    if((data.includes("Account created"))){
       console.log("Account created");
-      location.href = "/"; 
+      if (confirm(data)) {
+        location.href = "/"; 
+      } else {
+      } 
     }
     else{
      alert(data);
