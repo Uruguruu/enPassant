@@ -1238,11 +1238,11 @@ app.post("/bauer_zu", async function (req, res) {
   }
 });
 
-app.get("/", function (req, res) {
+app.get("/login", function (req, res) {
   res.sendFile(__dirname + "/Frontend/Login.html", "/Login.css"); //hier mit CSS
 });
 
-app.get("/home", function (req, res) {
+app.get("/", function (req, res) {
   res.sendFile(__dirname + "/Frontend/home.html");
 });
 
