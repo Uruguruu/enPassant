@@ -62,13 +62,13 @@
           <p id="message"></p>
         </div>
       </div>
-      <div class="right-section" style="">
+      <div  id="Leaderboard" class="right-section" style="margin-bottom: 300px;">
         <h2>Leaderboard</h2>
       </div>
     </div>
   
+    <!--Button Functionality START-->
 
-  
     <script>
       const joinGameButton = document.getElementById('join-game-button');
       const joinGameInput = document.getElementById('join-game-input');
@@ -83,6 +83,9 @@
         // Hier könntest du den HTTP-Request absenden, um dem Spiel mit der Game-ID beizutreten
       });
     </script>
+
+    <!--Button Functionality END-->
+
   </body>
   </html>
   <style>
@@ -250,9 +253,6 @@ p {
 
 
 <script>
-  function get_data_again() {
-    get_data();
-  }
  async function get_create_game_params() {
         const public = 1;
         var token = localStorage.getItem("KEY")
@@ -349,7 +349,7 @@ catch{};
                       }
                       })
                         .then(function (response) {
-                          document.getElementById("spiele").innerHTML = "<h2>Deine Spiele</h2> <a onclick='get_data_again()''>🔃</a>";
+                          document.getElementById("spiele").innerHTML = "<h2>Deine Spiele</h2> <a onclick='get_data()''>🔃</a>";
                             if(response["data"] === "Invalid KEY"){
                                 // localStorage.removeItem('KEY');
                                 location.href = "/"
@@ -403,8 +403,58 @@ catch{};
         location.href = "/game";
       }
 
-      get_data_again();
-      setInterval(get_data_again, 4000);
+      get_data();
+      setInterval(get_data, 4000);
+
+
+//---Leaderboard START---
+
+
+if(localStorage.getItem("KEY") === undefined) location.href = "/"
+        async function leaderboard_get_data() {
+            try {
+                console.log(4);
+                return new Promise ((resolveOuter) => {
+                    console.log(2);
+                    axios.get('http://raspisamuel.local:3004//leaderboard', {
+                      headers: {
+                       "Content-Type": "application/x-www-form-urlencoded"
+                      }
+                      })
+                        .then(function (response) {
+                          document.getElementById("spiele").innerHTML = "<h2>Leaderboard</h2> <a onclick='leaderboard_get_data()'>🔃</a>";
+                                console.log(response);
+                                var data = response["data"];
+                                for (let i = 0; i < data.length; i++) {
+                                    show_data(data[i])
+                            }
+                        })
+                })
+            }
+            catch(error){  
+                console.log(error);
+            }
+        }
+      
+
+        function leaderboard_show_data(data){
+        var Username = document.createElement("p");
+        var Wins = document.createElement("p");
+        var abstand = document.createElement("br");
+        weiss.innerHTML = "Name: "+data["Username"];
+        weiss.innerHTML = "Amount of Wins: "+data["Wins"];
+        var leaderboard = document.getElementById("leaderboard");
+        leaderboard.appendChild(Username)
+        leaderboard.appendChild(Wins)
+        leaderboard.appendChild(abstand);
+    }
+
+      leaderboard_get_data();
+      setInterval(leaderboard_get_data, 4000);
+
+
+//---Leaderboard END---
+
+
 </script>
-<script src="../public/error.js"></script>
 </html>
