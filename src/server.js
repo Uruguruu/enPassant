@@ -1118,7 +1118,7 @@ app.post("/mache_move", async function (req, res) {
               if (eat_value === "gefallen") {
                 if (spiel_spieler["aktueller_player"] === 1) {
                   res.send("Schwarz hat gewonnen!!!");
-                  
+
                 } else {
                   res.send("Weiss hat gewonnen!!!");
 
