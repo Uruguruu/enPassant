@@ -1117,23 +1117,25 @@ app.post("/mache_move", async function (req, res) {
               var spiel_spieler = get_spielzug.get({ spiel_id });
               if (eat_value === "gefallen") {
                 if (spiel_spieler["aktueller_player"] === 1) {
-                /*const gewonnen = db.prepare(
-                "UPDATE User SET Type = @zu WHERE "
-                );*/
                   res.send("Schwarz hat gewonnen!!!");
                   var gewinner = spiel_spieler["aktueller_player"];
+                  const get_spielzug = db.prepare(
+                  "SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id"
+                  );
+                  var aktueller_player = get_spielzug.get({ spiel_id });
                   console.log("gewinner")
-                  console.log(gewinner);
+                  console.log(aktueller_player);
+                  console.log(aktueller_pladyer.spiel_id);
+                  /*const win = db.prepare(
+                  "UPDATE User SET aktueller_player = @aktueller_player WHERE User_ID = @"
+                  )*/
 
 
                 } else {
-                /*const gewonnen = db.prepare(
-                "UPDATE User SET Type = @zu WHERE "
-                );*/
                   res.send("Weiss hat gewonnen!!!");
                   var gewinner = spiel_spieler["aktueller_player"];
-                                    console.log("gewinner")
-                                    console.log(gewinner);
+                  console.log("gewinner")
+                  console.log(gewinner);
 
                 }
                 delete_game.run({ spiel_id });
