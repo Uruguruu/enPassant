@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="New Background and Draw function updated for handshake">
+    <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="Bad SQl Command fixed &quot;)&quot; added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.js" afterDir="false" />
     </list>
@@ -136,7 +136,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677622722064</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Bad SQl Command fixed &quot;)&quot; added">
+      <created>1677623326615</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1677623326615</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -158,6 +165,7 @@
     <MESSAGE value="testing js" />
     <MESSAGE value="create Game function made" />
     <MESSAGE value="New Background and Draw function updated for handshake" />
-    <option name="LAST_COMMIT_MESSAGE" value="New Background and Draw function updated for handshake" />
+    <MESSAGE value="Bad SQl Command fixed &quot;)&quot; added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bad SQl Command fixed &quot;)&quot; added" />
   </component>
 </project>

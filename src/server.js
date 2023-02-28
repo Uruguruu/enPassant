@@ -1360,7 +1360,8 @@ app.post("/draw", async function (req, res) {
               const delete_game = db.prepare(
                     "DELETE FROM Games WHERE Games_ID = @spiel_id"
                   );
-              delete_game.run({ spiel_id });
+                console.log("delete_game")
+              //delete_game.run({ spiel_id });
             }
       }
     }
