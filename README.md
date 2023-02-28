@@ -1,23 +1,27 @@
-# enPassant
+****# enPassant
 Project repository for a Chess Game made in two weeks.
 
 ## Funktionen
 
-##### Wir haben ein Login bei der sich der User Registrieren und danach Anmelden kann. Er bekommt dann auch einen Key mit dem er dann sich autentifiziert.
+- Wir haben ein Login bei der sich der User Registrieren und danach Anmelden kann. Er bekommt dann auch einen Key mit dem er dann sich autentifiziert.
 
-##### Danach kommt eine Übersicht von allen angefangenen Spielen, die man dann öffnen kann und weiterspielen kann wenn man am Zug ist
-
+- Danach kommt eine Übersicht von allen angefangenen Spielen, die man dann öffnen kann und weiterspielen kann wenn man am Zug ist
+<br>
 ##### Man kann auch ein neues Spiel erstellen. Dabei gibt es 2 Varianten
 1. Man macht es lokal und  spielt gegen sich selbst (optional)
+ <br>
 2. Man erstelt online ein Spiel und man kriegt dann einen Spiel-Code den man dann bei jemandem anders eingeben kann und somit gegeneinander Schach spielt
+<br>
 
 ##### Wir haben ein Schachbrett das mit drag and drop funktioniert
 
-##### Sobald jemand ein Zug macht wird eine request an das Backend gesendet und dieses überprüft dann, ob der Spieler am Zug ist und ob der Spielzug auch möglich ist. Das frontend aktualisiert danach das Spielfeld
+ Sobald jemand ein Zug macht wird eine request an das Backend gesendet und dieses überprüft dann, ob der Spieler am Zug ist und ob der Spielzug auch möglich ist. Das frontend aktualisiert danach das Spielfeld
 
+---
 ## API
 
-description: `If feed with a name and a Password the register function checks if the User already exists and is over 5 and under 200 signs, at the end he either trows back en error or creats the Account in the Database.`
+**Description:** 
+`If feed with a name and a Password the register function checks if the User already exists and is over 5 and under 200 signs, at the end he either trows back en error or creats the Account in the Database.`
 
 /register\
 POST\
@@ -37,7 +41,8 @@ User already exists
 ```
 
 ---
-description: `If feed with the Accounts name and Password the login function checks if said account exists and sends back a Tokken for identification.`\
+**Description:** 
+`If feed with the Accounts name and Password the login function checks if said account exists and sends back a Tokken for identification.`
 
 /login\
 POST\
@@ -48,7 +53,7 @@ antwort:
 
 ---
 
-description: `Shows Information about a specific game.`
+**Description:** `Shows Information about a specific game.`
 
 /get_spiel/{spiel_id}\
 GET\
@@ -56,7 +61,7 @@ antwort:
 1. Array mit Spielen
 
 ---
-description: `Bewegt die Figuren und validiert zug (Ist der Zug erlaubt).`
+**Description:** `Bewegt die Figuren und validiert zug (Ist der Zug erlaubt).`
 
 /mache_move\
 POST\
@@ -72,7 +77,8 @@ antwort:
 
 ---
 
-description: `Wenn ein Bauer das Ende des Spielfeldes ereich kann er sich in eine Andere Figur (alle ausser König und Bauer) verwandeln.`
+**Description:**
+`Wenn ein Bauer das Ende des Spielfeldes ereich kann er sich in eine Andere Figur (alle ausser König und Bauer) verwandeln.`
 
 /bauer_zu\
 POST\
@@ -87,7 +93,8 @@ antwort:
 
 ---
 
-description: `Sends TOP 10 (can be changed) Players Username and Win.`
+**Description:**
+`Sends TOP 10 (can be changed) Players Username and Win.`
 
 /leaderboard\
 GET\
@@ -107,7 +114,8 @@ antwort:
 
 ---
 
-description: `If given a The at Login generated KEY, the live_games_4u API spits out every game that you are the creator of.`
+**Description:** 
+`If given a The at Login generated KEY, the live_games_4u API spits out every game that you are the creator of.`
 
 /your_live_games/:KEY\
 GET\
@@ -135,7 +143,8 @@ Antwort:
 ]
 ```
 ---
-description: `Creates Game in Database and send back Game ID`
+**Description:**
+`Creates Game in Database and send back Game ID`
 
 /create_game\
 Post\
@@ -145,7 +154,7 @@ antwort:
 2. GAME_ID
 3. "ERROR"
 ---
-description: ``
+**Description:**
 
 /create_game\
 Post\
@@ -155,7 +164,8 @@ antwort:
 2. GAME_ID
 3. "ERROR"
 ---
-description: `Wenn ein Bauer das Ende des Spielfeldes ereich kann er sich in eine Andere Figur (alle ausser König und Bauer) verwandeln.`
+**Description:**
+`Wenn ein Bauer das Ende des Spielfeldes ereich kann er sich in eine Andere Figur (alle ausser König und Bauer) verwandeln.`
 
 /draw\
 POST\
@@ -166,9 +176,9 @@ antwort:
 3. Success
 ---
 ## Schachregeln:
-- normale Spielregeln (bewegung der Figuren)
+- Normale Spielregeln (bewegung der Figuren)
 - enPassant
-- rochade (alle figuren zwischen dem König müssen weg sein und der König oder Turm darf sich noch nicht webegt haben. Geht auch nicht wenn der König im schach steht, oder nach der Rochade im Schach steht.)
+- Rochade (alle figuren zwischen dem König müssen weg sein und der König oder Turm darf sich noch nicht webegt haben. Geht auch nicht wenn der König im schach steht, oder nach der Rochade im Schach steht.)
 - König muss mind. 1 Feld abstand vom anderen König haben
 - x Bauern dürfen, wenn sie noch nie bewegt wurden, zwei Felder nach vorne
 - x Wenn ein bauer auf die andere seite gelangt, verwandelt er sich in eine belibige Figur
