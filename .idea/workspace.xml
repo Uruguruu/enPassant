@@ -6,12 +6,33 @@
   <component name="ChangeListManager">
     <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="create Game function made">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Frontend/Spielpage.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frontend/Spielpage.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Frontend/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frontend/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/mime" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/mime" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/mime.ps1" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/mime.ps1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/prebuild-install" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/prebuild-install" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/prebuild-install.ps1" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/prebuild-install.ps1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/rc" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/rc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/rc.ps1" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/rc.ps1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/semver" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/semver" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/semver.ps1" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/semver.ps1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/better-sqlite3/build/Release/better_sqlite3.node" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/better-sqlite3/build/Release/better_sqlite3.node" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/mime/cli.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/mime/cli.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/prebuild-install/bin.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/prebuild-install/bin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/rc/cli.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/rc/cli.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/node_modules/semver/bin/semver.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/semver/bin/semver.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/home.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/home.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/images/wooden_plank_surface.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/images/wooden_plank_surface.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/spielpage.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/spielpage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -19,20 +40,23 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
   <component name="ProjectId" id="2LMEKnf1xcKcP8rugJNDSG6jK2P" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/Programmieren/Repos/enPassant",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Programmieren/Repos/enPassant&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\01_ZLI Repository\sportferienprojekt\enPassant\src\public" />
