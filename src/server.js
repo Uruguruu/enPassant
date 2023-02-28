@@ -1133,6 +1133,7 @@ app.post("/mache_move", async function (req, res) {
                   const win = db.prepare(
                   "UPDATE User SET Wins = Wins + 1 WHERE User_ID = @clean_player"
                   )
+                console.log("Running win")
                 win.run({ clean_player });
                 delete_game.run({ spiel_id });
                 return;

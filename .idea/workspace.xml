@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="incomplete inputs out commented">
+    <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="draw syntax fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.js" afterDir="false" />
     </list>
@@ -220,7 +220,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677626499395</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="draw syntax fix">
+      <created>1677626845338</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1677626845338</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -248,6 +255,7 @@
     <MESSAGE value="draw end test" />
     <MESSAGE value="Wins first test with console.logs" />
     <MESSAGE value="incomplete inputs out commented" />
-    <option name="LAST_COMMIT_MESSAGE" value="incomplete inputs out commented" />
+    <MESSAGE value="draw syntax fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="draw syntax fix" />
   </component>
 </project>
