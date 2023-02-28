@@ -1122,6 +1122,7 @@ app.post("/mache_move", async function (req, res) {
                 );*/
                   res.send("Schwarz hat gewonnen!!!");
                   var gewinner = spiel_spieler["aktueller_player"];
+                  console.log("gewinner")
                   console.log(gewinner);
 
 
@@ -1130,6 +1131,9 @@ app.post("/mache_move", async function (req, res) {
                 "UPDATE User SET Type = @zu WHERE "
                 );*/
                   res.send("Weiss hat gewonnen!!!");
+                  var gewinner = spiel_spieler["aktueller_player"];
+                                    console.log("gewinner")
+                                    console.log(gewinner);
 
                 }
                 delete_game.run({ spiel_id });
