@@ -155,8 +155,10 @@ antwort:
 3. "ERROR"
 ---
 **Description:**
+`You can Join a Created Game with the Game ID`
 
-/create_game\
+
+/join_game\
 Post\
 braucht: {KEY} = Your Tokken, {public} = 0/1 für Public Game oder Private
 antwort:
