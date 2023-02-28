@@ -1352,18 +1352,15 @@ app.post("/draw", async function (req, res) {
                         );
               var check_spiel_P1 = draw_been_made_Player_1.get({ Player, spiel_id });
               var check_spiel_P2 = draw_been_made_Player_2.get({ Player, spiel_id });
-              console.log(check_spiel_P1)
-              console.log(check_spiel_P2)
-              // check if spiel exist
               if (check_spiel_P1.draw_Player_1 === 0 || check_spiel_P2.draw_Player_2 === 0) {
-                res.send("Some didn't draw yet")
+                res.send("Some didn't draw yet");
               }
               else { res.send("Drawn!");
               const delete_game = db.prepare(
                     "DELETE FROM Games WHERE Games_ID = @spiel_id"
                   );
-                console.log("delete_game")
-              //delete_game.run({ spiel_id });
+                console.log("delete_game");
+                delete_game.run({ spiel_id });
             }
       }
     }
