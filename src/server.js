@@ -1117,9 +1117,18 @@ app.post("/mache_move", async function (req, res) {
               var spiel_spieler = get_spielzug.get({ spiel_id });
               if (eat_value === "gefallen") {
                 if (spiel_spieler["aktueller_player"] === 1) {
+                const gewonnen = db.prepare(
+                "UPDATE User SET Type = @zu WHERE "
+                );
                   res.send("Schwarz hat gewonnen!!!");
+                  var gewinner = spiel_spieler["aktueller_player"];
+                  console.log(gewinner);
+
 
                 } else {
+                const gewonnen = db.prepare(
+                "UPDATE User SET Type = @zu WHERE "
+                );
                   res.send("Weiss hat gewonnen!!!");
 
                 }

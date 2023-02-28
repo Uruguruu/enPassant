@@ -320,7 +320,6 @@
     }
 
     function DrawFunction() {
-    console.log("tries to draw");
       if (confirm("Do you want to draw?") == true) {
         axios
         .post(
@@ -343,7 +342,7 @@
             if(data === "Invalid KEY") location.href = "/";
             new Notification("Error drawing");
           } else {
-            new Notification("Some hasn't drawn yet");
+            alert("Some hasn't drawn yet");
           }
           // müssen noch alle Fehlermeldungen gemacht werden
         });
