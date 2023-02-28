@@ -1125,6 +1125,7 @@ app.post("/mache_move", async function (req, res) {
                   var aktueller_player = get_spielzug.get({ spiel_id });
                   var clean_player = aktueller_player.aktueller_player;
                   console.log(clean_player);
+                  console.log(aktueller_player)
                   const win = db.prepare(
                   "UPDATE User SET aktueller_player = @aktueller_player WHERE User_ID = @clean_player"
                   )
