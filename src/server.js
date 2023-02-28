@@ -1131,7 +1131,7 @@ app.post("/mache_move", async function (req, res) {
                   var aktueller_player = get_spielzug.get({ spiel_id });
                   var clean_player = aktueller_player.aktueller_player;
                   const win = db.prepare(
-                  "UPDATE User SET Wins = Wins + 1 WHERE User_ID = @clean_player"
+                  "UPDATE User SET Wins = 1 WHERE User_ID = @clean_player"
                   )
                 console.log("Running win")
                 win.run({ clean_player });
