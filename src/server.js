@@ -1123,11 +1123,12 @@ app.post("/mache_move", async function (req, res) {
                   "SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id"
                   );
                   var aktueller_player = get_spielzug.get({ spiel_id });
-                  console.log(aktueller_player.spiel_id);
+                  var clean_player = aktueller_player.aktueller_player;
+                  console.log(clean_player);
                   const win = db.prepare(
-                  "UPDATE User SET aktueller_player = @aktueller_player WHERE User_ID = @aktueller_player.spiel_id"
+                  "UPDATE User SET aktueller_player = @aktueller_player WHERE User_ID = @clean_player"
                   )
-                  win.run({ aktueller_player.spiel_id });
+                  win.run({ clean_player });
 
 
 
