@@ -1,4 +1,4 @@
-# Ignore NODE MODULES
-./src/node_modules
-# Ignore DATABASE
-./src/database.db
+#Ignores Modules
+node_modules
+
+#Ignore .env

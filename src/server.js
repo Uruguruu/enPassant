@@ -7,11 +7,10 @@ const db = new Database("./database.db", {});
 const start = new require("./start.js");
 var bodyParser = require("body-parser");
 
-
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
-// functions
+// functionss
 
 /*
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -73,7 +72,7 @@ function spielexist(spiel_id, Player) {
       wf = true;
     } else {
       // falscher spieler
-      wf = "f_player";
+      wf = "du bist nicht an der Reihe";
     }
   } else {
     // falsches Spiel
@@ -103,19 +102,16 @@ function game_create(Player_1, public) {
   return game_id - 1;
 }
 
-
 /*
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Beginn of the main code
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 */
+
+
 /*
-Login
-Needs name and Password.
-Checks in Database if User and Password exists.
-No = "Invalid wrong user or Password"
-No connection = "Invalid wrong user or password"
-Yes = sends api key
+Bei einem /login Post mit den Variabeln(name, password), wird folgendes ausgeführt:
+1.
 */
 
 app.post("/login", async function (req, res) {
@@ -158,8 +154,10 @@ app.post("/login", async function (req, res) {
 /*
 Register Start
 */
+console.log(1234567);
 app.post("/register", async function (req, res) {
   try {
+    console.log("register");
     // to allow croo things
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
@@ -170,13 +168,22 @@ app.post("/register", async function (req, res) {
     const check_key = db.prepare("SELECT * FROM User WHERE Username= @name");
     const check = await check_key.get({ name });
     // checks if users not already exist and if it is longer that 5 and shorter than 200
-    if (check === undefined && name.length >= 5 && name.length <= 200 && password.length > 7) {
+    if (
+      check === undefined &&
+      name.length >= 5 &&
+      name.length <= 200 &&
+      password.length > 7
+    ) {
       // insert user into database
       const insertUser = db.prepare(
         "INSERT INTO User (Username, Password) VALUES (@name, @password)"
       );
+      var Filter = require('bad-words'),
+      filter = new Filter();
+      name = filter.clean(name);
+      console.log(name);
       insertUser.run({ name, password });
-      res.send("Account created");
+      res.send("Account created, Your Username is: "+name);
     } else if (name.length <= 5) {
       // tells the user what is wrong
       res.send("Username is too short!");
@@ -224,8 +231,22 @@ app.post("/create_game", async function (req, res) {
 // checks APi KEY and joins existing game
 app.post("/join_game", async function (req, res) {
   try {
+    console.log("*************");
+    // to allow croo things
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     let { KEY, code } = req.body;
+    const full_game = db.prepare(
+      "SELECT Player_2 FROM Games WHERE Games_ID = @code AND Player_2 IS NOT NULL;"
+    );
+    const result = full_game.get({ code });
+    console.log(result)
+    //console.log(block_game.run({ code }));
     if (!(await check_key(KEY))) res.send("Invalid KEY");
+    else if (result != undefined) res.send("game full");
     else {
       // when Key is correct
       const check_code = db.prepare(
@@ -245,6 +266,10 @@ app.post("/join_game", async function (req, res) {
         player1 = get_player1.get({ code });
         await start.game_start(player1["Player_1"], Player, code);
         res.send("Success");
+        /*const block_game = db.prepare(
+          "SELECT Player_2 FROM Games WHERE Games_ID = @code"
+        );
+        block_game.run({ code });*/
       } else {
         // if game doesn't exist
         res.send("Wrong Code");
@@ -265,10 +290,17 @@ app.post("/join_game", async function (req, res) {
 
 app.post("/mache_move", async function (req, res) {
   try {
+     // to allow croo things
+     res.header("Access-Control-Allow-Origin", "*");
+     res.header(
+       "Access-Control-Allow-Headers",
+       "Origin, X-Requested-With, Content-Type, Accept"
+     );
     const move = db.prepare(
       "UPDATE Figuren SET X = @endex, Y =  @endey WHERE X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id"
     );
     let { KEY, spiel_id, anfangx, anfangy, endex, endey } = req.body;
+    console.log("____",spiel_id, anfangx, anfangy, endex, endey);
     anfangy = parseInt(anfangy);
     anfangx = parseInt(anfangx);
     endex = parseInt(endex);
@@ -288,9 +320,9 @@ app.post("/mache_move", async function (req, res) {
       var Player = get_player(KEY);
       if (
         spielexist(spiel_id, Player) === "k_spiel" ||
-        spielexist(spiel_id, Player) === "f_player"
+        spielexist(spiel_id, Player) === "du bist nicht an der Reihe"
       ) {
-        res.send("Invalid Game doesn't exist " + spielexist(spiel_id, Player));
+        res.send(spielexist(spiel_id, Player));
         return;
       } else {
         const get_type = db.prepare(
@@ -316,10 +348,12 @@ app.post("/mache_move", async function (req, res) {
           return;
         } else {
           const get_color = db.prepare(
-            "SELECT g.Player_2 FROM Figuren f LEFT JOIN Games g ON f.Player = g.Player_2 WHERE f.X = @anfangx AND f.Y = @anfangy AND f.Games_ID = @spiel_id"
+            "SELECT g.Player_2 FROM Figuren f LEFT JOIN Games g ON f.Games_ID = g.Games_ID WHERE f.X = @anfangx AND f.Y = @anfangy AND f.Games_ID = @spiel_id"
           );
+          console.log(anfangx, anfangy, spiel_id);
           var g_color = get_color.get({ anfangx, anfangy, spiel_id });
           var farbe; // true = weiss false = schwarz
+          console.log(g_color, Player);
           if (g_color["Player_2"] === Player) farbe = false;
           else farbe = true;
           var spielzug;
@@ -344,12 +378,15 @@ app.post("/mache_move", async function (req, res) {
           /*
           Switch for White Figures
           */
+         console.log(farbe);
           if (farbe === true) {
+            console.log(spielfigur);
             switch (spielfigur) {
               /*
               Pawn
               */
               case 1:
+                console.log("Pawn");
                 if (anfangy - endey != -1) {
                   spielzug = false; // Überprüfung ob der Bauer nach vorne geht
                 }
@@ -407,7 +444,8 @@ app.post("/mache_move", async function (req, res) {
                 if (
                   anfangy === 2 &&
                   !(await getposition(anfangy + 1)) &&
-                  anfangy - endey === -2
+                  anfangy - endey === -2 &&
+                  anfangx === endex
                 ) {
                   const set_modus = db.prepare(
                     "UPDATE FIGUREN SET Modus = 1 WHERE  X = @anfangx AND Y = @anfangy AND Games_ID = @spiel_id"
@@ -442,26 +480,26 @@ app.post("/mache_move", async function (req, res) {
                     i !== endey;
                     i += increment
                   ) {
-                    if (!(await getposition(anfangx, i, spiel_id))) {
+                    if ((await getposition(anfangx, i, spiel_id))) {
                       spielzug = false;
                       break;
                     }
                   }
-                  spielzug = true;
+                  if(spielzug === undefined) spielzug = true;
                 } else if (anfangy === endey) {
                   //Function checks if in the y axis is any piece
                   let increment = (endex - anfangx) / Math.abs(endex - anfangx);
                   for (
                     let i = anfangx + increment;
-                    i === endex;
+                    i != endex;
                     i += increment
                   ) {
-                    if (!(await getposition(i, anfangy, spiel_id))) {
+                    if ((await getposition(i, anfangy, spiel_id))) {
                       spielzug = false;
                       break;
                     }
                   }
-                  spielzug = true;
+                  if(spielzug === undefined) spielzug = true;
                 }
                 break;
               /*
@@ -534,6 +572,7 @@ app.post("/mache_move", async function (req, res) {
             King
             */
               case 5:
+                console.log("******************************");
                 if (anfangx + 1 === endex && anfangy + 1 === endey) {
                   spielzug = true;
                   break;
@@ -567,6 +606,79 @@ app.post("/mache_move", async function (req, res) {
                   break;
                 }
                 spielzug = false;
+                const get_type = db.prepare(
+                  "SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
+                );
+                // checks if you want to change Turm with the König
+                if (
+                  (anfangx === 5 && anfangy === 1 && endex === 1 && endey === 1)
+                ) {
+                  if (
+                    (await !getposition(4, 1, spiel_id)) &&
+                    (await !getposition(2, 1, spiel_id)) &&
+                    (await !getposition(3, 1, spiel_id))
+                  ) {
+                    if (
+                      get_type.get({ spiel_id, anfangx: 1, anfangy: 1 })["Type"] ===
+                        2 &&
+                      get_type.get({ spiel_id, anfangx: 5, anfangy: 1 })["Type"] ===
+                        5
+                    ) {
+                      change_player();
+                      move.run({
+                        endex: 3,
+                        endey: 1,
+                        anfangx: 1,
+                        anfangy: 1,
+                        spiel_id,
+                      });
+                      move.run({
+                        endex: 2,
+                        endey: 1,
+                        anfangx: 5,
+                        anfangy: 1,
+                        spiel_id,
+                      });
+                      spielzug = true;
+                      res.send("Success");
+                      return;
+                    }
+                  }
+                }
+                if (
+                  (anfangx === 5 && anfangy === 1 && endex === 8 && endey === 1)
+                ) {
+                  if (
+                    (await !getposition(6, 1, spiel_id)) &&
+                    (await !getposition(7, 1, spiel_id))
+                  ) {
+                    if (
+                      get_type.get({ spiel_id, anfangx: 8, anfangy: 1 })["Type"] ===
+                        2 &&
+                      get_type.get({ spiel_id, anfangx: 5, anfangy: 1 })["Type"] ===
+                        5
+                    ) {
+                      change_player();
+                      move.run({
+                        endex: 7,
+                        endey: 1,
+                        anfangx: 5,
+                        anfangy: 1,
+                        spiel_id,
+                      });
+                      move.run({
+                        endex: 6,
+                        endey: 1,
+                        anfangx: 8,
+                        anfangy: 1,
+                        spiel_id,
+                      });
+                      spielzug = true;
+                      res.send("Success");
+                      return;
+                    }
+                  }
+                }
                 break;
               /*
         Queen
@@ -586,12 +698,12 @@ app.post("/mache_move", async function (req, res) {
                       i != endey;
                       i += increment
                     ) {
-                      if (!(await getposition(anfangx, i, spiel_id))) {
+                      if ((await getposition(anfangx, i, spiel_id))) {
                         spielzug = false;
                         break;
                       }
                     }
-                    spielzug = true;
+                    if(spielzug === undefined) spielzug = true;
                   } else if (anfangy === endey) {
                     //Function checks if in the y axis is any piece
                     let increment =
@@ -601,12 +713,12 @@ app.post("/mache_move", async function (req, res) {
                       i === endex;
                       i += increment
                     ) {
-                      if (!(await getposition(i, anfangy, spiel_id))) {
+                      if ((await getposition(i, anfangy, spiel_id))) {
                         spielzug = false;
                         break;
                       }
                     }
-                    spielzug = true;
+                    if(spielzug === undefined) spielzug = true;
                   }
                 } else {
                   var incrementx;
@@ -632,80 +744,6 @@ app.post("/mache_move", async function (req, res) {
                 }
                 break;
             }
-            const get_type = db.prepare(
-              "SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
-            );
-            // checks if you want to change Turm with the König
-            if (
-              (anfangx === 1 && anfangy === 1 && endex === 4 && endey === 1) ||
-              (anfangx === 4 && anfangy === 1 && endex === 8 && endey === 1)
-            ) {
-              if (
-                (await !getposition(2, 1, spiel_id)) &&
-                (await !getposition(3, 1, spiel_id))
-              ) {
-                if (
-                  get_type.get({ spiel_id, anfangx: 1, anfangy: 1 })["Type"] ===
-                    2 &&
-                  get_type.get({ spiel_id, anfangx: 4, anfangy: 1 })["Type"] ===
-                    6
-                ) {
-                  change_player();
-                  move.run({
-                    endex: 3,
-                    endey: 1,
-                    anfangx: 1,
-                    anfangy: 1,
-                    spiel_id,
-                  });
-                  move.run({
-                    endex: 2,
-                    endey: 1,
-                    anfangx: 4,
-                    anfangy: 1,
-                    spiel_id,
-                  });
-                  spielzug = true;
-                  res.send("Success");
-                  return;
-                }
-              }
-            }
-            if (
-              (anfangx === 8 && anfangy === 1 && endex === 4 && endey === 1) ||
-              (anfangx === 4 && anfangy === 1 && endex === 8 && endey === 1)
-            ) {
-              if (
-                (await !getposition(5, 1, spiel_id)) &&
-                (await !getposition(6, 1, spiel_id)) &&
-                (await !getposition(7, 1, spiel_id))
-              ) {
-                if (
-                  get_type.get({ spiel_id, anfangx, anfangy })["Type"] === 2 &&
-                  get_type.get({ spiel_id, anfangx, anfangy })["Type"] === 6
-                ) {
-                  change_player();
-                  move.run({
-                    endex: 8,
-                    endey: 1,
-                    anfangx: 4,
-                    anfangy: 1,
-                    spiel_id,
-                  });
-                  move.run({
-                    endex: 4,
-                    endey: 1,
-                    anfangx: 8,
-                    anfangy: 1,
-                    spiel_id,
-                  });
-                  spielzug = true;
-                  res.send("Success");
-                  return;
-                }
-              }
-            }
-
             /*
     Switch for black figures
     */
@@ -807,12 +845,12 @@ app.post("/mache_move", async function (req, res) {
                     i !== endey;
                     i += increment
                   ) {
-                    if (!(await getposition(anfangx, i, spiel_id))) {
+                    if ((await getposition(anfangx, i, spiel_id))) {
                       spielzug = false;
                       break;
                     }
                   }
-                  spielzug = true;
+                  if(spielzug === undefined) spielzug = true;
                 } else if (anfangy === endey) {
                   //Function checks if in the y axis is any piece
                   let increment = (endex - anfangx) / Math.abs(endex - anfangx);
@@ -821,12 +859,12 @@ app.post("/mache_move", async function (req, res) {
                     i === endex;
                     i += increment
                   ) {
-                    if (!(await getposition(i, anfangy, spiel_id))) {
+                    if ((await getposition(i, anfangy, spiel_id))) {
                       spielzug = false;
                       break;
                     }
                   }
-                  spielzug = true;
+                  if(spielzug === undefined) spielzug = true;
                 }
                 break;
               /*
@@ -932,7 +970,81 @@ app.post("/mache_move", async function (req, res) {
                   break;
                 }
                 spielzug = false;
+               
+
+                const get_type = db.prepare(
+                  "SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
+                );
+                // checks if you want to change Turm with the König
+                if (
+                  (anfangx === 1 && anfangy === 8 && endex === 5 && endey === 8)
+                ) {
+                  if (
+                    (await !getposition(4, 8, spiel_id)) &&
+                    (await !getposition(2, 8, spiel_id)) &&
+                    (await !getposition(3, 8, spiel_id))
+                  ) {
+                    if (
+                      get_type.get({ spiel_id, anfangx: 1, anfangy: 8 })["Type"] ===
+                        2 &&
+                      get_type.get({ spiel_id, anfangx: 5, anfangy: 8 })["Type"] ===
+                        5
+                    ) {
+                      change_player();
+                      move.run({
+                        endex: 3,
+                        endey: 8,
+                        anfangx: 1,
+                        anfangy: 8,
+                        spiel_id,
+                      });
+                      move.run({
+                        endex: 2,
+                        endey: 8,
+                        anfangx: 5,
+                        anfangy: 8,
+                        spiel_id,
+                      });
+                      spielzug = true;
+                      res.send("Success");
+                      return;
+                    }
+                  }
+                }
+                if (
+                  (anfangx === 5 && anfangy === 8 && endex === 8 && endey === 8)
+                ) {
+                  if (
+                    (await !getposition(6, 8, spiel_id)) &&
+                    (await !getposition(7, 8, spiel_id))
+                  ) {
+                    if (
+                      get_type.get({ spiel_id, anfangx, anfangy })["Type"] === 5 &&
+                      get_type.get({ spiel_id, anfangx: endex, anfangy })["Type"] === 2
+                    ) {
+                      change_player();
+                      move.run({
+                        endex: 7,
+                        endey: 8,
+                        anfangx: 5,
+                        anfangy: 8,
+                        spiel_id,
+                      });
+                      move.run({
+                        endex: 6,
+                        endey: 8,
+                        anfangx: 8,
+                        anfangy: 8,
+                        spiel_id,
+                      });
+                      spielzug = true;
+                      res.send("Success");
+                      return;
+                    }
+                  }
+                }
                 break;
+        
               /*
     Queen
     */
@@ -951,12 +1063,12 @@ app.post("/mache_move", async function (req, res) {
                       i != endey;
                       i += increment
                     ) {
-                      if (!(await getposition(anfangx, i, spiel_id))) {
+                      if ((await getposition(anfangx, i, spiel_id))) {
                         spielzug = false;
                         break;
                       }
                     }
-                    spielzug = true;
+                    if(spielzug === undefined) spielzug = true;
                   } else if (anfangy === endey) {
                     //Function checks if in the y axis is any piece
                     let increment =
@@ -966,12 +1078,12 @@ app.post("/mache_move", async function (req, res) {
                       i === endex;
                       i += increment
                     ) {
-                      if (!(await getposition(i, anfangy, spiel_id))) {
+                      if ((await getposition(i, anfangy, spiel_id))) {
                         spielzug = false;
                         break;
                       }
                     }
-                    spielzug = true;
+                    if(spielzug === undefined) spielzug = true;
                   }
                 } else {
                   var incrementx;
@@ -997,79 +1109,6 @@ app.post("/mache_move", async function (req, res) {
                 }
                 break;
             }
-            const get_type = db.prepare(
-              "SELECT Type FROM Figuren WHERE Games_ID = @spiel_id AND X = @anfangx AND Y = @anfangy"
-            );
-            // checks if you want to change Turm with the König
-            if (
-              (anfangx === 8 && anfangy === 8 && endex === 4 && endey === 8) ||
-              (anfangx === 4 && anfangy === 8 && endex === 8 && endey === 8)
-            ) {
-              if (
-                (await !getposition(2, 8, spiel_id)) &&
-                (await !getposition(3, 8, spiel_id))
-              ) {
-                if (
-                  get_type.get({ spiel_id, anfangx: 8, anfangy: 8 })["Type"] ===
-                    2 &&
-                  get_type.get({ spiel_id, anfangx: 4, anfangy: 8 })["Type"] ===
-                    6
-                ) {
-                  change_player();
-                  move.run({
-                    endex: 3,
-                    endey: 8,
-                    anfangx: 8,
-                    anfangy: 8,
-                    spiel_id,
-                  });
-                  move.run({
-                    endex: 2,
-                    endey: 8,
-                    anfangx: 4,
-                    anfangy: 8,
-                    spiel_id,
-                  });
-                  spielzug = true;
-                  res.send("Success");
-                  return;
-                }
-              }
-            }
-            if (
-              (anfangx === 8 && anfangy === 8 && endex === 4 && endey === 8) ||
-              (anfangx === 4 && anfangy === 8 && endex === 8 && endey === 8)
-            ) {
-              if (
-                (await !getposition(5, 8, spiel_id)) &&
-                (await !getposition(6, 8, spiel_id)) &&
-                (await !getposition(7, 8, spiel_id))
-              ) {
-                if (
-                  get_type.get({ spiel_id, anfangx, anfangy })["Type"] === 2 &&
-                  get_type.get({ spiel_id, anfangx, anfangy })["Type"] === 6
-                ) {
-                  change_player();
-                  move.run({
-                    endex: 8,
-                    endey: 8,
-                    anfangx: 4,
-                    anfangy: 8,
-                    spiel_id,
-                  });
-                  move.run({
-                    endex: 4,
-                    endey: 8,
-                    anfangx: 8,
-                    anfangy: 8,
-                    spiel_id,
-                  });
-                  spielzug = true;
-                  res.send("Success");
-                  return;
-                }
-              }
-            }
           }
           // does the moving and the eating
           if (spielzug === true) {
@@ -1079,8 +1118,10 @@ app.post("/mache_move", async function (req, res) {
               if (eat_value === "gefallen") {
                 if (spiel_spieler["aktueller_player"] === 1) {
                   res.send("Schwarz hat gewonnen!!!");
+
                 } else {
                   res.send("Weiss hat gewonnen!!!");
+
                 }
                 delete_game.run({ spiel_id });
                 return;
@@ -1152,7 +1193,6 @@ function eat(ax, ay, ex, ey, id) {
         myResolve(true);
       }
     } catch (error) {
-      console.log(error);
       const deleten = db.prepare(
         "DELETE FROM Figuren WHERE X = @ex AND Y = @ey AND Games_ID = @id"
       );
@@ -1212,11 +1252,11 @@ app.post("/bauer_zu", async function (req, res) {
   }
 });
 
-app.get("/", function (req, res) {
+app.get("/login", function (req, res) {
   res.sendFile(__dirname + "/Frontend/Login.html", "/Login.css"); //hier mit CSS
 });
 
-app.get("/home", function (req, res) {
+app.get("/", function (req, res) {
   res.sendFile(__dirname + "/Frontend/home.html");
 });
 
@@ -1225,6 +1265,12 @@ app.get("/signup", function (req, res) {
 });
 
 app.get("/get_spiel/:spiel_id", (req, res) => {
+    // to allow croo things
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
   var spiel_id = req.params.spiel_id;
   const figures = db.prepare(
     "SELECT * FROM Figuren WHERE Games_ID = @spiel_id"
@@ -1234,6 +1280,11 @@ app.get("/get_spiel/:spiel_id", (req, res) => {
 });
 
 app.get("/leaderboard", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   const lead_list = db.prepare(
     "SELECT Username, Wins FROM User ORDER BY Wins DESC LIMIT 10"
   );
@@ -1241,6 +1292,14 @@ app.get("/leaderboard", (req, res) => {
   res.send(result);
 });
 // ---Leaderboard END---
+
+app.get("/Game", function (req, res) {
+  res.sendFile(__dirname + "/Frontend/Spielpage.html", "/spielpage.css");
+});
+
+app.get("/watch", function (req, res) {
+  res.sendFile(__dirname + "/Frontend/watch.html", "/spielpage.css");
+});
 
 // ---Your Hosted games START---
 app.get("/your_live_games/:KEY", async function (req, res) {
@@ -1288,3 +1347,70 @@ app.post("/draw", async function (req, res) {
     res.send("Error");
   }
 });
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// beginn of the chat
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+app.post("/get_chat", async function(req, res){
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  try{
+    let {KEY, spiel_id} = req.body;
+    if (!(await check_key(KEY))) res.send("Invalid KEY");
+    else{
+      var Player = get_player(KEY);
+      const spielexist = db.prepare(
+        "SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id"
+      );
+      var check_spiel = spielexist.get({ Player, spiel_id });
+      // check if spiel exist
+      if (check_spiel != undefined) {
+        const get_chat = db.prepare(
+          "SELECT Text, Username FROM messages m LEFT JOIN User u ON m.Spieler_ID = u.User_ID WHERE m.Game_ID = @spiel_id"
+        );
+        res.send(get_chat.all({spiel_id }))
+      }
+      else res.send("not found");   
+    }
+  }
+  catch(error){
+    console.log(error);
+    res.send("Error");
+  }
+})
+
+app.post("/send_chat", async function(req, res){
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  try{
+    let {KEY, spiel_id, message} = req.body;
+    if (!(await check_key(KEY))) res.send("Invalid KEY");
+    else{
+      var Player = get_player(KEY);
+      const spielexist = db.prepare(
+        "SELECT Player_2, aktueller_player FROM Games WHERE (Player_2 = @Player OR Player_1 = @Player) AND Games_ID = @spiel_id"
+      );
+      var check_spiel = spielexist.get({ Player, spiel_id });
+      // check if spiel exist
+      if (check_spiel != undefined) {
+        const get_chat = db.prepare(
+          "INSERT INTO messages (Game_ID, Text, Spieler_ID) VALUES (@spiel_id, @message, @Player)"
+        );
+        get_chat.run({spiel_id, message, Player })
+        res.send("Success")
+      }
+      else res.send("not found");   
+    }
+  }
+  catch(error){
+    console.log(error);
+    res.send("Error");
+  }
+})

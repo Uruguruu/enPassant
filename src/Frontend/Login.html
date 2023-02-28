@@ -9,9 +9,6 @@
     <title>Login und Register TEST</title>
   </head>
   <body>
-    <div class="banner">
-        <img src="/images/wallpaper.jpg">
-    </div>
     <div class="center">
       <div class="text-wrapper">
         <span style="--i:1"><strong>L</strong></span>
@@ -50,7 +47,8 @@
         </form>
     </div>
     <script>
-            async function logvar() {
+      var adresse = "http://raspisamuel.local:3004";
+        async function logvar() {
         var eMail = document.getElementById("Username").value;
         var password = document.getElementById("Password").value;
         console.log("The E-Mail typed in was: " + eMail);
@@ -59,10 +57,9 @@
       }
       async function login(eMail, password) {
   try {
-    console.log(5);
     //http://localhost:3004/login
     // http://raspisamuel.local:3004/login 
-axios.post('http://raspisamuel.local:3004/login',{
+axios.post(adresse+'/login',{
   name: eMail,  password: password
 }, {
 headers: {
@@ -80,7 +77,7 @@ headers: {
     else{
       console.log(1);
       localStorage.setItem('KEY', data);
-      location.href = "/home";
+      location.href = "/";
     }
   })
 }
