@@ -1355,7 +1355,7 @@ app.post("/draw", async function (req, res) {
               console.log(check_spiel_P1)
               console.log(check_spiel_P2)
               // check if spiel exist
-              if (check_spiel_P1 === 0 || check_spiel_P2 === 0) {
+              if (check_spiel_P1.draw_Player_1 === 0 || check_spiel_P2.draw_Player_2 === 0) {
                 res.send("Some didn't draw yet")
               }
               else { res.send("Drawn!");
