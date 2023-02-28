@@ -4,26 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="create Game function made">
+    <list default="true" id="0b23bb4c-dc2e-4124-8f6f-181423e3c835" name="Changes" comment="New Background and Draw function updated for handshake">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Frontend/Spielpage.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frontend/Spielpage.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Frontend/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frontend/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/mime" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/mime" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/mime.ps1" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/mime.ps1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/prebuild-install" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/prebuild-install" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/prebuild-install.ps1" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/prebuild-install.ps1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/rc" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/rc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/rc.ps1" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/rc.ps1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/semver" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/semver" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/.bin/semver.ps1" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/.bin/semver.ps1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/better-sqlite3/build/Release/better_sqlite3.node" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/better-sqlite3/build/Release/better_sqlite3.node" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/mime/cli.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/mime/cli.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/prebuild-install/bin.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/prebuild-install/bin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/rc/cli.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/rc/cli.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/node_modules/semver/bin/semver.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/node_modules/semver/bin/semver.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/home.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/home.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/images/wooden_plank_surface.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/images/wooden_plank_surface.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/spielpage.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/spielpage.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,6 +18,19 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="52009760-b4e1-430b-9537-f344b4fc5e8e" />
+        <option name="url" value="https://github.com/Uruguruu/enPassant.git" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -134,7 +129,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676477718999</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="New Background and Draw function updated for handshake">
+      <created>1677622722064</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1677622722064</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -155,6 +157,7 @@
     <MESSAGE value="new file chess.js for all Frontend javascript functions" />
     <MESSAGE value="testing js" />
     <MESSAGE value="create Game function made" />
-    <option name="LAST_COMMIT_MESSAGE" value="create Game function made" />
+    <MESSAGE value="New Background and Draw function updated for handshake" />
+    <option name="LAST_COMMIT_MESSAGE" value="New Background and Draw function updated for handshake" />
   </component>
 </project>

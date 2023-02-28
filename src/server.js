@@ -1345,10 +1345,10 @@ app.post("/draw", async function (req, res) {
         lock_draw2.run({ spiel_id, Player });
         //-------SQL COMMANDS FOR CHECKING DRAW STATUS-------
         const draw_been_made_Player_1 = db.prepare(
-                "SELECT draw_Player_1 FROM Games WHERE Games_ID = @spiel_id AND (Player_1 = @Player OR Player_2 = @Player"
+                "SELECT draw_Player_1 FROM Games WHERE Games_ID = @spiel_id AND (Player_1 = @Player OR Player_2 = @Player)"
               );
           const draw_been_made_Player_2 = db.prepare(
-                          "SELECT draw_Player_2 FROM Games WHERE Games_ID = @spiel_id AND (Player_1 = @Player OR Player_2 = @Player"
+                          "SELECT draw_Player_2 FROM Games WHERE Games_ID = @spiel_id AND (Player_1 = @Player OR Player_2 = @Player)"
                         );
               var check_spiel_P1 = draw_been_made_Player_1.get({ Player, spiel_id });
               var check_spiel_P2 = draw_been_made_Player_2.get({ Player, spiel_id });
