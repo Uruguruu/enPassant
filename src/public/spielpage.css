@@ -1,6 +1,10 @@
-* {
+html {
     margin: 1;
     padding: 1;
+}
+
+header {
+margin-top: 1em;
 }
 
 body {
@@ -10,8 +14,10 @@ body {
     display: grid;
     place-items: center;
     overflow-x: hidden;
+    font-family: Helvetica, Arial, sans-serif;
+    line-height: 1.5em;
+    margin: 0;
 }
-
 
 ul {
     padding: 1%;
@@ -99,3 +105,44 @@ li {
     background-color: #04AA6D;
     color: white;
   }
+
+/*--------------------CHESSBOARD CONTAINER START--------------------------------*/
+.chessboard-container {
+    position: relative;
+}
+/*--------------------CHESSBOARD CONTAINER END--------------------------------*/
+/*------------------------CHAT CONTAINER START--------------------------------*/
+    .Chat-Container {
+      margin-top: 25px;
+      padding-right: 1em;
+      padding-left: 1em;
+      position: relative;
+      background-color: rgba(255, 255, 255, 0.5);
+      width: 120%;
+      inline-size: 400px;
+      overflow-wrap: break-word;
+      border-radius: 3px;
+    }
+
+    .Chat-Container #chat_text {
+        max-height: 590px;
+        overflow: auto;
+        padding-right: 2em;
+    }
+/*------------------------CHAT CONTAINER END--------------------------------*/
+/*------------------------GRID START--------------------------------*/
+    section{
+        margin-top: 5%;
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-gap: 3em;
+    }
+/*-----------------------Grid END--------------------------------*/
+/*------------------------CHAT START--------------------------------*/
+    .chat {
+      position: absolute;
+      bottom: 0;
+      white-space: nowrap;
+      margin: 1em;
+    }
+/*------------------------CHAT END--------------------------------*/

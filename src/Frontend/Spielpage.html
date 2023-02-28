@@ -10,6 +10,7 @@
   </head>
 
   <body>
+  <header>
     <style>
         li {
             box-sizing: border-box;
@@ -28,7 +29,9 @@
         >Rules</a
       >
     </div>
-
+  </header>
+  <section>
+    <div class="chessboard-container">
     <ul>
       <div class="divv" id="row8">
         <li class="box" id="b801">Brook</li>
@@ -112,17 +115,19 @@
         <li class="box" id="b108">Wrook</li>
       </div>
     </ul>
-    <div>
+    </div>
+    <div class="Chat-Container">
         <div>
             <div id="chat_text">
 
             </div>
         </div>
-        <div>
-            <input id="chat_input">
+        <div class="chat">
+            <input size="40"id="chat_input">
             <button onclick="send_chat()">Senden</button>
         </div>
     </div>
+  </section>
   </body>
 
   <script>
@@ -331,14 +336,14 @@
         )
         .then(function (response) {
           data = response["data"];
-          if (data != "Your Draw has been confirmed") {
+          if (data != "Some didn't draw yet") {
+            if(data === "Drawn!") location.href = "/";
             if(data === "Invalid Game doesn't exist k_spiel") location.href = "/";
             if(data === "Invalid KEY") location.href = "/";
             new Notification("Error drawing");
           } else {
-            location.href = "/";
+            alert("Some hasn't drawn yet");
           }
-
           // müssen noch alle Fehlermeldungen gemacht werden
         });
       } else {

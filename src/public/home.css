@@ -1,13 +1,15 @@
 body {
+    height: 100vh;
+    padding: 0;
+    overflow: hidden;
     background-image: url('images/wallpaper.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
-    box-sizing: border-box;
+    /*box-sizing: border-box;*/
     font-family: Arial, Helvetica, sans-serif;
     font-weight: White;
-    background-color: black;
   }
   
   .container {
@@ -163,7 +165,7 @@ body {
     box-sizing: border-box;
   }
 
-  /*hide scrollbar*/
+  /*hide scrollbar
   html {
     -ms-overflow-style: none;
   }
@@ -171,6 +173,7 @@ body {
   html::-webkit-scrollbar {
     display: none;
   }
+  */
 
   .List {
     height: 500px; 
