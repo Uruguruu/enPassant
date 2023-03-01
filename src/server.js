@@ -1127,7 +1127,8 @@ app.post("/mache_move", async function (req, res) {
                   var data = get_score.get({spiel_id});
                   insert_score.run({wins: parseInt(data["wins"])+1, ID: data["ID"]});
                   res.send("Schwarz hat gewonnen!!!");
-                  
+
+
                 } else {
                   const get_score = db.prepare(
                     "SELECT p.Wins AS wins, p.User_ID AS ID  FROM Games g LEFT JOIN User p ON g.Player_1 = p.User_ID WHERE Games_ID = @spiel_id"
@@ -1141,6 +1142,17 @@ app.post("/mache_move", async function (req, res) {
                   
                   res.send("Weiss hat gewonnen!!!");
                 }
+                  var gewinner = spiel_spieler["aktueller_player"];
+                  const get_spielzug = db.prepare(
+                  "SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id"
+                  );
+                  var aktueller_player = get_spielzug.get({ spiel_id });
+                  var clean_player = aktueller_player.aktueller_player;
+                  const win = db.prepare(
+                  "UPDATE User SET Wins = Wins + 1 WHERE User_ID = @clean_player"
+                  )
+                console.log("Running win")
+                win.run({ clean_player });
                 delete_game.run({ spiel_id });
                 return;
               }
@@ -1352,12 +1364,34 @@ app.post("/draw", async function (req, res) {
       if (spielexist(spiel_id, Player) == "k_spiel") {
         res.send("Invalid Game doesn't exist " + spielexist(spiel_id, Player));
         return;
-      } else {
-        const delete_game = db.prepare(
-          "DELETE FROM Games WHERE Games_ID = @spiel_id"
+      } else { //Tries to find games with spiel_id where drawing player is player_1 or player_2
+        const lock_draw = db.prepare(
+          "UPDATE Games SET draw_Player_1 = 1 WHERE Games_ID = @spiel_id AND Player_1 = @Player"
         );
-        delete_game.run({ spiel_id });
-        res.send("Your Draw has been confirmed");
+        const lock_draw2 = db.prepare(
+          "UPDATE Games SET draw_Player_2 = 1 WHERE Games_ID = @spiel_id AND Player_2 = @Player"
+        );
+        lock_draw.run({ spiel_id, Player });
+        lock_draw2.run({ spiel_id, Player });
+        //-------SQL COMMANDS FOR CHECKING DRAW STATUS-------
+        const draw_been_made_Player_1 = db.prepare(
+                "SELECT draw_Player_1 FROM Games WHERE Games_ID = @spiel_id AND (Player_1 = @Player OR Player_2 = @Player)"
+              );
+          const draw_been_made_Player_2 = db.prepare(
+                          "SELECT draw_Player_2 FROM Games WHERE Games_ID = @spiel_id AND (Player_1 = @Player OR Player_2 = @Player)"
+                        );
+              var check_spiel_P1 = draw_been_made_Player_1.get({ Player, spiel_id });
+              var check_spiel_P2 = draw_been_made_Player_2.get({ Player, spiel_id });
+              if (check_spiel_P1.draw_Player_1 === 0 || check_spiel_P2.draw_Player_2 === 0) {
+                res.send("Some didn't draw yet");
+              }
+              else { res.send("Drawn!");
+              const delete_game = db.prepare(
+                    "DELETE FROM Games WHERE Games_ID = @spiel_id"
+                  );
+                console.log("delete_game");
+                delete_game.run({ spiel_id });
+            }
       }
     }
   } catch (error) {
@@ -1432,3 +1466,5 @@ app.post("/send_chat", async function(req, res){
     res.send("Error");
   }
 })
+
+
