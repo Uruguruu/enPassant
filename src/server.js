@@ -176,7 +176,7 @@ app.post("/register", async function (req, res) {
     ) {
       // insert user into database
       const insertUser = db.prepare(
-        "INSERT INTO User (Username, Password) VALUES (@name, @password)"
+        "INSERT INTO User (Username, Password, Wins) VALUES (@name, @password, 0)"
       );
       var Filter = require('bad-words'),
       filter = new Filter();
@@ -305,7 +305,7 @@ app.post("/mache_move", async function (req, res) {
     anfangx = parseInt(anfangx);
     endex = parseInt(endex);
     endey = parseInt(endey);
-    spiel_id = parseInt(spiel_id);
+    spiel_id = parseInt(spiel_id);get_player
     const get_spielzug = db.prepare(
       "SELECT aktueller_player FROM Games WHERE Games_ID = @spiel_id"
     );
@@ -1117,11 +1117,29 @@ app.post("/mache_move", async function (req, res) {
               var spiel_spieler = get_spielzug.get({ spiel_id });
               if (eat_value === "gefallen") {
                 if (spiel_spieler["aktueller_player"] === 1) {
+                  const get_score = db.prepare(
+                    "SELECT p.Wins AS wins, p.User_ID AS ID  FROM Games g LEFT JOIN User p ON g.Player_2 = p.User_ID WHERE Games_ID = @spiel_id"
+                  );
+                  console.log( get_score.get({spiel_id}));
+                  const insert_score = db.prepare(
+                    "UPDATE User SET Wins = @wins WHERE User_ID = @ID"
+                  );
+                  var data = get_score.get({spiel_id});
+                  insert_score.run({wins: parseInt(data["wins"])+1, ID: data["ID"]});
                   res.send("Schwarz hat gewonnen!!!");
                   
                 } else {
+                  const get_score = db.prepare(
+                    "SELECT p.Wins AS wins, p.User_ID AS ID  FROM Games g LEFT JOIN User p ON g.Player_1 = p.User_ID WHERE Games_ID = @spiel_id"
+                  );
+                  console.log( get_score.get({spiel_id}));
+                  const insert_score = db.prepare(
+                    "UPDATE User SET Wins = @wins WHERE User_ID = @ID"
+                  );
+                  var data = get_score.get({spiel_id});
+                  insert_score.run({wins: parseInt(data["wins"])+1, ID: data["ID"]});
+                  
                   res.send("Weiss hat gewonnen!!!");
-
                 }
                 delete_game.run({ spiel_id });
                 return;
