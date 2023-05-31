@@ -1,286 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, height initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, height initial-scale=1.0"/>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="/home.css" />
+    <link rel="stylesheet" href="/home.css"/>
     <title>Homepage</title>
-  </head>
-  <body>
-    <div class="container">
-      <div class="left-section">
+</head>
+<body>
+<div class="container">
+    <div class="left-section">
         <h2>Deine Spiele</h2>
         <a onclick="get_data()">🔃</a>
         <div id="spiele" class="List"></div>
-      </div>
-      <div class="center-section">
-        <img src="images/enPassant.png" alt="Logo" />
+    </div>
+    <div class="center-section">
+        <img src="images/enPassant.png" alt="Logo"/>
         <div class="button-container">
-          <img id="loader" src="images/loader.gif" style="width:48px;height:48px; visibility: hidden;"></img>
-          <button id="AutoJoinBtn" style="visibility: hidden; margin-bottom: 10px;">Join</button>
-          <p id="game_id"></p>
-          <button
-            id="create-game-button"
-            onclick="get_create_game_params()"
-            class="game-button"
-          >
-            Create Game
-          </button>
-          <span class="or-separator">OR</span>
-          <button id="join-game-button" class="game-button">Join Game</button>
+            <img id="loader" src="images/loader.gif" style="width:48px;height:48px; visibility: hidden;"></img>
+            <button id="AutoJoinBtn" style="visibility: hidden; margin-bottom: 10px;">Join</button>
+            <p id="game_id"></p>
+            <button
+                    id="create-game-button"
+                    onclick="get_create_game_params()"
+                    class="game-button"
+            >
+                Create Game
+            </button>
+            <span class="or-separator">OR</span>
+            <button id="join-game-button" class="game-button">Join Game</button>
         </div>
 
         <div id="join-game-input" style="display: none">
-          <label for="game-id-input" style="color: white">Enter game ID:</label>
-          <input type="number" id="game-id-input" />
-          <button id="join-game-submit-button" onclick="join()">Join</button>
-          <p id="message"></p>
+            <label for="game-id-input" style="color: white">Enter game ID:</label>
+            <input type="number" id="game-id-input"/>
+            <button id="join-game-submit-button" onclick="join()">Join</button>
+            <p id="message"></p>
         </div>
-      </div>
-      <div class="right-section" style="margin-top: 5%">
+    </div>
+    <div class="right-section" style="margin-top: 5%">
         <h2>Leaderboard</h2>
         <a onclick="leaderboard_get_data()">🔃</a>
         <div id="Leaderboard" class="List"></div>
-      </div>
     </div>
+</div>
 
-    <!--Button Functionality START-->
+<!--Button Functionality START-->
 
-    <script>
-      const joinGameButton = document.getElementById("join-game-button");
-      const joinGameInput = document.getElementById("join-game-input");
-      const joinGameSubmitButton = document.getElementById(
+<script>
+    const joinGameButton = document.getElementById("join-game-button");
+    const joinGameInput = document.getElementById("join-game-input");
+    const joinGameSubmitButton = document.getElementById(
         "join-game-submit-button"
-      );
+    );
 
-      joinGameButton.addEventListener("click", () => {
+    joinGameButton.addEventListener("click", () => {
         joinGameInput.style.display = "block";
-      });
+    });
 
-      joinGameSubmitButton.addEventListener("click", () => {
+    joinGameSubmitButton.addEventListener("click", () => {
         const gameId = document.getElementById("game-id-input").value;
         // Hier könntest du den HTTP-Request absenden, um dem Spiel mit der Game-ID beizutreten
-      });
-    </script>
+    });
+</script>
 
-    <!--Button Functionality END-->
-  </body>
+<!--Button Functionality END-->
+</body>
 
-  <script>
-  /*-----START create game-----*/
+<script>
+    // Function to fetch the APIURL
+    function fetchAPIURL() {
+        return new Promise((resolve, reject) => {
+            fetch("/apiurl")
+                .then(response => response.json())
+                .then(data => {
+                    const adresse = data.APIURL;
+                    resolve(adresse);
+                })
+                .catch(error => {
+                    console.error("Error fetching APIURL:", error);
+                    reject(error);
+                });
+        });
+    }
 
-  //http://localhost:3004/
-  // http://raspisamuel.local:3004/
-  var adresse = "http://raspisamuel.local:3004";
-      async function get_create_game_params() {
+    async function get_create_game_params() {
         const public = 1;
         var token = localStorage.getItem("KEY");
         /*console.log(token);
           console.log(public);*/
         create_game(token, public);
-      }
+    }
 
-      async function create_game(token, public) {
+    async function create_game(token, public) {
         try {
-          axios
-            .post(
-              adresse + "/create_game",
-              {
-                KEY: token,
-                public: public,
-              },
-              {
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-              }
-            )
-            .then(function (response) {
-              data = response["data"];
-              if (data === "Invalid KEY") {
-                location.href = "/login";
-              } else {
-                document.getElementById("game_id").innerHTML =
-                  "Dein Game Code lautet: " + data;
-                setInterval(function () {
-                  joinable(data);
-                }, 4000);
-              }
-            });
-        } catch {}
-      }
+            axios
+                .post(
+                    await fetchAPIURL() + "/create_game",
+                    {
+                        KEY: token,
+                        public: public,
+                    },
+                    {
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                    }
+                )
+                .then(function (response) {
+                    data = response["data"];
+                    if (data === "Invalid KEY") {
+                        location.href = "/login";
+                    } else {
+                        document.getElementById("game_id").innerHTML =
+                            "Dein Game Code lautet: " + data;
+                        setInterval(function () {
+                            joinable(data);
+                        }, 4000);
+                    }
+                });
+        } catch {
+        }
+    }
 
-      /*Function that checks if a Second Player is in Game. Needs id for the game*/
-      async function joinable(game_id) {
+    /*Function that checks if a Second Player is in Game. Needs id for the game*/
+    async function joinable(game_id) {
         console.log("Joinable?");
         try {
-          return new Promise((resolveOuter) => {
-            axios
-              .get(adresse + "/your_live_games/" + localStorage.getItem("KEY"), {
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-              })
-              .then(function (response) {
-                if (response["data"] === "Invalid KEY") {
-                  // localStorage.removeItem('KEY');
-                  location.href = "/login";
-                } else {
-                  var richtige_zahl;
-                  var dataRaw = response["data"];
-                  for (let i = 0; i < dataRaw.length; i++) {
-                    /*console.log(dataRaw[i]["Games_ID"]);
-                    console.log(game_id);*/
-                    if (dataRaw[i]["Games_ID"] === game_id) {
-                      var ID_for_Join = dataRaw[i]["Games_ID"];
-                      richtige_zahl = i;
-                      break;
-                    }
-                  }
-                  console.log(dataRaw[richtige_zahl]["schwarz"]);
-                  if (dataRaw[richtige_zahl]["schwarz"] == null) {
-                    console.log("free");
-                    document.getElementById("loader").style.visibility = "visible";
-                  } else {
-                    //console.log(data[richtige_zahl]["Games_ID"])
-                    console.log("full");
-                    document.getElementById("loader").style.visibility = "hidden";
-                    document.getElementById("AutoJoinBtn").style.visibility = "visible";
-                    document.getElementById("AutoJoinBtn").onclick = () => {spiel(dataRaw[richtige_zahl]["Games_ID"]);}
-                    
-                  }
-                }
-              });
-          });
+            return new Promise(async (resolveOuter) => {
+                axios
+                    .get(await fetchAPIURL() + "/your_live_games/" + localStorage.getItem("KEY"), {
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                    })
+                    .then(function (response) {
+                        if (response["data"] === "Invalid KEY") {
+                            // localStorage.removeItem('KEY');
+                            location.href = "/login";
+                        } else {
+                            var richtige_zahl;
+                            var dataRaw = response["data"];
+                            for (let i = 0; i < dataRaw.length; i++) {
+                                /*console.log(dataRaw[i]["Games_ID"]);
+                                console.log(game_id);*/
+                                if (dataRaw[i]["Games_ID"] === game_id) {
+                                    var ID_for_Join = dataRaw[i]["Games_ID"];
+                                    richtige_zahl = i;
+                                    break;
+                                }
+                            }
+                            console.log(dataRaw[richtige_zahl]["schwarz"]);
+                            if (dataRaw[richtige_zahl]["schwarz"] == null) {
+                                console.log("free");
+                                document.getElementById("loader").style.visibility = "visible";
+                            } else {
+                                //console.log(data[richtige_zahl]["Games_ID"])
+                                console.log("full");
+                                document.getElementById("loader").style.visibility = "hidden";
+                                document.getElementById("AutoJoinBtn").style.visibility = "visible";
+                                document.getElementById("AutoJoinBtn").onclick = () => {
+                                    spiel(dataRaw[richtige_zahl]["Games_ID"]);
+                                }
+
+                            }
+                        }
+                    });
+            });
         } catch (error) {
-          console.log(error);
+            console.log(error);
         }
-      }
-  /*-----END create game-----*/
+    }
+
+    /*-----END create game-----*/
 
 
 
-  /*-----START Game Join functions-----*/
+    /*-----START Game Join functions-----*/
 
     async function join() {
-      var token = localStorage.getItem("KEY");
-      var GameCode = document.getElementById("game-id-input").value;
-      console.log("Your game id is " + GameCode);
-      //console.log("Your KEY is " + token);
-      joinGame(token, GameCode);
+        var token = localStorage.getItem("KEY");
+        var GameCode = document.getElementById("game-id-input").value;
+        console.log("Your game id is " + GameCode);
+        //console.log("Your KEY is " + token);
+        joinGame(token, GameCode);
     }
+
     async function joinGame(token, GameCode) {
-      try {
-        console.log("Dein Key ist " + token);
-        axios
-          .post(
-            adresse + "/join_game",
-            {
-              KEY: token,
-              code: GameCode,
-            },
-            {
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-            }
-          )
-          .then(function (response) {
-            data = response["data"];
-            console.log(data === "Wrong Code");
-            if (data === "Invalid KEY") {
-              location.href = "/login";
-            } else if (data === "Wrong Code") {
-              document.getElementById("message").innerHTML = data;
-              //ERROR could be displayed in Frontend
-            } else if (data === "game full") {
-              console.log("full");
-              document.getElementById("message").innerHTML = data;
-              if (confirm("Press a button!") == true) {
-                location.href = "/watch";
-                localStorage.setItem("spiel", GameCode);
-              } else {
-                text = "You canceled!";
-              }
-            } else {
-              localStorage.setItem("spiel", GameCode);
-              console.log(GameCode);
-              location.href = "/Game"; //going to game
-            }
-          });
-      } catch {}
+        try {
+            console.log("Dein Key ist " + token);
+            axios
+                .post(
+                    await fetchAPIURL() + "/join_game",
+                    {
+                        KEY: token,
+                        code: GameCode,
+                    },
+                    {
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                    }
+                )
+                .then(function (response) {
+                    data = response["data"];
+                    console.log(data === "Wrong Code");
+                    if (data === "Invalid KEY") {
+                        location.href = "/login";
+                    } else if (data === "Wrong Code") {
+                        document.getElementById("message").innerHTML = data;
+                        //ERROR could be displayed in Frontend
+                    } else if (data === "game full") {
+                        console.log("full");
+                        document.getElementById("message").innerHTML = data;
+                        if (confirm("Press a button!") == true) {
+                            location.href = "/watch";
+                            localStorage.setItem("spiel", GameCode);
+                        } else {
+                            text = "You canceled!";
+                        }
+                    } else {
+                        localStorage.setItem("spiel", GameCode);
+                        console.log(GameCode);
+                        location.href = "/Game"; //going to game
+                    }
+                });
+        } catch {
+        }
     }
 
     /*-----END Game Join functions-----*/
     /*-----START Your Games functions*/
 
     if (localStorage.getItem("KEY") === undefined) location.href = "/login";
+
     async function get_data() {
-      try {
-        return new Promise((resolveOuter) => {
-          axios
-            .get(adresse + "/your_live_games/" + localStorage.getItem("KEY"), {
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-            })
-            .then(function (response) {
-              document.getElementById("spiele").innerHTML = "";
-              if (response["data"] === "Invalid KEY") {
-                // localStorage.removeItem('KEY');
-                location.href = "/login";
-              } else {
-                console.log("Data Reloaded (Every 4s)");
-                var data = response["data"];
-                document.getElementById("spiele").innerHTML = "";
-                for (let i = 0; i < data.length; i++) {
-                  show_data(data[i]);
-                }
-              }
+        try {
+            return new Promise(async (resolveOuter) => {
+                axios
+                    .get(await fetchAPIURL() + "/your_live_games/" + localStorage.getItem("KEY"), {
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                    })
+                    .then(function (response) {
+                        document.getElementById("spiele").innerHTML = "";
+                        if (response["data"] === "Invalid KEY") {
+                            // localStorage.removeItem('KEY');
+                            location.href = "/login";
+                        } else {
+                            console.log("Data Reloaded (Every 4s)");
+                            var data = response["data"];
+                            document.getElementById("spiele").innerHTML = "";
+                            for (let i = 0; i < data.length; i++) {
+                                show_data(data[i]);
+                            }
+                        }
+                    });
             });
-        });
-      } catch (error) {
-        console.log(error);
-      }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     function show_data(data) {
-      var weiss = document.createElement("p");
-      var schwarz = document.createElement("p");
-      var game_id_text = document.createElement("p");
-      var aktueller_player = document.createElement("p");
-      var abstand = document.createElement("br");
-      var spielen = document.createElement("button");
-      spielen.onclick = function () {
-        spiel(data["Games_ID"]);
-      };
-      spielen.innerHTML = "Jetzt weiterspielen";
-      game_id_text.innerHTML = "Game ID: " + data["Games_ID"];
-      weiss.innerHTML = "Weiss spielt: " + data["weiss"];
-      schwarz.innerHTML = "Schwarz spielt: " + data["schwarz"];
-      if (data["aktueller_player"] === 0 && data["weiss"] === data["m_user"]) {
-        aktueller_player.innerHTML = "Aktueller Spieler: " + "du";
-      } else if (
-        data["aktueller_player"] != 0 &&
-        data["weiss"] != data["m_user"]
-      ) {
-        aktueller_player.innerHTML = "Aktueller Spieler: " + "du";
-      } else {
-        aktueller_player.innerHTML = "Aktueller Spieler: " + "gegenspieler";
-      }
-      var main = document.getElementById("spiele");
-      main.appendChild(game_id_text);
-      main.appendChild(weiss);
-      main.appendChild(schwarz);
-      main.appendChild(aktueller_player);
-      main.appendChild(spielen);
-      main.appendChild(abstand);
+        var weiss = document.createElement("p");
+        var schwarz = document.createElement("p");
+        var game_id_text = document.createElement("p");
+        var aktueller_player = document.createElement("p");
+        var abstand = document.createElement("br");
+        var spielen = document.createElement("button");
+        spielen.onclick = function () {
+            spiel(data["Games_ID"]);
+        };
+        spielen.innerHTML = "Jetzt weiterspielen";
+        game_id_text.innerHTML = "Game ID: " + data["Games_ID"];
+        weiss.innerHTML = "Weiss spielt: " + data["weiss"];
+        schwarz.innerHTML = "Schwarz spielt: " + data["schwarz"];
+        if (data["aktueller_player"] === 0 && data["weiss"] === data["m_user"]) {
+            aktueller_player.innerHTML = "Aktueller Spieler: " + "du";
+        } else if (
+            data["aktueller_player"] != 0 &&
+            data["weiss"] != data["m_user"]
+        ) {
+            aktueller_player.innerHTML = "Aktueller Spieler: " + "du";
+        } else {
+            aktueller_player.innerHTML = "Aktueller Spieler: " + "gegenspieler";
+        }
+        var main = document.getElementById("spiele");
+        main.appendChild(game_id_text);
+        main.appendChild(weiss);
+        main.appendChild(schwarz);
+        main.appendChild(aktueller_player);
+        main.appendChild(spielen);
+        main.appendChild(abstand);
     }
+
     function spiel(zahl) {
-      localStorage.setItem("spiel", zahl);
-      location.href = "/game";
+        localStorage.setItem("spiel", zahl);
+        location.href = "/game";
     }
 
     get_data();
@@ -290,45 +309,46 @@
     /*-----Leaderboard START-----*/
 
     if (localStorage.getItem("KEY") === undefined) location.href = "/login";
+
     async function leaderboard_get_data() {
-      try {
-        return new Promise((resolveOuter) => {
-          axios
-            .get(adresse + "/leaderboard", {
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-            })
-            .then(function (response) {
-              document.getElementById("Leaderboard").innerHTML = "";
-              var data = response["data"];
-              for (let i = 0; i < data.length; i++) {
-                leaderboard_show_data(data[i]);
-              }
+        try {
+            return new Promise(async (resolveOuter) => {
+                axios
+                    .get(await fetchAPIURL() + "/leaderboard", {
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                    })
+                    .then(function (response) {
+                        document.getElementById("Leaderboard").innerHTML = "";
+                        var data = response["data"];
+                        for (let i = 0; i < data.length; i++) {
+                            leaderboard_show_data(data[i]);
+                        }
+                    });
             });
-        });
-      } catch (error) {
-        console.log(error);
-      }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     function leaderboard_show_data(data) {
-      var Place = document.createElement("h2");
-      var Username = document.createElement("p");
-      var Wins = document.createElement("p");
-      var abstand = document.createElement("br");
-      Place.innerHTML = "";
-      Username.innerHTML = "Name: " + data["Username"];
-      Wins.innerHTML = "Amount of Wins: " + data["Wins"];
-      var leaderboard = document.getElementById("Leaderboard");
-      leaderboard.appendChild(Username);
-      leaderboard.appendChild(Wins);
-      leaderboard.appendChild(abstand);
+        var Place = document.createElement("h2");
+        var Username = document.createElement("p");
+        var Wins = document.createElement("p");
+        var abstand = document.createElement("br");
+        Place.innerHTML = "";
+        Username.innerHTML = "Name: " + data["Username"];
+        Wins.innerHTML = "Amount of Wins: " + data["Wins"];
+        var leaderboard = document.getElementById("Leaderboard");
+        leaderboard.appendChild(Username);
+        leaderboard.appendChild(Wins);
+        leaderboard.appendChild(abstand);
     }
 
     leaderboard_get_data();
     setInterval(leaderboard_get_data, 4000);
 
     /*-----Leaderboard END-----*/
-  </script>
+</script>
 </html>

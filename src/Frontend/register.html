@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="/register.css">
     <title>Login und Register TEST</title>
-  </head>
-  <body>
-    <div class="banner">
-        <img src="/images/wallpaper.jpg">
-    </div>
-    <div class="center">
-      <div class="text-wrapper">
+</head>
+<body>
+<div class="banner">
+    <img src="/images/wallpaper.jpg">
+</div>
+<div class="center">
+    <div class="text-wrapper">
         <span style="--i:1"><strong>R</strong></span>
         <span style="--i:2"><strong>E</strong></span>
         <span style="--i:3"><strong>G</strong></span>
@@ -22,67 +22,84 @@
         <span style="--i:6"><strong>T</strong></span>
         <span style="--i:7"><strong>E</strong></span>
         <span style="--i:8"><strong>R</strong></span>
-      </div>
-    <form class="form-container"> 
-            <div class="txt-field">
-              <input
-              id="Username"
-              type="text" 
-              required
-            />
-                <span></span>
-                <label for="Username">New User</label>
-            </div>
-            <div class="txt-field">
-              <input
-              type="Password"
-              id="Password"
-              required
-            />
-                <span></span>
-                <label for="Password">New Password</label>
-            </div>
-            <!--<input type="submit" value="Login" onclick="logvar()">-->
-            <p id="message"></p>
-            <button type="button" class="btn cancel" onclick="logvar()">
-              Create Account
-        </form>
     </div>
-    <script>
-            async function logvar() {
+    <form class="form-container">
+        <div class="txt-field">
+            <input
+                    id="Username"
+                    type="text"
+                    required
+            />
+            <span></span>
+            <label for="Username">New User</label>
+        </div>
+        <div class="txt-field">
+            <input
+                    type="Password"
+                    id="Password"
+                    required
+            />
+            <span></span>
+            <label for="Password">New Password</label>
+        </div>
+        <!--<input type="submit" value="Login" onclick="logvar()">-->
+        <p id="message"></p>
+        <button type="button" class="btn cancel" onclick="logvar()">
+            Create Account
+    </form>
+</div>
+<script>
+    // Function to fetch the APIURL
+    function fetchAPIURL() {
+        return new Promise((resolve, reject) => {
+            fetch("/apiurl")
+                .then(response => response.json())
+                .then(data => {
+                    const adresse = data.APIURL;
+                    resolve(adresse);
+                })
+                .catch(error => {
+                    console.error("Error fetching APIURL:", error);
+                    reject(error);
+                });
+        });
+    }
+
+    async function logvar() {
         var eMail = document.getElementById("Username").value;
         var password = document.getElementById("Password").value;
         console.log("The E-Mail typed in was: " + eMail);
         console.log("The Password typed in was: " + password);
         login(eMail, password);
-      }
-      async function login(eMail, password) {
-  try {
-    console.log(5);
-axios.post('http://raspisamuel:3004/register',{
-  name: eMail,  password: password
-}, {
-headers: {
- "Content-Type": "application/x-www-form-urlencoded"
-}
-})
-  .then(function (response) {
-    console.log(response);
-    data = response["data"];
-    if((data.includes("Account created"))){
-      console.log("Account created");
-      if (confirm(data)) {
-        location.href = "/login"; 
-      } else {
-      } 
     }
-    else{
-     alert(data);
+
+    async function login(eMail, password) {
+        try {
+            console.log(5);
+            axios.post(await fetchAPIURL() + '/register', {
+                name: eMail, password: password
+            }, {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            })
+                .then(function (response) {
+                    console.log(response);
+                    data = response["data"];
+                    if ((data.includes("Account created"))) {
+                        console.log("Account created");
+                        if (confirm(data)) {
+                            location.href = "/login";
+                        } else {
+                        }
+                    } else {
+                        alert(data);
+                    }
+                })
+        } catch {
+        }
+        ;
     }
-  })
-}
-catch{};
-}
-    </script>
-  </body>
+</script>
+</body>
 </html>

@@ -3,6 +3,12 @@ const path = require('path');
 
 const app = express();
 const port = 3005;
+const APIURL = process.env.APIURL || 'http://localhost:3004';
+
+app.get("/apiurl", function (req, res) {
+    res.json({ APIURL });
+});
+
 
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -26,8 +32,8 @@ app.get("/Game", function (req, res) {
 app.get("/watch", function (req, res) {
     res.sendFile(__dirname + "/Frontend/watch.html", "/spielpage.css");
 });
-
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
+    console.log(`The API server is expected on: ${APIURL}`);
 });

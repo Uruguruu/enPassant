@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="/spielpage.css" />
-  </head>
+    <link rel="stylesheet" href="/spielpage.css"/>
+    <title>Watching</title>
+</head>
+<style>
+    li {
+        box-sizing: border-box;
+    }
+</style>
+<body>
+<div class="topnav">
+    <a class="active" href="/">Home</a>
+    <a onclick="getdata()" title="Reload the positions of all Figures"
+    >Reload</a
+    >
+    <a
+            href="https://en.wikipedia.org/wiki/Rules_of_chess"
+            target="_blank"
+            title="Open a offical Rule site"
+    >Rules</a
+    >
+</div>
 
-  <body>
-    <style>
-        li {
-            box-sizing: border-box;
-        }
-    </style>
-    <div class="topnav">
-      <a class="active" href="/">Home</a>
-      <a onclick="getdata()" title="Reload the positions of all Figures"
-        >Reload</a
-      >
-      <a
-        href="https://en.wikipedia.org/wiki/Rules_of_chess"
-        target="_blank"
-        title="Open a offical Rule site"
-        >Rules</a
-      >
-    </div>
-
-    <ul>
-      <div class="divv" id="row8">
+<ul>
+    <div class="divv" id="row8">
         <li class="box" id="b801">Brook</li>
         <li class="box" id="b802">Bknight</li>
         <li class="box" id="b803">Bbishop</li>
@@ -37,8 +37,8 @@
         <li class="box" id="b806">Bbishop</li>
         <li class="box" id="b807">Bknight</li>
         <li class="box" id="b808">Brook</li>
-      </div>
-      <div class="divv" id="row7">
+    </div>
+    <div class="divv" id="row7">
         <li class="box" id="b701">Bpawn</li>
         <li class="box" id="b702">Bpawn</li>
         <li class="box" id="b703">Bpawn</li>
@@ -47,8 +47,8 @@
         <li class="box" id="b706">Bpawn</li>
         <li class="box" id="b707">Bpawn</li>
         <li class="box" id="b708">Bpawn</li>
-      </div>
-      <div class="divv" id="row6">
+    </div>
+    <div class="divv" id="row6">
         <li class="box" id="b601"></li>
         <li class="box" id="b602"></li>
         <li class="box" id="b603"></li>
@@ -57,8 +57,8 @@
         <li class="box" id="b606"></li>
         <li class="box" id="b607"></li>
         <li class="box" id="b608"></li>
-      </div>
-      <div class="divv" id="row5">
+    </div>
+    <div class="divv" id="row5">
         <li class="box" id="b501"></li>
         <li class="box" id="b502"></li>
         <li class="box" id="b503"></li>
@@ -67,8 +67,8 @@
         <li class="box" id="b506"></li>
         <li class="box" id="b507"></li>
         <li class="box" id="b508"></li>
-      </div>
-      <div class="divv" id="row4">
+    </div>
+    <div class="divv" id="row4">
         <li class="box" id="b401"></li>
         <li class="box" id="b402"></li>
         <li class="box" id="b403"></li>
@@ -77,8 +77,8 @@
         <li class="box" id="b406"></li>
         <li class="box" id="b407"></li>
         <li class="box" id="b408"></li>
-      </div>
-      <div class="divv" id="row3">
+    </div>
+    <div class="divv" id="row3">
         <li class="box" id="b301"></li>
         <li class="box" id="b302"></li>
         <li class="box" id="b303"></li>
@@ -87,9 +87,9 @@
         <li class="box" id="b306"></li>
         <li class="box" id="b307"></li>
         <li class="box" id="b308"></li>
-      </div>
+    </div>
 
-      <div class="divv" id="row2">
+    <div class="divv" id="row2">
         <li class="box " id="b201">Wpawn</li>
         <li class="box " id="b202">Wpawn</li>
         <li class="box " id="b203">Wpawn</li>
@@ -98,8 +98,8 @@
         <li class="box " id="b206">Wpawn</li>
         <li class="box " id="b207">Wpawn</li>
         <li class="box" id="b208">Wpawn</li>
-      </div>
-      <div class="divv" id="row1">
+    </div>
+    <div class="divv" id="row1">
         <li class="box" id="b101">Wrook</li>
         <li class="box" id="b102">Wknight</li>
         <li class="box" id="b103">Wbishop</li>
@@ -108,104 +108,124 @@
         <li class="box" id="b106">Wbishop</li>
         <li class="box" id="b107">Wknight</li>
         <li class="box" id="b108">Wrook</li>
-      </div>
-    </ul>
-  </body>
+    </div>
+</ul>
+</body>
 
-  <script>
-    function getdata() {
-      try {
-        axios
-          .get(
-            "http://raspisamuel:3004/get_spiel/" + localStorage.getItem("spiel")
-          )
-          .then(function (response) {
-            data = response["data"];
-            var white;
-            try {
-              white = data[0]["Player"];
-            } catch (error) {
-              console.log(error);
-              console.log(localStorage.getItem("spiel"));
-              location.href = "/";
-            }
-            document.querySelectorAll(".box").forEach((image) => {
-              image.innerText = "";
-            });
-            for (let i = 0; i < data.length; i++) {
-              var x = data[i]["X"];
-              var y = data[i]["Y"];
-              var type = data[i]["Type"];
-              var list;
-              if (white === data[i]["Player"]) {
-                list = [
-                  "",
-                  "Wpawn",
-                  "Wrook",
-                  "Wknight",
-                  "Wbishop",
-                  "Wking",
-                  "Wqueen",
-                ];
-              } else {
-                list = [
-                  "",
-                  "Bpawn",
-                  "Brook",
-                  "Bknight",
-                  "Bbishop",
-                  "Bking",
-                  "Bqueen",
-                ];
-              }
-              document.getElementById("b" + y + "0" + x).innerHTML = list[type];
-            }
-            insertImage();
-          });
-      } catch {}
+<script>
+    // Function to fetch the APIURL
+    function fetchAPIURL() {
+        return new Promise((resolve, reject) => {
+            fetch("/apiurl")
+                .then(response => response.json())
+                .then(data => {
+                    const adresse = data.APIURL;
+                    resolve(adresse);
+                })
+                .catch(error => {
+                    console.error("Error fetching APIURL:", error);
+                    reject(error);
+                });
+        });
     }
+
+    async function getdata() {
+        try {
+            axios
+                .get(
+                    await fetchAPIURL() + "/get_spiel/" + localStorage.getItem("spiel")
+                )
+                .then(function (response) {
+                    data = response["data"];
+                    var white;
+                    try {
+                        white = data[0]["Player"];
+                    } catch (error) {
+                        console.log(error);
+                        console.log(localStorage.getItem("spiel"));
+                        location.href = "/";
+                    }
+                    document.querySelectorAll(".box").forEach((image) => {
+                        image.innerText = "";
+                    });
+                    for (let i = 0; i < data.length; i++) {
+                        var x = data[i]["X"];
+                        var y = data[i]["Y"];
+                        var type = data[i]["Type"];
+                        var list;
+                        if (white === data[i]["Player"]) {
+                            list = [
+                                "",
+                                "Wpawn",
+                                "Wrook",
+                                "Wknight",
+                                "Wbishop",
+                                "Wking",
+                                "Wqueen",
+                            ];
+                        } else {
+                            list = [
+                                "",
+                                "Bpawn",
+                                "Brook",
+                                "Bknight",
+                                "Bbishop",
+                                "Bking",
+                                "Bqueen",
+                            ];
+                        }
+                        document.getElementById("b" + y + "0" + x).innerHTML = list[type];
+                    }
+                    insertImage();
+                });
+        } catch {
+        }
+    }
+
     setInterval(getdata, 1000);
 
     getdata();
 
     // Inserting the Images
     function insertImage() {
-      document.querySelectorAll(".box").forEach((image) => {
-        if (image.innerText.length !== 0) {
-          if (image.innerText == "Wpawn" || image.innerText == "Bpawn") {
-            image.innerHTML = `${image.innerText} <img class='allimg allpawn' src="images/chessPieces/${image.innerText}.png" alt="">`;
-            image.style.cursor = "pointer";
-          } else {
-            image.innerHTML = `${image.innerText} <img class='allimg' src="images/chessPieces/${image.innerText}.png" alt="">`;
-            image.style.cursor = "pointer";
-          }
-        }
-      });
+        document.querySelectorAll(".box").forEach((image) => {
+            if (image.innerText.length !== 0) {
+                if (image.innerText == "Wpawn" || image.innerText == "Bpawn") {
+                    image.innerHTML = `${image.innerText} <img class='allimg allpawn' src="images/chessPieces/${image.innerText}.png" alt="">`;
+                    image.style.cursor = "pointer";
+                } else {
+                    image.innerHTML = `${image.innerText} <img class='allimg' src="images/chessPieces/${image.innerText}.png" alt="">`;
+                    image.style.cursor = "pointer";
+                }
+            }
+        });
     }
+
     insertImage();
 
     // Chessboard coloring
     function coloring() {
-      const color = document.querySelectorAll(".box");
+        const color = document.querySelectorAll(".box");
 
-      color.forEach((color) => {
-        getId = color.id;
-        arr = Array.from(getId);
-        arr.shift();
-        aside = eval(arr.pop());
-        aup = eval(arr.shift());
-        a = aside + aup;
+        color.forEach((color) => {
+            getId = color.id;
+            arr = Array.from(getId);
+            arr.shift();
+            aside = eval(arr.pop());
+            aup = eval(arr.shift());
+            a = aside + aup;
 
-        if (a % 2 == 0) {
-          color.style.backgroundColor = "#FFFFFF";
-        }
-        if (a % 2 !== 0) {
-          color.style.backgroundColor = "#8c9ea3";
-        }
-      });
+            if (a % 2 == 0) {
+                color.style.backgroundColor = "#FFFFFF";
+            }
+            if (a % 2 !== 0) {
+                color.style.backgroundColor = "#8c9ea3";
+            }
+        });
     }
+
     coloring();
 
-  </script>
+</script>
 
 </html>
