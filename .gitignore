@@ -1,5 +1,4 @@
-#Ignores Modules
-./backend/node_modules/
+# Ignore Database files.
 *.db
-#Ignore .env
-./idea/
+# Ignore idea fodler.
+/.idea/
