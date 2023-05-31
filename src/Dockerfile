@@ -20,9 +20,9 @@ RUN npm rebuild
 CMD ["npm", "start"]
 
 # Expose Port
-EXPOSE 3004
+EXPOSE 3005
 
 
 #Commands
-# Running command : docker run -p 3004:3004  uruguruu/chess-api:latest
+# Running command : docker run -p 3005:3005  uruguruu/enpassant-:latest
 # Build command : docker build -t uruguruu/chess-api .
